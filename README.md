@@ -106,7 +106,7 @@ El mapa impreso mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las
 - **Su mundo:** detrás de la tarjeta pasan las imágenes de contexto elegidas en `contextos.json`, con un acercamiento lento y un efecto de profundidad al inclinar el teléfono. Arriba se muestra el pie de foto con su crédito y licencia. El botón «Ver cámara» las oculta.
 - **Marco vacío:** si una mujer no tiene imágenes, la tarjeta de brecha invita a subir una a Wikimedia Commons.
 - **Línea de tiempo:** nacimiento, muerte, obras, premios y cargos, tomados de Wikidata, en una pestaña aparte.
-- **Escuchar:** el teléfono lee la tarjeta en voz alta (`speechSynthesis`, sin servidor).
+- **Escuchar:** el teléfono lee la tarjeta en voz alta (`speechSynthesis`, sin servidor). Elige una voz latinoamericana (México, EE. UU. hispano, Colombia, Argentina…; España queda al final) y acerca el tono al centro para que suene lo más neutra posible.
 - **Tu recorrido:** el teléfono guarda las calles que ya escaneaste (solo en ese teléfono) y muestra «3/30». La hoja del pasaporte incluye recorridos por tema (insurgentas, escritoras, artistas, científicas, educadoras y feministas), con un botón «Guíame».
 - **Siguiente en el mapa:** una flecha y la distancia real sobre el piso hasta el pin más cercano que falta, calculadas con `posiciones_qr.csv`.
   - **Calibración automática de la brújula:** no hay que medir nada al montar. Todos los QR están impresos derechos, con su borde de arriba hacia el norte del mapa. Cuando la cámara ve un QR del piso, la app mide qué tan girado aparece y le suma el rumbo de la brújula del teléfono: el resultado es hacia dónde queda el norte del mapa en la sala.
@@ -156,7 +156,6 @@ En el escritorio abre `http://localhost:8765/ar.html?calle_id=leona-vicario-2485
 
 ## Antes de la inauguración
 
-- [ ] Cambiar `GUIA_GEOCHICAS_URL` en `ar.html` por la guía de edición oficial (ahora apunta al sitio del proyecto).
 - [ ] Regenerar el JSON con `--enriquecer` lo más cerca posible de la fecha. Las calles que sigan en la brecha son el mensaje de la exposición.
 - [ ] Imprimir en material mate o con laminado antideslizante mate, porque el brillo de los focos impide leer los QR. Antes de mandar a imprimir el plotter, probar `tarjetas_qr_prueba.pdf` con varios teléfonos.
 - [ ] Si se espera mucho público con la misma IP (el wifi de la galería), revisar los [límites de tasa de Wikimedia](https://www.mediawiki.org/wiki/Wikimedia_APIs/Rate_limits). El `extracto_respaldo` evita que la experiencia se rompa si se alcanzan.

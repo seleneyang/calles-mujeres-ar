@@ -470,8 +470,7 @@ const CONFIG = {
   WIKI_EDITAR: 'https://es.wikipedia.org/w/index.php',
   WIKIDATA_API: 'https://www.wikidata.org/w/api.php',
   AYUDA_PRIMER_ARTICULO: 'https://es.wikipedia.org/wiki/Ayuda:Tu_primer_art%C3%ADculo',
-  // TODO: reemplazar por la guía de edición oficial de Geochicas cuando esté publicada.
-  GUIA_GEOCHICAS_URL: 'https://geochicasosm.github.io/lascallesdelasmujeres/',
+  PROYECTO_URL: 'https://geochicasosm.github.io/lascallesdelasmujeres/',
   SUBIR_COMMONS: 'https://commons.wikimedia.org/wiki/Special:UploadWizard?uselang=es',
   TIEMPO_MAX_MS: 7000,
   SEGUNDOS_POR_IMAGEN: 7,
@@ -705,7 +704,7 @@ function panelBrecha(calle, datos) {
     calle.contexto?.length ? null : marcoVacio(),
     el('div', { class: 'acciones' },
       enlaceExterno('Escribir este artículo', crear),
-      enlaceExterno('Guía de edición de Geochicas', CONFIG.GUIA_GEOCHICAS_URL, 'boton secundario'),
+      enlaceExterno('Entra al proyecto más amplio de Las Calles de las Mujeres', CONFIG.PROYECTO_URL, 'boton secundario'),
       enlaceExterno('¿Primera vez? Cómo crear un artículo', CONFIG.AYUDA_PRIMER_ARTICULO, 'boton texto'),
     ),
   );
@@ -840,16 +839,42 @@ function alternarMundo(visible = !mundoVisible) {
 // ============================================================================
 // Escuchar (síntesis de voz del propio teléfono)
 // ============================================================================
+// Voz latinoamericana y lo más neutra posible. La Web Speech API no informa el género de las voces,
+// así que se reconoce por el nombre y se acerca el tono al centro: voces agudas un poco más graves,
+// voces graves un poco más agudas.
+const VOCES_AGUDAS = /paulina|m[oó]nica|soledad|isabela|ang[eé]lica|francisca|luciana|marisol|sabina|helena|laura|elvira|dalia|camila|valeria|flo\b|sandy|shelley|female|mujer/i;
+const VOCES_GRAVES = /juan|jorge|diego|carlos|eddy|reed|rocko|jacobo|pablo|[aá]lvaro|ra[uú]l|gonzalo|enrique|andr[eé]s|male|hombre/i;
+const VOCES_CARICATURA = /grandma|grandpa|bad news|bells|boing|bubbles|jester|organ|superstar|trinoids|whisper|wobble|zarvox|albert|cellos/i;
+const PREFERENCIA_LATAM = ['es-MX', 'es-US', 'es-419', 'es-CO', 'es-AR', 'es-CL', 'es-PE', 'es-VE', 'es-UY', 'es-EC', 'es-GT', 'es-CR'];
+
+function elegirVoz() {
+  const voces = window.speechSynthesis.getVoices().filter((v) => v.lang?.toLowerCase().startsWith('es') && !VOCES_CARICATURA.test(v.name));
+  const norm = (l) => l.replace('_', '-').toLowerCase();
+  const rango = (v) => {
+    const i = PREFERENCIA_LATAM.findIndex((l) => norm(l) === norm(v.lang));
+    return (i === -1 ? (norm(v.lang) === 'es-es' ? 90 : 50) : i)  // España al final
+      // Una voz aguda llevada un poco más grave suena más neutra que una grave forzada hacia arriba
+      + (VOCES_AGUDAS.test(v.name) ? 0 : VOCES_GRAVES.test(v.name) ? 0.4 : 0.2)
+      + (v.localService ? 0 : 0.5);                                   // mejor sin depender de la red
+  };
+  const voz = voces.sort((a, b) => rango(a) - rango(b))[0] || null;
+  const tono = !voz ? 1 : VOCES_AGUDAS.test(voz.name) ? 0.84 : VOCES_GRAVES.test(voz.name) ? 1.12 : 1;
+  return { voz, tono };
+}
+window.speechSynthesis?.getVoices(); // algunos navegadores cargan la lista de voces en diferido
+window.speechSynthesis?.addEventListener?.('voiceschanged', () => {});
+
 function escuchar(texto, boton) {
-  const voz = window.speechSynthesis;
-  if (voz.speaking) {
-    voz.cancel();
+  const sintesis = window.speechSynthesis;
+  if (sintesis.speaking) {
+    sintesis.cancel();
     return;
   }
   const u = new SpeechSynthesisUtterance(texto);
-  u.lang = 'es-MX';
-  const voces = voz.getVoices();
-  u.voice = voces.find((v) => v.lang === 'es-MX') || voces.find((v) => v.lang.startsWith('es')) || null;
+  const { voz, tono } = elegirVoz();
+  u.voice = voz;
+  u.lang = voz?.lang || 'es-MX';
+  u.pitch = tono;
   u.rate = 0.95;
   const marcar = (activo) => {
     boton.textContent = activo ? '■' : '🔊';
@@ -858,7 +883,7 @@ function escuchar(texto, boton) {
   };
   u.onstart = () => marcar(true);
   u.onend = u.onerror = () => marcar(false);
-  voz.speak(u);
+  sintesis.speak(u);
 }
 addEventListener('pagehide', () => window.speechSynthesis?.cancel());
 
