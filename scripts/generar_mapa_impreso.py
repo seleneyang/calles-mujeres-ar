@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """
-Genera el mapa impreso (plotter 320 × 240 cm): pines con el logo de Geochicas y un QR circular
+Genera el mapa impreso para PARED (200 × 150 cm, una sola pieza de vinil): pines con el logo de Geochicas y un QR circular
 adentro, con la punta sobre cada calle.
 
     .venv/bin/python scripts/generar_mapa_impreso.py \
         --url-base https://seleneyang.github.io/calles-mujeres-ar/
 
 Salidas en impresion/:
-    mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, en RGB (para revisar en pantalla)
-    PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf   ESTA es la que va a la imprenta:
-                                    CMYK, textos en curvas y al 20 % (64 × 48 cm), como pide la ficha técnica
-                                    de la imprenta para piezas de más de 3 m (requiere: brew install ghostscript)
+    mapa_calles_mujeres_200x150cm.pdf   vectorial, tamaño real, en RGB (para revisar en pantalla)
+    PARA_IMPRESION_mapa_200x150cm_CMYK_curvas.pdf   ESTA es la que va a la imprenta: tamaño real, CMYK y
+                                    textos en curvas, según la ficha técnica (requiere: brew install ghostscript)
     mapa_calles_mujeres_preview.png vista previa
     posiciones_qr.csv               dónde queda cada QR (cm desde la esquina superior izquierda)
     tarjetas_qr_prueba.pdf          los 30 pines QR en hojas carta para probar con el celular
@@ -58,7 +57,8 @@ GEOJSON_URL = (
 )
 UA = {"User-Agent": "GeochicasAR-print/1.0 (mapa impreso exposicion Geochicas)"}
 
-ANCHO_CM, ALTO_CM = 320.0, 240.0
+# Montaje en PARED, una sola pieza: el vinil de la imprenta mide máximo 1.50 m de ancho
+ANCHO_CM, ALTO_CM = 200.0, 150.0
 ALTO_KM = 24.5                       # las 30 calles abarcan ~22 km de norte a sur
 ANCHO_KM = ALTO_KM * ANCHO_CM / ALTO_CM
 CENTRO = (19.409, -99.1185)  # lat, lon: centro de las 30 calles seleccionadas
@@ -82,12 +82,16 @@ MARCA = "#871657"         # color del logo de Geochicas: pines y QR
 MARCA_CLARA = "#b23a7e"   # las 30 calles con QR (todas iguales)
 MORADO_OSCURO = "#1a0b2e"
 
-QR_CM = 8.0               # lado del QR cuadrado inscrito en el círculo del logo
+QR_CM = 5.0               # lado del QR (en pared se escanea a 40–60 cm; en piso harían falta ≥ 8 cm)
 QR_VERSION = 5            # fija para que todos los pines midan igual (37 × 37 módulos ≈ 2.2 mm c/u)
 QR_MODULOS = 17 + 4 * QR_VERSION
 QR_SILENCIO = 1           # módulos blancos entre el código y el relleno decorativo
 QR_SILENCIO_BUSCADORES = 2
-MARGEN_CM = 4.0
+MARGEN_CM = 3.0
+# Escalas de diseño respecto al mapa original de piso (QR de 8 cm, 3.20 m de ancho)
+E_PIN = QR_CM / 8.0       # etiquetas y contornos de los pines
+E_LEY = 0.6               # tarjeta de leyenda
+E_TRAZO = 0.7             # grosor de calles y tamaño de etiquetas de colonias
 
 
 # ---------------------------------------------------------------- utilidades
@@ -289,7 +293,7 @@ class Logo:
             return MPath(v + [v[0]], [MPath.MOVETO] + [MPath.LINETO] * (len(v) - 1) + [MPath.CLOSEPOLY])
 
         if fondo:
-            ax.add_patch(PathPatch(path(self.silueta), facecolor=fondo, edgecolor=fondo, linewidth=10,
+            ax.add_patch(PathPatch(path(self.silueta), facecolor=fondo, edgecolor=fondo, linewidth=10 * E_PIN,
                                    joinstyle="round", zorder=z))
         piezas = self.piezas + ([self.disco] if con_disco else [])
         ax.add_collection(PathCollection([path(p) for p in piezas], facecolor=color, edgecolor="none", zorder=z + 1))
@@ -347,15 +351,15 @@ def qr_circular(ax, cx, cy, radio, url, semilla, z, color=MARCA, silencio=QR_SIL
 
 def etiqueta(nombre):
     lineas_txt = textwrap.wrap(nombre, 20)[:2]
-    ancho = max(len(t) for t in lineas_txt) * 0.7 + 3.0
-    alto = len(lineas_txt) * 1.55 + 1.3
+    ancho = (max(len(t) for t in lineas_txt) * 0.7 + 3.0) * E_PIN
+    alto = (len(lineas_txt) * 1.55 + 1.3) * E_PIN
     return lineas_txt, ancho, alto
 
 
-def caja_marcador(logo, k, tx, ty, nombre, pad=0.8):
+def caja_marcador(logo, k, tx, ty, nombre, pad=0.8 * E_PIN):
     """Rectángulo que ocupa el marcador (logo + nombre encima) con la punta en (tx, ty)."""
     _, ancho, alto = etiqueta(nombre)
-    arriba = ty - logo.arriba * k - alto - 0.6
+    arriba = ty - logo.arriba * k - alto - 0.6 * E_PIN
     izq = min(tx - logo.izq * k, tx - ancho / 2)
     der = max(tx + logo.der * k, tx + ancho / 2)
     return (izq - pad, arriba - pad, der + pad, ty + pad)
@@ -365,13 +369,13 @@ def dibujar_marcador(ax, logo, k, tx, ty, calle, url, fuentes, z=50):
     centro = logo.dibujar(ax, tx, ty, k, z, MARCA, fondo="white", con_disco=False)
     version = qr_circular(ax, *centro, logo.r_qr * k, url, calle["calle_id"], z + 2)
     lineas_txt, ancho, alto = etiqueta(calle["mujer"]["nombre"])
-    y_base = ty - logo.arriba * k - 0.6
+    y_base = ty - logo.arriba * k - 0.6 * E_PIN
     ax.add_patch(FancyBboxPatch((tx - ancho / 2, y_base - alto), ancho, alto,
-                                boxstyle=f"round,pad=0,rounding_size={min(alto / 2, 1.4)}",
-                                facecolor="white", edgecolor=MARCA, linewidth=6, zorder=z + 5))
+                                boxstyle=f"round,pad=0,rounding_size={min(alto / 2, 1.4 * E_PIN)}",
+                                facecolor="white", edgecolor=MARCA, linewidth=6 * E_PIN, zorder=z + 5))
     for i, t in enumerate(lineas_txt):
-        ax.text(tx, y_base - alto + 0.65 + 0.775 + i * 1.55, t, ha="center", va="center",
-                fontproperties=fuentes["titulo"], fontsize=34, color=MARCA, zorder=z + 6)
+        ax.text(tx, y_base - alto + (0.65 + 0.775 + i * 1.55) * E_PIN, t, ha="center", va="center",
+                fontproperties=fuentes["titulo"], fontsize=34 * E_PIN, color=MARCA, zorder=z + 6)
     return version
 
 
@@ -400,7 +404,7 @@ def colocar_marcadores(calles, puntos, logo, k, zona_reservada, intentos=300):
     """Prueba muchos órdenes de colocación y se queda con el de líneas guía más cortas y sin cruces."""
     def vecinos(cid):
         px, py = puntos[cid]
-        return sum(1 for o, (qx, qy) in puntos.items() if o != cid and math.hypot(px - qx, py - qy) < 40)
+        return sum(1 for o, (qx, qy) in puntos.items() if o != cid and math.hypot(px - qx, py - qy) < 40 * E_PIN)
 
     base = sorted(calles, key=vecinos, reverse=True)
     rnd = random.Random(2026)  # semilla fija: el mapa sale igual cada vez que se genera
@@ -423,7 +427,7 @@ def _colocar_en_orden(orden, calles, puntos, logo, k, zona_reservada):
         px, py = puntos[cid]
         nombre = calles[cid]["mujer"]["nombre"]
         mejor = None
-        for radio in (0, 5, 9, 14, 20, 27, 35, 44, 54, 65, 77, 90, 104):
+        for radio in [r * E_PIN for r in (0, 5, 9, 14, 20, 27, 35, 44, 54, 65, 77, 90, 104)]:
             for paso in range(1 if radio == 0 else 24):
                 ang = 2 * math.pi * paso / 24
                 tx, ty = px + radio * math.cos(ang), py + radio * math.sin(ang)
@@ -433,7 +437,7 @@ def _colocar_en_orden(orden, calles, puntos, logo, k, zona_reservada):
                 if any(se_cruzan(r, o) for o in ocupado):
                     continue
                 tapa = sum(1 for o, (qx, qy) in puntos.items()
-                           if o != cid and r[0] - 2 < qx < r[2] + 2 and r[1] - 2 < qy < r[3] + 2)
+                           if o != cid and r[0] - 2 * E_PIN < qx < r[2] + 2 * E_PIN and r[1] - 2 * E_PIN < qy < r[3] + 2 * E_PIN)
                 # Una línea guía que pasa por debajo de otro pin o cruza otra línea confunde
                 cruces = 0
                 if radio:
@@ -443,7 +447,7 @@ def _colocar_en_orden(orden, calles, puntos, logo, k, zona_reservada):
                 # y una nueva tampoco debe tapar líneas ya trazadas
                 cruces += sum(_atraviesa(*g, r) for g in guias)
                 penal = tapa * 100 + cruces * 45
-                coste = radio + penal
+                coste = radio / E_PIN + penal
                 if mejor is None or coste < mejor[0]:
                     mejor = (coste, tx, ty, r, penal)
             if mejor and mejor[4] == 0:  # ya hay un lugar limpio: no hace falta alejarse más
@@ -484,9 +488,9 @@ PASOS = ("1  Busca un pin con código QR sobre una calle\n"
 CREDITOS = ("Mapa base © colaboradores de OpenStreetMap · OpenMapTiles · OpenFreeMap.\n"
             "Calles: Geochicas, «Las Calles de las Mujeres» (ODbL). Textos: Wikipedia (CC BY-SA 4.0).")
 TITULO = "Las Calles de las Mujeres -\nCiudad de México"
-PAD = 4.0
-SANGRIA_LEYENDA = 8.0
-FILA_LEYENDA = 3.4
+PAD = 4.0 * E_LEY
+SANGRIA_LEYENDA = 8.0 * E_LEY
+FILA_LEYENDA = 3.4 * E_LEY
 
 
 def _medida(ax, txt, fp, tam, interlineado):
@@ -505,29 +509,33 @@ def maquetar_titulo(ax, fuentes, total_mujer):
     leyenda = [f"Calle con nombre de mujer ({total_mujer} en la CDMX)",
                "Calle con código QR: escanéalo y descubre su historia",
                "Límite de la Ciudad de México"]
-    bloques = {"intro": (INTRO, f, 38, 1.3), "pasos": (PASOS, f, 42, 1.55), "creditos": (CREDITOS, f, 20, 1.3)}
+    bloques = {"intro": (INTRO, f, 38 * E_LEY, 1.3), "pasos": (PASOS, f, 42 * E_LEY, 1.55),
+               "creditos": (CREDITOS, f, max(12, 20 * E_LEY), 1.3)}
     med = {k: _medida(ax, *v) for k, v in bloques.items()}
-    ancho_leyenda = SANGRIA_LEYENDA + max(_medida(ax, t, f, 38, 1)[0] for t in leyenda)
+    ancho_leyenda = SANGRIA_LEYENDA + max(_medida(ax, t, f, 38 * E_LEY, 1)[0] for t in leyenda)
     ancho_resto = max(ancho_leyenda, med["intro"][0], med["pasos"][0], med["creditos"][0])
     # El título se ajusta al ancho del resto del contenido (entre 110 y 150 pt)
-    ancho_t150, _ = _medida(ax, TITULO, fuentes["titulo"], 150, 0.95)
-    tam_titulo = max(110, min(150, 150 * ancho_resto / ancho_t150))
+    t_max, t_min = 150 * E_LEY, 110 * E_LEY
+    ancho_tmax, _ = _medida(ax, TITULO, fuentes["titulo"], t_max, 0.95)
+    tam_titulo = max(t_min, min(t_max, t_max * ancho_resto / ancho_tmax))
     ancho_t, alto_t = _medida(ax, TITULO, fuentes["titulo"], tam_titulo, 0.95)
-    logo_alto = 4.4
+    e = E_LEY
+    logo_alto = 4.4 * e
     y = PAD
-    pos = {"titulo": y}; y += alto_t + 2.0
-    pos["logo"] = y; y += logo_alto + 2.6
-    pos["intro"] = y; y += med["intro"][1] + 2.8
-    pos["pasos"] = y; y += med["pasos"][1] + 1.6
-    pos["leyenda"] = y + FILA_LEYENDA / 2; y += 3 * FILA_LEYENDA + 1.2
-    pos["escala"] = y; y += 4.2
-    pos["creditos"] = y; y += med["creditos"][1] + PAD - 0.5
+    pos = {"titulo": y}; y += alto_t + 2.0 * e
+    pos["logo"] = y; y += logo_alto + 2.6 * e
+    pos["intro"] = y; y += med["intro"][1] + 2.8 * e
+    pos["pasos"] = y; y += med["pasos"][1] + 1.6 * e
+    pos["leyenda"] = y + FILA_LEYENDA / 2; y += 3 * FILA_LEYENDA + 1.2 * e
+    pos["escala"] = y; y += 4.2 * e
+    pos["creditos"] = y; y += med["creditos"][1] + PAD - 0.5 * e
     return {"ancho": max(ancho_t, ancho_resto) + 2 * PAD, "alto": y, "tam_titulo": tam_titulo,
             "logo_alto": logo_alto, "pos": pos, "bloques": bloques, "leyenda": leyenda}
 
 
 def cuadro_titulo(ax, x0, y0, m, fuentes, proj):
-    ax.add_patch(FancyBboxPatch((x0, y0), m["ancho"], m["alto"], boxstyle="round,pad=0,rounding_size=2.5",
+    e = E_LEY
+    ax.add_patch(FancyBboxPatch((x0, y0), m["ancho"], m["alto"], boxstyle=f"round,pad=0,rounding_size={2.5 * e}",
                                 facecolor=MORADO_OSCURO, edgecolor="none", zorder=60))
     tx, pos = x0 + PAD, m["pos"]
     ax.text(tx, y0 + pos["titulo"], TITULO, fontproperties=fuentes["titulo"], fontsize=m["tam_titulo"],
@@ -537,22 +545,22 @@ def cuadro_titulo(ax, x0, y0, m, fuentes, proj):
     for clave, (txt, fp, tam, interlineado) in m["bloques"].items():
         ax.text(tx, y0 + pos[clave], txt, fontproperties=fp, fontsize=tam, color=colores[clave], va="top",
                 linespacing=interlineado, zorder=61)
-    muestras = ((MUJER, 10, "-"), (MARCA_CLARA, 18, "-"), ("#bbbbbb", 5, (0, (3, 2))))
+    muestras = ((MUJER, 8 * E_TRAZO, "-"), (MARCA_CLARA, 15 * E_TRAZO, "-"), ("#bbbbbb", 4, (0, (3, 2))))
     for i, (txt, (c, grosor, estilo)) in enumerate(zip(m["leyenda"], muestras)):
         y = y0 + pos["leyenda"] + i * FILA_LEYENDA
-        ax.plot([tx, tx + 6], [y, y], color=c, linewidth=grosor, linestyle=estilo, solid_capstyle="round", zorder=61)
-        ax.text(tx + SANGRIA_LEYENDA, y, txt, fontproperties=fuentes["texto"], fontsize=38, color="white",
+        ax.plot([tx, tx + 6 * e], [y, y], color=c, linewidth=grosor, linestyle=estilo, solid_capstyle="round", zorder=61)
+        ax.text(tx + SANGRIA_LEYENDA, y, txt, fontproperties=fuentes["texto"], fontsize=38 * e, color="white",
                 va="center", zorder=61)
     # Escala gráfica y norte
     km = proj.cm_por_km()
     sy = y0 + pos["escala"]
     for i in range(2):
-        ax.add_patch(Rectangle((tx + i * km, sy), km, 1.0, facecolor="white" if i % 2 == 0 else "#9c7cc4",
-                               edgecolor="white", linewidth=2, zorder=61))
-    ax.text(tx, sy + 1.6, "0", fontproperties=fuentes["texto"], fontsize=30, color="white", va="top", zorder=61)
-    ax.text(tx + 2 * km, sy + 1.6, "2 km", fontproperties=fuentes["texto"], fontsize=30, color="white",
+        ax.add_patch(Rectangle((tx + i * km, sy), km, 1.0 * e, facecolor="white" if i % 2 == 0 else "#9c7cc4",
+                               edgecolor="white", linewidth=1.5, zorder=61))
+    ax.text(tx, sy + 1.6 * e, "0", fontproperties=fuentes["texto"], fontsize=30 * e, color="white", va="top", zorder=61)
+    ax.text(tx + 2 * km, sy + 1.6 * e, "2 km", fontproperties=fuentes["texto"], fontsize=30 * e, color="white",
             va="top", ha="center", zorder=61)
-    ax.text(tx + 2 * km + 8, sy + 0.5, "N ↑", fontproperties=fuentes["titulo"], fontsize=48, color="white",
+    ax.text(tx + 2 * km + 8 * e, sy + 0.5 * e, "N ↑", fontproperties=fuentes["titulo"], fontsize=48 * e, color="white",
             va="center", zorder=61)
 
 
@@ -582,26 +590,23 @@ def tarjetas_prueba(calles, urls, fuentes, logo, destino):
             plt.close(fig)
 
 
-ESCALA_IMPRENTA = 0.20  # ficha técnica de la imprenta: piezas de más de 3 m se envían al 20 %
-
-
-def preparar_para_imprenta(origen, destino):
-    """Archivo según la ficha técnica de la imprenta: CMYK (sin RGB), textos convertidos a curvas y al 20 %
-    del tamaño final. Es vectorial, así que no pierde calidad al ampliarlo al 500 %.
+def preparar_para_imprenta(origen, destino, escala=1.0):
+    """Archivo según la ficha técnica de la imprenta: CMYK (sin RGB) y textos convertidos a curvas.
+    Piezas de hasta 3 m van a tamaño real; las mayores, al 20 % (es vectorial: no pierde calidad al ampliarlo).
     Usa Ghostscript con su perfil CMYK por omisión (matplotlib solo escribe RGB)."""
     gs = shutil.which("gs")
     if not gs:
         print("  ⚠️  Ghostscript no está instalado: no se generó el archivo para imprenta (brew install ghostscript)")
         return
-    ancho_pt = ANCHO_CM * ESCALA_IMPRENTA / 2.54 * 72
-    alto_pt = ALTO_CM * ESCALA_IMPRENTA / 2.54 * 72
+    ancho_pt = ANCHO_CM * escala / 2.54 * 72
+    alto_pt = ALTO_CM * escala / 2.54 * 72
     subprocess.run([gs, "-q", "-o", str(destino), "-sDEVICE=pdfwrite",
                     "-sColorConversionStrategy=CMYK", "-sProcessColorModel=DeviceCMYK", "-dOverrideICC=true",
                     "-dNoOutputFonts",  # textos en curvas
                     f"-dDEVICEWIDTHPOINTS={ancho_pt:.2f}", f"-dDEVICEHEIGHTPOINTS={alto_pt:.2f}",
                     "-dFIXEDMEDIA", "-dPDFFitPage", "-dCompatibilityLevel=1.6", "-dAutoRotatePages=/None",
                     "-dDownsampleColorImages=false", "-dDownsampleGrayImages=false", str(origen)], check=True)
-    print(f"  Para imprenta (CMYK, curvas, {ESCALA_IMPRENTA:.0%}) → {destino.name}")
+    print(f"  Para imprenta (CMYK, curvas, {escala:.0%}) → {destino.name}")
 
 
 # ---------------------------------------------------------------- main
@@ -643,28 +648,29 @@ def main():
     rellenar(ax, rellenos[PARQUE], PARQUE, 3)
     rellenar(ax, rellenos[AGUA], AGUA, 4)
     trazar(ax, rios, AGUA, 3, 5)
-    trazar(ax, viales["menor"], CALLE_MENOR, 1.6, 6)
-    trazar(ax, viales["tren"], TREN, 2.5, 7, linestyles=(0, (4, 3)))
+    t = E_TRAZO
+    trazar(ax, viales["menor"], CALLE_MENOR, 1.6 * t, 6)
+    trazar(ax, viales["tren"], TREN, 2.5 * t, 7, linestyles=(0, (4, 3)))
     for clave, ancho in (("terciaria", 4), ("secundaria", 6), ("primaria", 8), ("autopista", 11)):
-        trazar(ax, viales[clave], CASING, ancho + 2.5, 8)
+        trazar(ax, viales[clave], CASING, (ancho + 2.5) * t, 8)
     for clave, ancho in (("terciaria", 4), ("secundaria", 6), ("primaria", 8), ("autopista", 11)):
-        trazar(ax, viales[clave], CALLE_MAYOR, ancho, 9)
+        trazar(ax, viales[clave], CALLE_MAYOR, ancho * t, 9)
     trazar(ax, limites, "#a9a9a9", 6, 10, linestyles=(0, (6, 4)))
     for (x, y), nombre in colonias:
         if 0 < x < ANCHO_CM and 0 < y < ALTO_CM:
-            ax.text(x, y, nombre.upper(), ha="center", va="center", fontsize=26, color=ETIQUETA,
+            ax.text(x, y, nombre.upper(), ha="center", va="center", fontsize=26 * E_TRAZO, color=ETIQUETA,
                     fontproperties=fuentes["texto_b"], alpha=0.75, zorder=11)
 
     # Todas las calles con nombre de mujer, pintadas
-    trazar(ax, trazos_mujer, "white", 12, 20)
-    trazar(ax, trazos_mujer, MUJER, 8, 21)
+    trazar(ax, trazos_mujer, "white", 12 * E_TRAZO, 20)
+    trazar(ax, trazos_mujer, MUJER, 8 * E_TRAZO, 21)
 
     # Las 30 calles con QR: todas iguales, sin delatar si su artículo existe
     puntos = {}
     for cid, c in calles.items():
         trazos = [t for osm in c["geo"]["osm_way_ids"] for t in por_osm.get(osm, [])]
-        trazar(ax, trazos, "white", 22, 30)
-        trazar(ax, trazos, MARCA_CLARA, 15, 31)
+        trazar(ax, trazos, "white", 22 * E_TRAZO, 30)
+        trazar(ax, trazos, MARCA_CLARA, 15 * E_TRAZO, 31)
         puntos[cid] = punto_de_calle(trazos)
 
     maqueta = maquetar_titulo(ax, fuentes, total_mujer)
@@ -678,9 +684,9 @@ def main():
     for cid, (tx, ty) in posiciones.items():
         px, py = puntos[cid]
         if math.hypot(tx - px, ty - py) > 0.5:  # pin desplazado: línea guía hasta su calle
-            ax.plot([px, tx], [py, ty], color="white", linewidth=12, solid_capstyle="round", zorder=40)
-            ax.plot([px, tx], [py, ty], color=MARCA, linewidth=6, solid_capstyle="round", zorder=41)
-        ax.add_patch(Circle((px, py), 1.1, facecolor=MARCA, edgecolor="white", linewidth=6, zorder=42))
+            ax.plot([px, tx], [py, ty], color="white", linewidth=12 * E_PIN, solid_capstyle="round", zorder=40)
+            ax.plot([px, tx], [py, ty], color=MARCA, linewidth=6 * E_PIN, solid_capstyle="round", zorder=41)
+        ax.add_patch(Circle((px, py), 1.1 * E_PIN, facecolor=MARCA, edgecolor="white", linewidth=6 * E_PIN, zorder=42))
         version = dibujar_marcador(ax, logo, k, tx, ty, calles[cid], urls[cid], fuentes)
         filas.append({
             "calle_id": cid,
@@ -698,7 +704,8 @@ def main():
 
     cuadro_titulo(ax, titulo[0], titulo[1], maqueta, fuentes, proj)
 
-    pdf = SALIDA / "mapa_calles_mujeres_320x240cm.pdf"
+    medida = f"{ANCHO_CM:.0f}x{ALTO_CM:.0f}cm"
+    pdf = SALIDA / f"mapa_calles_mujeres_{medida}.pdf"
     print("Escribiendo PDF vectorial…")
     fig.savefig(pdf)
     fig.savefig(SALIDA / "mapa_calles_mujeres_preview.png", dpi=a.dpi_preview)
@@ -710,7 +717,9 @@ def main():
         w.writerows(sorted(filas, key=lambda f: (f["qr_centro_y_cm"], f["qr_centro_x_cm"])))
 
     tarjetas_prueba(calles, urls, fuentes, logo, SALIDA / "tarjetas_qr_prueba.pdf")
-    preparar_para_imprenta(pdf, SALIDA / "PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf")
+    escala = 1.0 if max(ANCHO_CM, ALTO_CM) <= 300 else 0.2
+    nombre = f"PARA_IMPRESION_mapa_{medida}_" + ("" if escala == 1 else "ESCALA_20pct_") + "CMYK_curvas.pdf"
+    preparar_para_imprenta(pdf, SALIDA / nombre, escala)
     print(f"Listo → {SALIDA}  ({pdf.stat().st_size / 1e6:.1f} MB)")
 
 

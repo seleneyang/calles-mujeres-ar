@@ -339,7 +339,7 @@
   .marco-vacio svg { flex: none; width: 46px; height: 46px; }
   .marco-vacio a { color: var(--ambar); font-weight: 600; }
 
-  /* ---------- Dock: recorrido + siguiente calle en el mapa del piso ---------- */
+  /* ---------- Dock: recorrido + siguiente calle en el mapa impreso ---------- */
   .dock {
     position: fixed; z-index: 6; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom));
     display: none; gap: 8px;
@@ -437,7 +437,7 @@
   <div class="sello"><span>10</span>GEOCHICAS</div>
   <p id="calle-previa" aria-live="polite"></p>
   <h2 id="portada-titulo">Las calles<br>de las mujeres</h2>
-  <p>Apunta tu cámara al suelo del mapa y descubre la historia detrás de este nombre.</p>
+  <p id="portada-instruccion">Apunta tu cámara al pin del mapa y descubre la historia detrás de este nombre.</p>
   <div class="acciones">
     <button class="boton" id="btn-ar" type="button">Activar realidad aumentada</button>
     <button class="boton texto" id="btn-sin-camara" type="button">Continuar sin cámara</button>
@@ -474,7 +474,10 @@ const CONFIG = {
   SUBIR_COMMONS: 'https://commons.wikimedia.org/wiki/Special:UploadWizard?uselang=es',
   TIEMPO_MAX_MS: 7000,
   SEGUNDOS_POR_IMAGEN: 7,
-  // Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso en la sala.
+  // Dónde está montado el mapa impreso. 'pared': la flecha señala arriba/abajo/izquierda/derecha sobre el
+  // mapa (la brújula no sirve con el mapa vertical). 'piso': la flecha usa la brújula, calibrada con el QR.
+  MONTAJE: 'pared',
+  // Solo para MONTAJE 'piso'. Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso en la sala.
   // No hace falta medirlo: cada teléfono lo calcula solo al ver un QR del piso con la cámara
   // (ver calibrarConQR). Solo se escribe aquí para forzar un valor fijo.
   NORTE_MAPA_RUMBO: null,
@@ -974,6 +977,9 @@ async function calibrarConQR(video) {
 }
 
 const RUMBOS = ['norte', 'noreste', 'este', 'sureste', 'sur', 'suroeste', 'oeste', 'noroeste'];
+// En la pared el norte del mapa es "arriba": se habla de direcciones sobre el mapa, no cardinales
+const DIRECCIONES_PARED = ['arriba', 'arriba a la derecha', 'a la derecha', 'abajo a la derecha', 'abajo',
+  'abajo a la izquierda', 'a la izquierda', 'arriba a la izquierda'];
 let rumboTelefono = null; // grados de brújula; null si el teléfono no la da
 let guia = null;          // { datos, desde, hacia }
 
@@ -1010,14 +1016,16 @@ function pintarGuia() {
     flecha.style.transform = '';
     return;
   }
-  const conBrujula = norteMapa != null && rumboTelefono != null;
+  const enPared = CONFIG.MONTAJE === 'pared';
+  const conBrujula = !enPared && norteMapa != null && rumboTelefono != null;
   const giro = conBrujula ? guia.rumbo + norteMapa - rumboTelefono : guia.rumbo;
   flecha.style.transform = `rotate(${giro}deg)`;
   $('#sig-nombre').textContent = guia.calle.mujer.nombre;
   const m = guia.metros < 1 ? `${Math.round(guia.metros * 100)} cm` : `${guia.metros.toFixed(1).replace('.', ',')} m`;
-  $('#sig-distancia').textContent = conBrujula
-    ? `${m} · sigue la flecha`
-    : `${m} al ${RUMBOS[Math.round(guia.rumbo / 45) % 8]} del mapa`;
+  const sector = Math.round(guia.rumbo / 45) % 8;
+  $('#sig-distancia').textContent = conBrujula ? `${m} · sigue la flecha`
+    : enPared ? `${m} ${DIRECCIONES_PARED[sector]}`
+    : `${m} al ${RUMBOS[sector]} del mapa`;
 }
 
 function escucharBrujula() {
@@ -1143,8 +1151,10 @@ async function entrar(conCamara) {
     ]);
     if (orientacion) {
       iniciarAnclaje();
-      escucharBrujula();
-      if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
+      if (CONFIG.MONTAJE === 'piso') {
+        escucharBrujula();
+        if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
+      }
     }
   }
   (await datosListos)();
