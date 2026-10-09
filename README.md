@@ -86,7 +86,7 @@ python3 scripts/generar_calles.py --seleccion seleccion_30.json --enriquecer --b
 python3 -m venv .venv && .venv/bin/pip install segno mapbox-vector-tile matplotlib
 ```
 ```bash
-.venv/bin/python scripts/generar_mapa_impreso.py --url-base https://seleneyang.github.io/calles-mujeres-ar/ar.html
+.venv/bin/python scripts/generar_mapa_impreso.py --url-base https://seleneyang.github.io/calles-mujeres-ar/
 ```
 
 El mapa impreso mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las 30 calles (escala aproximada de 1 cm por cada 102 m). Incluye:
@@ -96,7 +96,8 @@ El mapa impreso mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las
 - **Tarjeta de leyenda:** lleva el título, el logotipo horizontal de Geochicas en vectores (`assets/logo_geochicas_horizontal.json`, extraído de `assets/logo_geochicas_horizontal.pdf`), el texto de presentación, las instrucciones, la leyenda, la escala y los créditos. Su tamaño se calcula a partir del texto real, para que no quede espacio vacío.
 - **Las 30 seleccionadas:** todas se ven iguales, con el mismo color de calle y el mismo pin. Desde el mapa no se puede saber cuál tiene artículo en Wikipedia: cada persona lo descubre al escanear.
 - **Los pines:** son el logo de Geochicas (vectorizado en `assets/logo_geochicas.json` a partir de `assets/logo_geochicas.webp`), de 29 × 21.5 cm, con la punta sobre la calle. Si dos pines chocan, uno se desplaza y una línea lo une a su calle. El script prueba 300 órdenes de colocación y se queda con el de líneas más cortas y sin cruces; usa una semilla fija, así que el resultado es siempre el mismo.
-- **El QR circular:** ocupa todo el interior del círculo del logo y está en el mismo color de Geochicas. La parte que la cámara lee es un QR cuadrado normal de 9.5 cm, versión 8 y corrección de errores nivel Q. Alrededor lleva módulos decorativos idénticos que completan el círculo. Entre el código y la decoración se dejan **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). En las pruebas, sin ese margen no se leyó ninguno (0/30), y con él ZXing leyó los 30 de frente, inclinados, girados y desenfocados. **No reduzcas esos valores sin volver a probar.**
+- **El QR circular:** ocupa todo el interior del círculo del logo y está en el color de Geochicas. La parte que la cámara lee es un QR cuadrado de **8 cm**, versión 5 (37 × 37 módulos de unos 2.2 mm) y corrección de errores nivel Q, rodeado de módulos decorativos que completan el círculo. Entre el código y la decoración hay **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). Sin ese margen no se leyó ninguno (0/30). **No reduzcas esos valores sin volver a probar.**
+  - **URL corta:** el QR lleva `https://seleneyang.github.io/calles-mujeres-ar/?calle_id=xxx`. El código de 3 caracteres sale del `calle_id` (`codigo_corto()`) y no revela nada de la calle. `index.html` redirige a `ar.html` conservando el parámetro, y `ar.html` acepta tanto el código como el `calle_id` completo. Una URL más corta significa menos módulos, cada uno más grande: en las pruebas, este QR de 8 cm se leyó en condiciones donde el anterior de 9.5 cm (49 × 49) ya fallaba.
 
 > ⚠️ Los QR llevan la URL de `--url-base`. Si cambias el dominio o el nombre del repositorio, **vuelve a generar el PDF antes de imprimir**.
 

@@ -35,12 +35,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 103.6,
-        "qr_y_cm": 106.1
+        "qr_x_cm": 111.5,
+        "qr_y_cm": 113.5
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "li5"
     },
     "andrea-arrieta-27785857": {
       "calle_id": "andrea-arrieta-27785857",
@@ -60,12 +61,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 262.2,
-        "qr_y_cm": 133.0
+        "qr_x_cm": 262.3,
+        "qr_y_cm": 135.9
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "ht7"
     },
     "carlota-armero-25399398": {
       "calle_id": "carlota-armero-25399398",
@@ -86,12 +88,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 244.7,
-        "qr_y_cm": 207.8
+        "qr_x_cm": 141.6,
+        "qr_y_cm": 217.7
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "ie2"
     },
     "catalina-buendia-40879676": {
       "calle_id": "catalina-buendia-40879676",
@@ -112,11 +115,12 @@
       },
       "mapa_fisico": {
         "qr_x_cm": 167.4,
-        "qr_y_cm": 189.4
+        "qr_y_cm": 192.3
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "say"
     },
     "dolores-del-rio-70905707": {
       "calle_id": "dolores-del-rio-70905707",
@@ -136,8 +140,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 43.6,
-        "qr_y_cm": 152.8
+        "qr_x_cm": 60.9,
+        "qr_y_cm": 145.7
       },
       "contexto": [
         {
@@ -176,7 +180,8 @@
       ],
       "temas": [
         "artistas"
-      ]
+      ],
+      "codigo": "5sw"
     },
     "dolores-jimenez-muro-25053071": {
       "calle_id": "dolores-jimenez-muro-25053071",
@@ -196,8 +201,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 57.1,
-        "qr_y_cm": 59.1
+        "qr_x_cm": 57.2,
+        "qr_y_cm": 62.0
       },
       "contexto": [
         {
@@ -237,7 +242,8 @@
         "educadoras",
         "escritoras",
         "insurgentas"
-      ]
+      ],
+      "codigo": "o9f"
     },
     "elena-arizmendi-25207088": {
       "calle_id": "elena-arizmendi-25207088",
@@ -257,8 +263,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 52.8,
-        "qr_y_cm": 97.4
+        "qr_x_cm": 135.6,
+        "qr_y_cm": 117.1
       },
       "contexto": [
         {
@@ -285,7 +291,8 @@
       ],
       "temas": [
         "feministas"
-      ]
+      ],
+      "codigo": "8mm"
     },
     "elisa-g-otis-56722040": {
       "calle_id": "elisa-g-otis-56722040",
@@ -305,12 +312,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 192.2,
-        "qr_y_cm": 185.0
+        "qr_x_cm": 188.2,
+        "qr_y_cm": 187.9
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "r28"
     },
     "emilia-romero-de-valle-25154829": {
       "calle_id": "emilia-romero-de-valle-25154829",
@@ -330,12 +338,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 175.7,
-        "qr_y_cm": 91.3
+        "qr_x_cm": 138.4,
+        "qr_y_cm": 84.2
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "nv5"
     },
     "eulalia-guzman-5849710": {
       "calle_id": "eulalia-guzman-5849710",
@@ -356,8 +365,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 127.7,
-        "qr_y_cm": 56.5
+        "qr_x_cm": 125.4,
+        "qr_y_cm": 50.7
       },
       "contexto": [
         {
@@ -387,7 +396,8 @@
         "educadoras",
         "escritoras",
         "feministas"
-      ]
+      ],
+      "codigo": "tit"
     },
     "florencia-antillon-34071461": {
       "calle_id": "florencia-antillon-34071461",
@@ -408,11 +418,12 @@
       },
       "mapa_fisico": {
         "qr_x_cm": 170.8,
-        "qr_y_cm": 19.0
+        "qr_y_cm": 21.9
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "std"
     },
     "frida-kalho-38525493": {
       "calle_id": "frida-kalho-38525493",
@@ -432,8 +443,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 243.3,
-        "qr_y_cm": 21.8
+        "qr_x_cm": 247.0,
+        "qr_y_cm": 20.8
       },
       "contexto": [
         {
@@ -475,7 +486,8 @@
       ],
       "temas": [
         "artistas"
-      ]
+      ],
+      "codigo": "8o8"
     },
     "gabriela-mistral-32886048": {
       "calle_id": "gabriela-mistral-32886048",
@@ -497,8 +509,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 230.1,
-        "qr_y_cm": 144.9
+        "qr_x_cm": 230.2,
+        "qr_y_cm": 147.8
       },
       "contexto": [
         {
@@ -534,7 +546,8 @@
       "temas": [
         "educadoras",
         "escritoras"
-      ]
+      ],
+      "codigo": "dov"
     },
     "josefa-ortiz-dedominguez-99984608": {
       "calle_id": "josefa-ortiz-dedominguez-99984608",
@@ -554,8 +567,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 68.9,
-        "qr_y_cm": 135.6
+        "qr_x_cm": 93.0,
+        "qr_y_cm": 212.7
       },
       "contexto": [
         {
@@ -593,7 +606,8 @@
       ],
       "temas": [
         "insurgentas"
-      ]
+      ],
+      "codigo": "73i"
     },
     "josefina-prior-155907583": {
       "calle_id": "josefina-prior-155907583",
@@ -613,12 +627,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 91.5,
-        "qr_y_cm": 178.8
+        "qr_x_cm": 91.7,
+        "qr_y_cm": 177.3
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "pf8"
     },
     "laura-mendez-de-cuenca-40879832": {
       "calle_id": "laura-mendez-de-cuenca-40879832",
@@ -638,8 +653,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 220.0,
-        "qr_y_cm": 198.3
+        "qr_x_cm": 211.1,
+        "qr_y_cm": 201.2
       },
       "contexto": [
         {
@@ -668,7 +683,8 @@
         "educadoras",
         "escritoras",
         "feministas"
-      ]
+      ],
+      "codigo": "g6g"
     },
     "leona-vicario-24850916": {
       "calle_id": "leona-vicario-24850916",
@@ -688,8 +704,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 151.7,
-        "qr_y_cm": 70.9
+        "qr_x_cm": 159.5,
+        "qr_y_cm": 69.3
       },
       "contexto": [
         {
@@ -728,7 +744,8 @@
       "temas": [
         "escritoras",
         "insurgentas"
-      ]
+      ],
+      "codigo": "ely"
     },
     "luz-savinon-4842166": {
       "calle_id": "luz-savinon-4842166",
@@ -748,8 +765,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 130.7,
-        "qr_y_cm": 121.2
+        "qr_x_cm": 196.1,
+        "qr_y_cm": 104.1
       },
       "contexto": [
         {
@@ -774,7 +791,8 @@
           "texto": "Muere"
         }
       ],
-      "temas": []
+      "temas": [],
+      "codigo": "76i"
     },
     "ma-de-la-luz-bringas-221672255": {
       "calle_id": "ma-de-la-luz-bringas-221672255",
@@ -797,11 +815,12 @@
       },
       "mapa_fisico": {
         "qr_x_cm": 96.8,
-        "qr_y_cm": 143.6
+        "qr_y_cm": 146.5
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "dw9"
     },
     "madame-cuirie-392206229": {
       "calle_id": "madame-cuirie-392206229",
@@ -822,7 +841,7 @@
       },
       "mapa_fisico": {
         "qr_x_cm": 205.8,
-        "qr_y_cm": 141.1
+        "qr_y_cm": 144.0
       },
       "contexto": [
         {
@@ -895,7 +914,8 @@
       "temas": [
         "cientificas",
         "educadoras"
-      ]
+      ],
+      "codigo": "lsq"
     },
     "manuela-saenz-40879606": {
       "calle_id": "manuela-saenz-40879606",
@@ -920,8 +940,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 143.3,
-        "qr_y_cm": 199.0
+        "qr_x_cm": 174.1,
+        "qr_y_cm": 154.3
       },
       "contexto": [],
       "linea_tiempo": [
@@ -952,7 +972,8 @@
       ],
       "temas": [
         "insurgentas"
-      ]
+      ],
+      "codigo": "qm4"
     },
     "margarita-maza-de-juarez-78362513": {
       "calle_id": "margarita-maza-de-juarez-78362513",
@@ -973,8 +994,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 114.7,
-        "qr_y_cm": 20.5
+        "qr_x_cm": 108.2,
+        "qr_y_cm": 20.7
       },
       "contexto": [
         {
@@ -1001,7 +1022,8 @@
       ],
       "temas": [
         "insurgentas"
-      ]
+      ],
+      "codigo": "8g8"
     },
     "maria-luisa-stampa-ortigoza-75039575": {
       "calle_id": "maria-luisa-stampa-ortigoza-75039575",
@@ -1022,12 +1044,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 141.1,
-        "qr_y_cm": 22.2
+        "qr_x_cm": 139.3,
+        "qr_y_cm": 18.4
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "p72"
     },
     "matilde-marquez-38526111": {
       "calle_id": "matilde-marquez-38526111",
@@ -1048,12 +1071,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 200.4,
-        "qr_y_cm": 69.3
+        "qr_x_cm": 195.4,
+        "qr_y_cm": 72.2
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "o7l"
     },
     "paula-peraldo-40879632": {
       "calle_id": "paula-peraldo-40879632",
@@ -1073,12 +1097,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 157.2,
-        "qr_y_cm": 150.4
+        "qr_x_cm": 231.6,
+        "qr_y_cm": 217.2
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "si6"
     },
     "paz-montes-de-oca-25355285": {
       "calle_id": "paz-montes-de-oca-25355285",
@@ -1098,12 +1123,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 122.4,
-        "qr_y_cm": 156.5
+        "qr_x_cm": 118.9,
+        "qr_y_cm": 155.9
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "akk"
     },
     "prof-aurora-reza-69710986": {
       "calle_id": "prof-aurora-reza-69710986",
@@ -1123,12 +1149,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 119.7,
-        "qr_y_cm": 193.0
+        "qr_x_cm": 121.1,
+        "qr_y_cm": 186.7
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "9w5"
     },
     "rosa-maria-sequeira-40879639": {
       "calle_id": "rosa-maria-sequeira-40879639",
@@ -1151,12 +1178,13 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 72.3,
-        "qr_y_cm": 215.8
+        "qr_x_cm": 145.2,
+        "qr_y_cm": 181.2
       },
       "contexto": [],
       "linea_tiempo": [],
-      "temas": []
+      "temas": [],
+      "codigo": "bus"
     },
     "rosario-castellanos-25154787": {
       "calle_id": "rosario-castellanos-25154787",
@@ -1176,8 +1204,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 229.9,
-        "qr_y_cm": 100.0
+        "qr_x_cm": 172.9,
+        "qr_y_cm": 102.9
       },
       "contexto": [
         {
@@ -1233,7 +1261,8 @@
       "temas": [
         "educadoras",
         "escritoras"
-      ]
+      ],
+      "codigo": "g5u"
     },
     "sor-juana-ines-de-la-cruz-24858788": {
       "calle_id": "sor-juana-ines-de-la-cruz-24858788",
@@ -1255,7 +1284,7 @@
       },
       "mapa_fisico": {
         "qr_x_cm": 104.3,
-        "qr_y_cm": 65.0
+        "qr_y_cm": 67.9
       },
       "contexto": [
         {
@@ -1295,7 +1324,8 @@
       "temas": [
         "cientificas",
         "escritoras"
-      ]
+      ],
+      "codigo": "8n1"
     }
   },
   "temas": {

@@ -218,6 +218,7 @@ def main():
             if fila["calle_id"] in calles:
                 calles[fila["calle_id"]]["mapa_fisico"] = {
                     "qr_x_cm": float(fila["qr_centro_x_cm"]), "qr_y_cm": float(fila["qr_centro_y_cm"])}
+                calles[fila["calle_id"]]["codigo"] = fila["codigo"]  # lo que lleva el QR impreso
 
     # 2. Imágenes de contexto
     archivos = [img["archivo"] for c in curaduria.values() if isinstance(c, dict)

@@ -1064,14 +1064,16 @@ function cerrarPasaporte() {
 // Arranque
 // ============================================================================
 async function flujoDatos() {
-  const calleId = leerCalleId();
+  let calleId = leerCalleId();
   if (!calleId) {
     return () => pintar(panelError('Escanea un código QR',
       'Busca los códigos QR junto a las calles con nombre de mujer en el mapa y escanéalos con la cámara de tu teléfono.'));
   }
 
   const datos = await cargarDatos();
-  const calle = datos.calles?.[calleId];
+  // El QR impreso lleva un código corto de 3 caracteres; también se acepta el calle_id completo
+  const calle = datos.calles?.[calleId] ?? Object.values(datos.calles || {}).find((c) => c.codigo === calleId);
+  if (calle) calleId = calle.calle_id;
   if (!calle) {
     return () => pintar(panelError('Calle no encontrada',
       `No encontramos la calle “${calleId}”. Intenta escanear de nuevo el código QR.`));

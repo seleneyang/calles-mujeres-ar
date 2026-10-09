@@ -4,7 +4,7 @@ Genera el mapa impreso (plotter 320 × 240 cm): pines con el logo de Geochicas y
 adentro, con la punta sobre cada calle.
 
     .venv/bin/python scripts/generar_mapa_impreso.py \
-        --url-base https://seleneyang.github.io/calles-mujeres-ar/ar.html
+        --url-base https://seleneyang.github.io/calles-mujeres-ar/
 
 Salidas en impresion/:
     mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, para el plotter
@@ -21,6 +21,7 @@ import csv
 import gzip
 import json
 import math
+import hashlib
 import random
 import textwrap
 import time
@@ -76,8 +77,8 @@ MARCA = "#871657"         # color del logo de Geochicas: pines y QR
 MARCA_CLARA = "#b23a7e"   # las 30 calles con QR (todas iguales)
 MORADO_OSCURO = "#1a0b2e"
 
-QR_CM = 9.5               # lado del QR cuadrado inscrito en el círculo del logo
-QR_VERSION = 8            # fija para que todos los pines midan igual (49 × 49 módulos)
+QR_CM = 8.0               # lado del QR cuadrado inscrito en el círculo del logo
+QR_VERSION = 5            # fija para que todos los pines midan igual (37 × 37 módulos ≈ 2.2 mm c/u)
 QR_MODULOS = 17 + 4 * QR_VERSION
 QR_SILENCIO = 1           # módulos blancos entre el código y el relleno decorativo
 QR_SILENCIO_BUSCADORES = 2
@@ -123,6 +124,16 @@ class Proyeccion:
 
     def cm_por_km(self):
         return self.k * self.hx * 2 / self.ancho_km
+
+
+def codigo_corto(calle_id):
+    """3 caracteres estables derivados del calle_id: acortan la URL del QR (menos módulos, más grandes)
+    y no revelan nada de la calle. ar.html acepta tanto el código como el calle_id completo."""
+    n, alfabeto, s = int(hashlib.sha1(calle_id.encode()).hexdigest(), 16), "0123456789abcdefghijklmnopqrstuvwxyz", ""
+    while n:
+        n, r = divmod(n, 36)
+        s = alfabeto[r] + s
+    return s[:3]
 
 
 def fuente(nombre):
@@ -582,7 +593,10 @@ def main():
         "texto_b": fuente("inter_latest_latin-600-normal"),
     }
     calles = json.loads(Path(a.datos).read_text(encoding="utf-8"))["calles"]
-    urls = {cid: f"{a.url_base}?calle_id={cid}" for cid in calles}
+    codigos = {cid: codigo_corto(cid) for cid in calles}
+    if len(set(codigos.values())) != len(codigos):
+        raise SystemExit("Dos calles comparten código corto: alarga codigo_corto()")
+    urls = {cid: f"{a.url_base}?calle_id={codigos[cid]}" for cid in calles}
     proj = Proyeccion(*CENTRO, ANCHO_KM, ANCHO_CM, ALTO_CM)
 
     print("Descargando mapa base (OpenFreeMap)…")
@@ -643,6 +657,7 @@ def main():
         version = dibujar_marcador(ax, logo, k, tx, ty, calles[cid], urls[cid], fuentes)
         filas.append({
             "calle_id": cid,
+            "codigo": codigos[cid],
             "nombre_calle": calles[cid]["nombre_calle"],
             "qr_centro_x_cm": round(tx - (logo.punta[0] - logo.hueco["cx"]) * k, 1),
             "qr_centro_y_cm": round(ty - (logo.punta[1] - logo.hueco["cy"]) * k, 1),
