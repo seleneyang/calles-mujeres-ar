@@ -35,9 +35,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 102.4,
-        "y_cm": 176.1
-      }
+        "qr_x_cm": 96.0,
+        "qr_y_cm": 153.8
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "andrea-arrieta-27785857": {
       "calle_id": "andrea-arrieta-27785857",
@@ -57,9 +60,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 293.8,
-        "y_cm": 202.1
-      }
+        "qr_x_cm": 293.6,
+        "qr_y_cm": 182.8
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "carlota-armero-25399398": {
       "calle_id": "carlota-armero-25399398",
@@ -80,9 +86,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 170.4,
-        "y_cm": 300.0
-      }
+        "qr_x_cm": 196.2,
+        "qr_y_cm": 287.5
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "catalina-buendia-40879676": {
       "calle_id": "catalina-buendia-40879676",
@@ -102,9 +111,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 173.0,
-        "y_cm": 281.7
-      }
+        "qr_x_cm": 171.7,
+        "qr_y_cm": 257.3
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "dolores-del-rio-70905707": {
       "calle_id": "dolores-del-rio-70905707",
@@ -124,9 +136,35 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 30.7,
-        "y_cm": 214.9
-      }
+        "qr_x_cm": 30.6,
+        "qr_y_cm": 195.6
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1904,
+          "texto": "Nace en Victoria de Durango"
+        },
+        {
+          "anio": 1946,
+          "texto": "Recibe el Premio Ariel a mejor actriz"
+        },
+        {
+          "anio": 1952,
+          "texto": "Recibe el Premio Ariel a mejor actriz"
+        },
+        {
+          "anio": 1954,
+          "texto": "Recibe el Premio Ariel a mejor actriz"
+        },
+        {
+          "anio": 1983,
+          "texto": "Muere en Newport Beach"
+        }
+      ],
+      "temas": [
+        "artistas"
+      ]
     },
     "dolores-jimenez-muro-25053071": {
       "calle_id": "dolores-jimenez-muro-25053071",
@@ -146,9 +184,25 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 25.8,
-        "y_cm": 105.5
-      }
+        "qr_x_cm": 25.6,
+        "qr_y_cm": 86.2
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1848,
+          "texto": "Nace en Aguascalientes"
+        },
+        {
+          "anio": 1925,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "educadoras",
+        "escritoras",
+        "insurgentas"
+      ]
     },
     "elena-arizmendi-25207088": {
       "calle_id": "elena-arizmendi-25207088",
@@ -168,9 +222,23 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 102.1,
-        "y_cm": 177.6
-      }
+        "qr_x_cm": 120.0,
+        "qr_y_cm": 157.7
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1884,
+          "texto": "Nace en Ciudad de México"
+        },
+        {
+          "anio": 1949,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "feministas"
+      ]
     },
     "elisa-g-otis-56722040": {
       "calle_id": "elisa-g-otis-56722040",
@@ -190,9 +258,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 190.1,
-        "y_cm": 272.2
-      }
+        "qr_x_cm": 195.4,
+        "qr_y_cm": 250.7
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "emilia-romero-de-valle-25154829": {
       "calle_id": "emilia-romero-de-valle-25154829",
@@ -212,9 +283,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 154.6,
-        "y_cm": 147.6
-      }
+        "qr_x_cm": 163.4,
+        "qr_y_cm": 128.3
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "eulalia-guzman-5849710": {
       "calle_id": "eulalia-guzman-5849710",
@@ -235,9 +309,26 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 115.1,
-        "y_cm": 90.9
-      }
+        "qr_x_cm": 114.8,
+        "qr_y_cm": 71.5
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1890,
+          "texto": "Nace en San Pedro Piedra Gorda"
+        },
+        {
+          "anio": 1985,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "cientificas",
+        "educadoras",
+        "escritoras",
+        "feministas"
+      ]
     },
     "florencia-antillon-34071461": {
       "calle_id": "florencia-antillon-34071461",
@@ -257,9 +348,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 174.3,
-        "y_cm": 53.2
-      }
+        "qr_x_cm": 174.1,
+        "qr_y_cm": 33.9
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "frida-kalho-38525493": {
       "calle_id": "frida-kalho-38525493",
@@ -279,9 +373,46 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 272.6,
-        "y_cm": 45.7
-      }
+        "qr_x_cm": 288.8,
+        "qr_y_cm": 88.9
+      },
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/El_Museo_de_Frida_Khalo_%286086560243%29.jpg/1280px-El_Museo_de_Frida_Khalo_%286086560243%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:El_Museo_de_Frida_Khalo_(6086560243).jpg",
+          "autor": "katiebordner",
+          "licencia": "CC BY 2.0",
+          "licencia_url": "https://creativecommons.org/licenses/by/2.0",
+          "horizontal": true,
+          "pie": "El patio de la Casa Azul, en Coyoacán: «Frida y Diego vivieron en esta casa»"
+        },
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Ciudad_de_M%C3%A9xico_-_Museo_Frida_Kahlo_7125.jpg/1280px-Ciudad_de_M%C3%A9xico_-_Museo_Frida_Kahlo_7125.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Ciudad_de_M%C3%A9xico_-_Museo_Frida_Kahlo_7125.jpg",
+          "autor": "Phyrexian",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": false,
+          "pie": "La prótesis que usó tras la amputación de su pierna, en 1953"
+        }
+      ],
+      "linea_tiempo": [
+        {
+          "anio": 1907,
+          "texto": "Nace en Ciudad de México"
+        },
+        {
+          "anio": 1939,
+          "texto": "«Las dos Fridas»"
+        },
+        {
+          "anio": 1954,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "artistas"
+      ]
     },
     "gabriela-mistral-32886048": {
       "calle_id": "gabriela-mistral-32886048",
@@ -303,9 +434,32 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 225.7,
-        "y_cm": 217.6
-      }
+        "qr_x_cm": 222.0,
+        "qr_y_cm": 194.8
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1889,
+          "texto": "Nace en Vicuña"
+        },
+        {
+          "anio": 1945,
+          "texto": "Recibe el Premio Nobel de Literatura"
+        },
+        {
+          "anio": 1951,
+          "texto": "Recibe el Premio Nacional de Literatura"
+        },
+        {
+          "anio": 1957,
+          "texto": "Muere en Hempstead"
+        }
+      ],
+      "temas": [
+        "educadoras",
+        "escritoras"
+      ]
     },
     "josefa-ortiz-dedominguez-99984608": {
       "calle_id": "josefa-ortiz-dedominguez-99984608",
@@ -325,9 +479,23 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 90.9,
-        "y_cm": 234.4
-      }
+        "qr_x_cm": 92.0,
+        "qr_y_cm": 219.8
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1768,
+          "texto": "Nace en Morelia"
+        },
+        {
+          "anio": 1829,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "insurgentas"
+      ]
     },
     "josefina-prior-155907583": {
       "calle_id": "josefina-prior-155907583",
@@ -347,9 +515,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 67.7,
-        "y_cm": 250.6
-      }
+        "qr_x_cm": 68.8,
+        "qr_y_cm": 236.1
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "laura-mendez-de-cuenca-40879832": {
       "calle_id": "laura-mendez-de-cuenca-40879832",
@@ -369,9 +540,25 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 181.7,
-        "y_cm": 287.8
-      }
+        "qr_x_cm": 225.0,
+        "qr_y_cm": 268.1
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1853,
+          "texto": "Nace en Municipio de Ayapango"
+        },
+        {
+          "anio": 1928,
+          "texto": "Muere"
+        }
+      ],
+      "temas": [
+        "educadoras",
+        "escritoras",
+        "feministas"
+      ]
     },
     "leona-vicario-24850916": {
       "calle_id": "leona-vicario-24850916",
@@ -391,9 +578,43 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 149.1,
-        "y_cm": 122.1
-      }
+        "qr_x_cm": 140.1,
+        "qr_y_cm": 101.6
+      },
+      "contexto": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/6/62/37BrasilStoDomingoDF.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:37BrasilStoDomingoDF.JPG",
+          "autor": "Thelmadatter",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "pie": "Su casa en República de Brasil 37, en el Centro Histórico, donde vivió y murió"
+        },
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/0/05/Timbre_Postal_Leona_Vicario_1910.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Timbre_Postal_Leona_Vicario_1910.jpg",
+          "autor": "Mizael Contreras",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "pie": "Timbre conmemorativo del centenario de la Independencia, 1910"
+        }
+      ],
+      "linea_tiempo": [
+        {
+          "anio": 1789,
+          "texto": "Nace en Ciudad de México"
+        },
+        {
+          "anio": 1842,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "escritoras",
+        "insurgentas"
+      ]
     },
     "luz-savinon-4842166": {
       "calle_id": "luz-savinon-4842166",
@@ -413,9 +634,21 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 112.2,
-        "y_cm": 186.9
-      }
+        "qr_x_cm": 152.5,
+        "qr_y_cm": 178.7
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1850,
+          "texto": "Nace"
+        },
+        {
+          "anio": 1902,
+          "texto": "Muere"
+        }
+      ],
+      "temas": []
     },
     "ma-de-la-luz-bringas-221672255": {
       "calle_id": "ma-de-la-luz-bringas-221672255",
@@ -437,9 +670,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 77.6,
-        "y_cm": 216.1
-      }
+        "qr_x_cm": 68.7,
+        "qr_y_cm": 198.9
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "madame-cuirie-392206229": {
       "calle_id": "madame-cuirie-392206229",
@@ -459,9 +695,36 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 224.7,
-        "y_cm": 217.3
-      }
+        "qr_x_cm": 251.5,
+        "qr_y_cm": 197.9
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1867,
+          "texto": "Nace"
+        },
+        {
+          "anio": 1898,
+          "texto": "Recibe el Premio Gegner"
+        },
+        {
+          "anio": 1903,
+          "texto": "Recibe el Premio Nobel de Física"
+        },
+        {
+          "anio": 1911,
+          "texto": "Recibe el Premio Nobel de Química"
+        },
+        {
+          "anio": 1934,
+          "texto": "Muere en Sancellemoz"
+        }
+      ],
+      "temas": [
+        "cientificas",
+        "educadoras"
+      ]
     },
     "manuela-saenz-40879606": {
       "calle_id": "manuela-saenz-40879606",
@@ -486,9 +749,39 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 160.9,
-        "y_cm": 281.6
-      }
+        "qr_x_cm": 144.2,
+        "qr_y_cm": 257.1
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1797,
+          "texto": "Nace en Quito"
+        },
+        {
+          "anio": 1822,
+          "texto": "Recibe la Orden El Sol del Perú"
+        },
+        {
+          "anio": 1822,
+          "texto": "Es nombrada Primera dama de Colombia"
+        },
+        {
+          "anio": 1824,
+          "texto": "Es nombrada Primera dama de Perú"
+        },
+        {
+          "anio": 1825,
+          "texto": "Es nombrada Primera Dama de Bolivia"
+        },
+        {
+          "anio": 1856,
+          "texto": "Muere en Paita"
+        }
+      ],
+      "temas": [
+        "insurgentas"
+      ]
     },
     "margarita-maza-de-juarez-78362513": {
       "calle_id": "margarita-maza-de-juarez-78362513",
@@ -509,9 +802,23 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 108.8,
-        "y_cm": 21.4
-      }
+        "qr_x_cm": 109.9,
+        "qr_y_cm": 21.7
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1826,
+          "texto": "Nace en Oaxaca de Juárez"
+        },
+        {
+          "anio": 1871,
+          "texto": "Muere en Ciudad de México"
+        }
+      ],
+      "temas": [
+        "insurgentas"
+      ]
     },
     "maria-luisa-stampa-ortigoza-75039575": {
       "calle_id": "maria-luisa-stampa-ortigoza-75039575",
@@ -532,9 +839,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 124.8,
-        "y_cm": 26.4
-      }
+        "qr_x_cm": 136.2,
+        "qr_y_cm": 21.3
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "matilde-marquez-38526111": {
       "calle_id": "matilde-marquez-38526111",
@@ -555,9 +865,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 206.4,
-        "y_cm": 118.4
-      }
+        "qr_x_cm": 206.2,
+        "qr_y_cm": 99.5
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "paula-peraldo-40879632": {
       "calle_id": "paula-peraldo-40879632",
@@ -577,9 +890,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 156.6,
-        "y_cm": 282.4
-      }
+        "qr_x_cm": 138.9,
+        "qr_y_cm": 293.3
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "paz-montes-de-oca-25355285": {
       "calle_id": "paz-montes-de-oca-25355285",
@@ -599,9 +915,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 106.5,
-        "y_cm": 228.3
-      }
+        "qr_x_cm": 123.7,
+        "qr_y_cm": 198.9
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "prof-aurora-reza-69710986": {
       "calle_id": "prof-aurora-reza-69710986",
@@ -621,9 +940,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 107.6,
-        "y_cm": 262.2
-      }
+        "qr_x_cm": 97.4,
+        "qr_y_cm": 260.1
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "rosa-maria-sequeira-40879639": {
       "calle_id": "rosa-maria-sequeira-40879639",
@@ -646,9 +968,12 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 159.2,
-        "y_cm": 280.8
-      }
+        "qr_x_cm": 121.0,
+        "qr_y_cm": 238.5
+      },
+      "contexto": [],
+      "linea_tiempo": [],
+      "temas": []
     },
     "rosario-castellanos-25154787": {
       "calle_id": "rosario-castellanos-25154787",
@@ -668,9 +993,52 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 150.9,
-        "y_cm": 159.0
-      }
+        "qr_x_cm": 194.7,
+        "qr_y_cm": 139.6
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1925,
+          "texto": "Nace en Ciudad de México"
+        },
+        {
+          "anio": 1957,
+          "texto": "«Balún Canán»"
+        },
+        {
+          "anio": 1960,
+          "texto": "Recibe el Premio Xavier Villaurrutia"
+        },
+        {
+          "anio": 1960,
+          "texto": "«Ciudad Real»"
+        },
+        {
+          "anio": 1962,
+          "texto": "«Oficio de tinieblas»"
+        },
+        {
+          "anio": 1971,
+          "texto": "Es nombrada embajadora de México en Israel"
+        },
+        {
+          "anio": 1974,
+          "texto": "Muere en Tel Aviv"
+        },
+        {
+          "anio": 1975,
+          "texto": "«El eterno femenino» (póstuma)"
+        },
+        {
+          "anio": 1997,
+          "texto": "«Rito de iniciación» (póstuma)"
+        }
+      ],
+      "temas": [
+        "educadoras",
+        "escritoras"
+      ]
     },
     "sor-juana-ines-de-la-cruz-24858788": {
       "calle_id": "sor-juana-ines-de-la-cruz-24858788",
@@ -691,9 +1059,48 @@
         ]
       },
       "mapa_fisico": {
-        "x_cm": 105.9,
-        "y_cm": 108.6
-      }
+        "qr_x_cm": 91.4,
+        "qr_y_cm": 92.8
+      },
+      "contexto": [],
+      "linea_tiempo": [
+        {
+          "anio": 1651,
+          "texto": "Nace en Nepantla de Sor Juana Inés de la Cruz"
+        },
+        {
+          "anio": 1680,
+          "texto": "«Neptuno alegórico»"
+        },
+        {
+          "anio": 1691,
+          "texto": "«Respuesta a Sor Filotea de la Cruz»"
+        },
+        {
+          "anio": 1692,
+          "texto": "«Primero sueño»"
+        },
+        {
+          "anio": 1695,
+          "texto": "Muere en Ciudad de México"
+        },
+        {
+          "anio": 2014,
+          "texto": "«El divino Narciso» (póstuma)"
+        }
+      ],
+      "temas": [
+        "cientificas",
+        "escritoras"
+      ]
     }
+  },
+  "temas": {
+    "insurgentas": "Insurgentas y revolucionarias",
+    "escritoras": "Escritoras y periodistas",
+    "artistas": "Artistas",
+    "cientificas": "Científicas",
+    "educadoras": "Maestras y educadoras",
+    "feministas": "Feministas"
   }
 }

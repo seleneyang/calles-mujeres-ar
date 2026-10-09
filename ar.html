@@ -56,19 +56,21 @@
       radial-gradient(90% 60% at 10% 0%, #3b145f 0%, transparent 70%),
       var(--morado-950);
   }
-  #camara { opacity: 0; transition: opacity .6s ease; }
+  /* Orden de capas: fondo < cámara < su mundo < velo < escena < pie < dock < aviso < portada < hoja */
+  #fondo { z-index: 0; }
+  #camara { z-index: 1; opacity: 0; transition: opacity .6s ease; }
   #camara.activa { opacity: 1; }
   /* Velo para garantizar contraste del texto sobre cualquier imagen de cámara */
   .velo {
-    position: fixed; inset: 0; pointer-events: none;
+    position: fixed; inset: 0; pointer-events: none; z-index: 3;
     background: linear-gradient(180deg, rgba(18,6,31,.55) 0%, rgba(18,6,31,.15) 35%, rgba(18,6,31,.65) 100%);
   }
 
   /* ---------- Capa 1: escena AR (CSS 3D) ---------- */
   .escena {
-    position: fixed; inset: 0;
+    position: fixed; inset: 0; z-index: 4;
     display: grid; place-items: center;
-    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    padding: max(16px, env(safe-area-inset-top)) 16px calc(max(16px, env(safe-area-inset-bottom)) + 78px);
     perspective: 900px;
     perspective-origin: 50% 70%;
   }
@@ -87,7 +89,7 @@
 
   /* Haz de luz + anillo: sugiere que el panel "brota" del QR en el suelo */
   .haz {
-    width: 2px; height: 48px;
+    width: 2px; height: 26px;
     background: linear-gradient(var(--lila-200), transparent);
     opacity: .7;
   }
@@ -115,7 +117,8 @@
     border-radius: var(--radio);
     box-shadow: var(--sombra);
     padding: 22px 20px 20px;
-    max-height: calc(100dvh - 170px);
+    max-height: calc(100dvh - 230px);
+    overflow-y: auto; overscroll-behavior: contain;
     display: flex; flex-direction: column; gap: 14px;
     animation: aparecer .7s cubic-bezier(.2, .9, .3, 1.2) both;
   }
@@ -214,7 +217,7 @@
 
   /* ---------- Portada / permisos ---------- */
   .portada {
-    position: fixed; inset: 0; z-index: 10;
+    position: fixed; inset: 0; z-index: 30;
     display: flex; flex-direction: column; justify-content: flex-end; gap: 18px;
     padding: max(24px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom));
     background:
@@ -239,7 +242,7 @@
 
   .aviso {
     position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
-    z-index: 5; max-width: calc(100% - 32px);
+    z-index: 8; max-width: calc(100% - 32px);
     padding: 8px 14px; border-radius: 999px;
     background: rgba(18,6,31,.8); border: 1px solid var(--borde);
     font-size: .8rem; color: var(--texto-suave); text-align: center;
@@ -254,6 +257,121 @@
   }
   @keyframes girar { to { transform: rotate(360deg); } }
 
+  /* ---------- Su mundo: imágenes de contexto detrás de la tarjeta ---------- */
+  .mundo {
+    position: fixed; inset: -6%; z-index: 2; pointer-events: none;
+    opacity: 0; transition: opacity .9s ease; will-change: transform;
+  }
+  .mundo.visible { opacity: 1; }
+  .mundo figure { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.8s ease; }
+  .mundo figure.activa { opacity: 1; }
+  .mundo img { width: 100%; height: 100%; object-fit: cover; animation: acercar 16s ease-in-out infinite alternate; }
+  @keyframes acercar { from { transform: scale(1.03); } to { transform: scale(1.14) translate(-2%, -1.5%); } }
+  .mundo::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(18,6,31,.15) 0%, rgba(18,6,31,.45) 45%, rgba(18,6,31,.85) 100%);
+  }
+  .pie-mundo {
+    position: fixed; z-index: 5; left: 16px; right: 16px; top: max(14px, env(safe-area-inset-top));
+    display: none; justify-content: space-between; align-items: flex-start; gap: 10px;
+  }
+  .pie-mundo.visible { display: flex; }
+  .pie-mundo p {
+    background: rgba(18,6,31,.74); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--borde); border-radius: 14px; padding: 8px 12px;
+    font-size: .84rem; line-height: 1.35; color: var(--lila-100); max-width: 68%;
+  }
+  .pie-mundo p:empty { visibility: hidden; }
+  .pie-mundo small { display: block; margin-top: 4px; font-size: .68rem; color: var(--texto-suave); }
+  .pie-mundo small a { color: inherit; }
+  .chip {
+    flex: none; min-height: 40px; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--borde); background: rgba(18,6,31,.74); color: var(--texto);
+    font-size: .82rem; font-weight: 600; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .chip:focus-visible, .pestana:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
+
+  /* ---------- Tarjeta: pestañas, línea de tiempo, escuchar ---------- */
+  .herramientas { display: flex; gap: 6px; align-items: center; }
+  .pestana {
+    min-height: 36px; padding: 6px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap;
+    border: 1px solid var(--borde); background: transparent; color: var(--texto-suave);
+    font-size: .84rem; font-weight: 600;
+  }
+  .pestana[aria-selected="true"] { background: var(--lila-200); color: var(--morado-950); border-color: transparent; }
+  .herramientas .escuchar { margin-left: auto; }
+  .linea {
+    list-style: none; margin: 0; padding: 2px 4px 8px 22px; position: relative;
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  .linea::before {
+    content: ""; position: absolute; left: 7px; top: 10px; bottom: 14px; width: 2px;
+    background: linear-gradient(var(--lila-200), var(--morado-400));
+  }
+  .linea li { position: relative; padding: 4px 0 12px; line-height: 1.4; color: var(--lila-100); }
+  .linea li::before {
+    content: ""; position: absolute; left: -21px; top: 9px; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--morado-950); border: 2px solid var(--lila-200);
+  }
+  .linea b { display: block; font-family: var(--titular); font-size: 1.1rem; color: var(--lila-200); }
+
+  .marco-vacio {
+    display: flex; gap: 12px; align-items: center;
+    border: 2px dashed rgba(255,61,154,.65); border-radius: 16px; padding: 12px 14px;
+    font-size: .88rem; line-height: 1.4; color: var(--lila-100);
+  }
+  .marco-vacio svg { flex: none; width: 46px; height: 46px; }
+  .marco-vacio a { color: var(--ambar); font-weight: 600; }
+
+  /* ---------- Dock: recorrido + siguiente calle en el mapa del piso ---------- */
+  .dock {
+    position: fixed; z-index: 6; left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom));
+    display: none; gap: 8px;
+  }
+  .dock.visible { display: flex; }
+  .dock button {
+    min-height: 60px; padding: 8px 12px; border-radius: 18px; cursor: pointer; text-align: left;
+    border: 1px solid var(--borde); background: rgba(18,6,31,.82); color: var(--texto);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .dock small { display: block; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave); }
+  .dock strong { font-family: var(--titular); font-size: 1.05rem; }
+  .dock .siguiente { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+  #sig-nombre { display: block; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .flecha {
+    flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--lila-200); color: var(--morado-950); transition: transform .3s ease;
+  }
+  .flecha svg { width: 22px; height: 22px; }
+  .dock .siguiente > span:last-child { min-width: 0; }
+  #sig-distancia { text-transform: none; letter-spacing: 0; font-size: .74rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Con imágenes de contexto: la tarjeta deja ver su mundo arriba y abajo */
+  body.con-mundo .escena { padding-top: calc(max(14px, env(safe-area-inset-top)) + 96px); }
+  body.con-mundo .panel { max-height: min(60dvh, calc(100dvh - 300px)); background: rgba(26, 11, 46, 0.7); }
+
+  /* ---------- Hoja del pasaporte ---------- */
+  .hoja {
+    position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; max-height: 82dvh; overflow-y: auto;
+    background: var(--morado-900); border-radius: 24px 24px 0 0; border-top: 1px solid var(--borde);
+    padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
+    transform: translateY(105%); transition: transform .35s ease; box-shadow: 0 -20px 60px rgba(0,0,0,.5);
+  }
+  .hoja.abierta { transform: none; }
+  .hoja h2 { font-family: var(--titular); font-size: 1.4rem; }
+  .hoja h3 { font-size: .95rem; margin: 18px 0 8px; display: flex; justify-content: space-between; color: var(--lila-200); }
+  .hoja ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .hoja li { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: .92rem; }
+  .hoja li.visitada::before { content: "✓"; color: var(--lila-200); font-weight: 700; margin-right: -2px; }
+  .hoja li span { flex: 1; }
+  .hoja li button, .hoja li a {
+    min-height: 34px; padding: 4px 12px; border-radius: 999px; font-size: .78rem; font-weight: 600;
+    border: 1px solid var(--borde); background: transparent; color: var(--texto); text-decoration: none; cursor: pointer;
+  }
+  .progreso { height: 8px; border-radius: 999px; background: rgba(227,208,255,.15); overflow: hidden; margin: 10px 0 4px; }
+  .progreso div { height: 100%; background: linear-gradient(90deg, var(--morado-400), var(--lila-200)); }
+  .hoja .cerrar { position: absolute; top: 14px; right: 14px; }
+
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
   @media (prefers-reduced-motion: reduce) {
@@ -266,7 +384,12 @@
 
 <video id="camara" autoplay playsinline muted aria-hidden="true"></video>
 <div id="fondo" aria-hidden="true"></div>
+<div id="mundo" class="mundo" aria-hidden="true"></div>
 <div class="velo" aria-hidden="true"></div>
+<div id="pie-mundo" class="pie-mundo">
+  <p id="pie-texto" aria-live="polite"></p>
+  <button class="chip" id="btn-mundo" type="button" aria-pressed="true">Ver cámara</button>
+</div>
 
 <div id="aviso" class="aviso" role="status"></div>
 
@@ -291,6 +414,20 @@
   </div>
 </section>
 
+<nav class="dock" id="dock" aria-label="Tu recorrido por el mapa">
+  <button type="button" id="btn-pasaporte" aria-haspopup="dialog"><small>Tu recorrido</small><strong id="cuenta">0/30</strong></button>
+  <button type="button" class="siguiente" id="btn-siguiente">
+    <span class="flecha" id="flecha" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 11l7-7 7 7"/></svg></span>
+    <span><small id="sig-etiqueta">Siguiente en el mapa</small><span id="sig-nombre"></span><small id="sig-distancia"></small></span>
+  </button>
+</nav>
+
+<section class="hoja" id="hoja" role="dialog" aria-modal="true" aria-labelledby="hoja-titulo" hidden>
+  <button class="chip cerrar" id="btn-cerrar-hoja" type="button">Cerrar</button>
+  <h2 id="hoja-titulo">Tu recorrido</h2>
+  <div id="hoja-contenido"></div>
+</section>
+
 <div class="sr" id="lector" aria-live="assertive"></div>
 
 <script type="module">
@@ -305,7 +442,14 @@ const CONFIG = {
   AYUDA_PRIMER_ARTICULO: 'https://es.wikipedia.org/wiki/Ayuda:Tu_primer_art%C3%ADculo',
   // TODO: reemplazar por la guía de edición oficial de Geochicas cuando esté publicada.
   GUIA_GEOCHICAS_URL: 'https://geochicasosm.github.io/lascallesdelasmujeres/',
+  SUBIR_COMMONS: 'https://commons.wikimedia.org/wiki/Special:UploadWizard?uselang=es',
   TIEMPO_MAX_MS: 7000,
+  SEGUNDOS_POR_IMAGEN: 7,
+  // Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso, tal como quedó instalado
+  // en la sala. Medirlo el día del montaje con la brújula de un teléfono. Con null, la flecha
+  // indica la dirección "en el mapa" (arriba del mapa = norte) en lugar de usar la brújula.
+  NORTE_MAPA_RUMBO: null,
+  CLAVE_VISITAS: 'lcm.visitadas.v1',
 };
 
 const MENSAJE_BRECHA =
@@ -436,9 +580,43 @@ function subtitulo(calle, nombre) {
     : el('p', { class: 'subtitulo' }, `En honor a ${nombre}`);
 }
 
+function botonEscuchar(texto) {
+  if (!('speechSynthesis' in window)) return null;
+  return el('button', { class: 'pestana escuchar', type: 'button', 'aria-pressed': 'false', 'aria-label': 'Escuchar',
+    onclick: (e) => escuchar(texto, e.currentTarget) }, '🔊');
+}
+
+function lineaDeTiempo(eventos) {
+  return el('ol', { class: 'linea', 'aria-label': 'Línea de tiempo' },
+    eventos.map((e) => el('li', {}, el('b', {}, String(e.anio)), e.texto)));
+}
+
 function panelArticulo(calle, resumen) {
   const url = resumen.content_urls?.mobile?.page || resumen.content_urls?.desktop?.page;
   const foto = resumen.thumbnail?.source;
+  const historia = el('p', { class: 'extracto', id: 'vista-historia' }, resumen.extract);
+  const eventos = calle.linea_tiempo || [];
+  let herramientas;
+  if (eventos.length) {
+    const linea = lineaDeTiempo(eventos);
+    linea.id = 'vista-tiempo';
+    linea.hidden = true;
+    const pestanas = [['Historia', historia], ['Línea de tiempo', linea]].map(([txt, vista], i) =>
+      el('button', { class: 'pestana', type: 'button', role: 'tab', 'aria-selected': String(i === 0),
+        'aria-controls': vista.id, onclick: (e) => {
+          for (const p of pestanas) p.setAttribute('aria-selected', String(p === e.currentTarget));
+          historia.hidden = vista !== historia;
+          linea.hidden = vista !== linea;
+        } }, txt));
+    herramientas = el('div', { class: 'herramientas', role: 'tablist' }, pestanas,
+      botonEscuchar(`${calle.mujer.nombre}. ${resumen.extract}`));
+    return armarPanel(calle, resumen, url, foto, herramientas, [historia, linea]);
+  }
+  herramientas = el('div', { class: 'herramientas' }, botonEscuchar(`${calle.mujer.nombre}. ${resumen.extract}`));
+  return armarPanel(calle, resumen, url, foto, herramientas, [historia]);
+}
+
+function armarPanel(calle, resumen, url, foto, herramientas, vistas) {
   return el('article', { class: 'panel', 'aria-labelledby': 'titulo-calle' },
     el('span', { class: 'etiqueta' }, 'Calle con nombre de mujer'),
     el('div', { class: 'cabecera' },
@@ -448,12 +626,25 @@ function panelArticulo(calle, resumen) {
         subtitulo(calle, resumen.title),
       ),
     ),
-    el('p', { class: 'extracto' }, resumen.extract),
+    herramientas,
+    vistas,
     el('div', { class: 'acciones' }, url && enlaceExterno('Leer artículo completo →', url)),
     el('p', { class: 'credito' },
       'Texto: ', el('a', { href: url, target: '_blank', rel: 'noopener' }, 'Wikipedia'),
-      ' · CC BY-SA 4.0 · Datos: Geochicas / OpenStreetMap'),
+      ' · CC BY-SA 4.0 · Datos: Geochicas / OpenStreetMap / Wikidata'),
   );
+}
+
+const ICONO_SIN_IMAGEN = `<svg viewBox="0 0 48 48" fill="none" stroke="#ff3d9a" stroke-width="2.5" aria-hidden="true">
+  <rect x="5" y="9" width="38" height="30" rx="4" stroke-dasharray="5 4"/><circle cx="24" cy="21" r="6"/>
+  <path d="M14 36c2-5 6-8 10-8s8 3 10 8"/></svg>`;
+
+function marcoVacio() {
+  const icono = el('span', { 'aria-hidden': 'true' });
+  icono.innerHTML = ICONO_SIN_IMAGEN; // SVG fijo, no viene de datos externos
+  return el('div', { class: 'marco-vacio' }, icono,
+    el('p', {}, 'Tampoco hay ninguna imagen de ella en Wikimedia Commons. ¿Tienes una foto o un documento? ',
+      el('a', { href: CONFIG.SUBIR_COMMONS, target: '_blank', rel: 'noopener' }, 'Súbelo')));
 }
 
 function panelBrecha(calle, datos) {
@@ -469,14 +660,16 @@ function panelBrecha(calle, datos) {
 
   return el('article', { class: 'panel brecha', role: 'alert', 'aria-labelledby': 'titulo-calle' },
     el('span', { class: 'alerta' }, '⚠ Brecha de datos'),
-    el('div', {},
+    el('div', { class: 'herramientas' },
       el('h1', { id: 'titulo-calle' }, calle.mujer.nombre),
+      botonEscuchar(`${calle.mujer.nombre}. ${MENSAJE_BRECHA}`),
     ),
     el('p', { class: 'mensaje-brecha' },
       'Este artículo de Wikipedia ', el('strong', {}, 'aún no existe'),
       '. La historia de esta mujer sigue invisibilizada en la enciclopedia libre. ',
       '¿Te gustaría ser quien lo escriba y cierre esta brecha?'),
     dato,
+    calle.contexto?.length ? null : marcoVacio(),
     el('div', { class: 'acciones' },
       enlaceExterno('Escribir este artículo', crear),
       enlaceExterno('Guía de edición de Geochicas', CONFIG.GUIA_GEOCHICAS_URL, 'boton secundario'),
@@ -527,6 +720,8 @@ function iniciarAnclaje() {
     ancla.style.transform =
       `translate3d(${-actual.x * 2.2}px, ${-actual.y * 1.6}px, 0) ` +
       `rotateY(${actual.x * 0.6}deg) rotateX(${-actual.y * 0.5}deg)`;
+    // Las imágenes de fondo se desplazan al revés y menos: parecen estar más lejos que la tarjeta
+    $('#mundo').style.transform = `translate3d(${actual.x * 1.1}px, ${actual.y * 0.9}px, 0)`;
     requestAnimationFrame(cuadro);
   })();
 }
@@ -538,6 +733,187 @@ async function pedirOrientacion() {
     try { return (await DOE.requestPermission()) === 'granted'; } catch { return false; }
   }
   return 'DeviceOrientationEvent' in window;
+}
+
+// ============================================================================
+// Su mundo: imágenes de contexto (curadas en contextos.json, con crédito de Commons)
+// ============================================================================
+let mundoVisible = false;
+
+function montarMundo(imagenes) {
+  if (!imagenes?.length) return;
+  const capa = $('#mundo');
+  const figuras = imagenes.map((img) => el('figure', {}, el('img', { src: img.src, alt: '', decoding: 'async' })));
+  capa.replaceChildren(...figuras);
+  let i = 0;
+  const mostrar = () => {
+    figuras.forEach((f, k) => f.classList.toggle('activa', k === i));
+    const img = imagenes[i];
+    $('#pie-texto').replaceChildren(img.pie,
+      el('small', {}, 'Foto: ', img.autor, ' · ',
+        el('a', { href: img.pagina, target: '_blank', rel: 'noopener' }, img.licencia || 'ver licencia')));
+  };
+  mostrar();
+  if (figuras.length > 1) setInterval(() => { i = (i + 1) % figuras.length; mostrar(); }, CONFIG.SEGUNDOS_POR_IMAGEN * 1000);
+  alternarMundo(true);
+  document.body.classList.add('con-mundo');
+  $('#pie-mundo').classList.add('visible');
+}
+
+function alternarMundo(visible = !mundoVisible) {
+  mundoVisible = visible;
+  $('#mundo').classList.toggle('visible', visible);
+  $('#pie-texto').hidden = !visible;
+  const boton = $('#btn-mundo');
+  boton.textContent = visible ? 'Ver cámara' : 'Ver su mundo';
+  boton.setAttribute('aria-pressed', String(visible));
+}
+
+// ============================================================================
+// Escuchar (síntesis de voz del propio teléfono)
+// ============================================================================
+function escuchar(texto, boton) {
+  const voz = window.speechSynthesis;
+  if (voz.speaking) {
+    voz.cancel();
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(texto);
+  u.lang = 'es-MX';
+  const voces = voz.getVoices();
+  u.voice = voces.find((v) => v.lang === 'es-MX') || voces.find((v) => v.lang.startsWith('es')) || null;
+  u.rate = 0.95;
+  const marcar = (activo) => {
+    boton.textContent = activo ? '■' : '🔊';
+    boton.setAttribute('aria-label', activo ? 'Detener' : 'Escuchar');
+    boton.setAttribute('aria-pressed', String(activo));
+  };
+  u.onstart = () => marcar(true);
+  u.onend = u.onerror = () => marcar(false);
+  voz.speak(u);
+}
+addEventListener('pagehide', () => window.speechSynthesis?.cancel());
+
+// ============================================================================
+// Recorrido: pasaporte de calles visitadas + siguiente pin en el mapa del piso
+// ============================================================================
+function leerVisitas() {
+  try { return new Set(JSON.parse(localStorage.getItem(CONFIG.CLAVE_VISITAS)) || []); } catch { return new Set(); }
+}
+function guardarVisitas(visitas) {
+  try { localStorage.setItem(CONFIG.CLAVE_VISITAS, JSON.stringify([...visitas])); } catch { /* modo privado */ }
+}
+
+const RUMBOS = ['norte', 'noreste', 'este', 'sureste', 'sur', 'suroeste', 'oeste', 'noroeste'];
+let rumboTelefono = null; // grados de brújula; null si el teléfono no la da
+let guia = null;          // { datos, desde, hacia }
+
+function vectorEnMapa(a, b) {
+  // En el mapa impreso x crece hacia el este y y hacia el sur (cm)
+  const dx = b.mapa_fisico.qr_x_cm - a.mapa_fisico.qr_x_cm;
+  const dy = b.mapa_fisico.qr_y_cm - a.mapa_fisico.qr_y_cm;
+  return { metros: Math.hypot(dx, dy) / 100, rumbo: (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360 };
+}
+
+function siguienteSugerida(datos, calleId, visitas) {
+  const aqui = datos.calles[calleId];
+  return Object.entries(datos.calles)
+    .filter(([id, c]) => id !== calleId && !visitas.has(id) && c.mapa_fisico)
+    .map(([id, c]) => ({ id, calle: c, ...vectorEnMapa(aqui, c) }))
+    .sort((a, b) => a.metros - b.metros)[0] || null;
+}
+
+function guiarHacia(datos, calleId, destinoId) {
+  const aqui = datos.calles[calleId];
+  const destino = datos.calles[destinoId];
+  if (!aqui?.mapa_fisico || !destino?.mapa_fisico) return;
+  guia = { id: destinoId, calle: destino, ...vectorEnMapa(aqui, destino) };
+  $('#sig-etiqueta').textContent = 'Te guío hacia';
+  pintarGuia();
+}
+
+function pintarGuia() {
+  const flecha = $('#flecha');
+  if (!guia) {
+    $('#sig-etiqueta').textContent = '¡Lo lograste!';
+    $('#sig-nombre').textContent = 'Visitaste todas las calles';
+    $('#sig-distancia').textContent = '';
+    flecha.style.transform = '';
+    return;
+  }
+  const conBrujula = CONFIG.NORTE_MAPA_RUMBO != null && rumboTelefono != null;
+  const giro = conBrujula ? guia.rumbo + CONFIG.NORTE_MAPA_RUMBO - rumboTelefono : guia.rumbo;
+  flecha.style.transform = `rotate(${giro}deg)`;
+  $('#sig-nombre').textContent = guia.calle.mujer.nombre;
+  const m = guia.metros < 1 ? `${Math.round(guia.metros * 100)} cm` : `${guia.metros.toFixed(1).replace('.', ',')} m`;
+  $('#sig-distancia').textContent = conBrujula
+    ? `${m} · sigue la flecha`
+    : `${m} al ${RUMBOS[Math.round(guia.rumbo / 45) % 8]} del mapa`;
+}
+
+function escucharBrujula() {
+  const actualizar = (grados) => {
+    rumboTelefono = (grados + 360) % 360;
+    if (guia) pintarGuia();
+  };
+  addEventListener('deviceorientation', (e) => {
+    if (typeof e.webkitCompassHeading === 'number') actualizar(e.webkitCompassHeading); // iOS
+  });
+  addEventListener('deviceorientationabsolute', (e) => {
+    if (e.alpha != null) actualizar(360 - e.alpha); // Android
+  });
+}
+
+function montarRecorrido(datos, calleId) {
+  const visitas = leerVisitas();
+  visitas.add(calleId);
+  guardarVisitas(visitas);
+  const total = Object.keys(datos.calles).length;
+  $('#cuenta').textContent = `${visitas.size}/${total}`;
+  guia = siguienteSugerida(datos, calleId, visitas);
+  pintarGuia();
+  $('#dock').classList.add('visible');
+  $('#btn-pasaporte').onclick = () => abrirPasaporte(datos, calleId, visitas);
+  $('#btn-siguiente').onclick = () => abrirPasaporte(datos, calleId, visitas);
+}
+
+function abrirPasaporte(datos, calleId, visitas) {
+  const total = Object.keys(datos.calles).length;
+  const fila = (id) => {
+    const c = datos.calles[id];
+    const visitada = visitas.has(id);
+    return el('li', { class: visitada ? 'visitada' : '' }, el('span', {}, c.mujer.nombre),
+      id === calleId ? el('small', {}, 'aquí estás')
+        : visitada ? el('a', { href: `?calle_id=${encodeURIComponent(id)}` }, 'Volver a ver')
+        : el('button', { type: 'button', onclick: () => { guiarHacia(datos, calleId, id); cerrarPasaporte(); } }, 'Guíame'));
+  };
+  const rutas = Object.entries(datos.temas || {}).map(([clave, nombre]) => {
+    const ids = Object.keys(datos.calles).filter((id) => datos.calles[id].temas?.includes(clave));
+    if (ids.length < 2) return null;
+    const hechas = ids.filter((id) => visitas.has(id)).length;
+    return el('section', {}, el('h3', {}, el('span', {}, nombre), el('span', {}, `${hechas}/${ids.length}`)),
+      el('ul', {}, ids.map(fila)));
+  });
+  const visitadas = [...visitas].filter((id) => datos.calles[id]);
+  $('#hoja-contenido').replaceChildren(
+    el('p', { class: 'subtitulo' }, `Has descubierto ${visitadas.length} de ${total} calles del mapa.`),
+    el('div', { class: 'progreso', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(total),
+      'aria-valuenow': String(visitadas.length) }, el('div', { style: `width:${(visitadas.length / total) * 100}%` })),
+    el('h3', {}, 'Calles que ya visitaste'),
+    el('ul', {}, visitadas.map(fila)),
+    el('p', { class: 'subtitulo', style: 'margin-top:18px' }, 'Recorridos: elige a quién visitar y te guiamos sobre el mapa.'),
+    ...rutas.filter(Boolean),
+  );
+  const hoja = $('#hoja');
+  hoja.hidden = false;
+  requestAnimationFrame(() => hoja.classList.add('abierta'));
+  $('#btn-cerrar-hoja').focus();
+}
+
+function cerrarPasaporte() {
+  const hoja = $('#hoja');
+  hoja.classList.remove('abierta');
+  setTimeout(() => { hoja.hidden = true; }, 350);
 }
 
 // ============================================================================
@@ -564,12 +940,16 @@ async function flujoDatos() {
     return () => {
       pintar(panelArticulo(calle, resultado.resumen));
       $('#lector').textContent = `${calle.mujer.nombre}. ${resultado.resumen.extract}`;
+      montarMundo(calle.contexto);
+      montarRecorrido(datos, calleId);
     };
   }
   return () => {
     pintar(panelBrecha(calle, datos), { brecha: true });
     navigator.vibrate?.([60, 40, 60]);
     $('#lector').textContent = `${calle.mujer.nombre}. ${MENSAJE_BRECHA}`;
+    montarMundo(calle.contexto);
+    montarRecorrido(datos, calleId);
   };
 }
 
@@ -590,13 +970,19 @@ async function entrar(conCamara) {
         avisar('No se pudo abrir la cámara: mostrando sin realidad aumentada');
       }),
     ]);
-    if (orientacion) iniciarAnclaje();
+    if (orientacion) {
+      iniciarAnclaje();
+      escucharBrujula();
+    }
   }
   (await datosListos)();
 }
 
 $('#btn-ar').addEventListener('click', () => entrar(true));
 $('#btn-sin-camara').addEventListener('click', () => entrar(false));
+$('#btn-mundo').addEventListener('click', () => alternarMundo());
+$('#btn-cerrar-hoja').addEventListener('click', cerrarPasaporte);
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#hoja').hidden) cerrarPasaporte(); });
 </script>
 </body>
 </html>

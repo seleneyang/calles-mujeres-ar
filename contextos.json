@@ -1,0 +1,152 @@
+{
+  "_instrucciones": [
+    "Por cada mujer, agrega de 2 a 4 imágenes en 'imagenes'. Cada imagen es un objeto con:",
+    "  archivo: el nombre del archivo en Wikimedia Commons, p. ej. \"File:Casa Azul.jpg\" (lo preferible: autor y licencia se leen solos)",
+    "  pie: una frase corta que la sitúe en contexto, p. ej. \"La Casa Azul, en Coyoacán, donde nació y murió\"",
+    "Si la imagen NO está en Commons, usa url + autor + licencia (+ pagina) en lugar de archivo. Solo imágenes con licencia libre o de dominio público.",
+    "Si una mujer sin artículo tiene ficha en Wikidata, agrega \"wikidata_id\": \"Q...\" para mostrar su línea de tiempo.",
+    "Opcional: \"temas\": [\"insurgentas\", \"escritoras\", \"artistas\", \"cientificas\", \"educadoras\", \"feministas\"] para sumarla a un recorrido.",
+    "Si una mujer queda sin imágenes, la app muestra un marco vacío que invita a subir una a Commons."
+  ],
+  "leona-vicario-24850916": {
+    "nombre": "Leona Vicario",
+    "imagenes": [
+      {
+        "archivo": "File:37BrasilStoDomingoDF.JPG",
+        "pie": "Su casa en República de Brasil 37, en el Centro Histórico, donde vivió y murió"
+      },
+      {
+        "archivo": "File:Timbre Postal Leona Vicario 1910.jpg",
+        "pie": "Timbre conmemorativo del centenario de la Independencia, 1910"
+      }
+    ]
+  },
+  "rosario-castellanos-25154787": {
+    "nombre": "Rosario Castellanos",
+    "imagenes": []
+  },
+  "sor-juana-ines-de-la-cruz-24858788": {
+    "nombre": "Sor Juana Inés de la Cruz",
+    "imagenes": []
+  },
+  "eulalia-guzman-5849710": {
+    "nombre": "Eulalia Guzmán",
+    "imagenes": []
+  },
+  "elena-arizmendi-25207088": {
+    "nombre": "Elena Arizmendi",
+    "imagenes": [],
+    "temas": [
+      "feministas"
+    ]
+  },
+  "luz-savinon-4842166": {
+    "nombre": "Luz Saviñón",
+    "imagenes": []
+  },
+  "margarita-maza-de-juarez-78362513": {
+    "nombre": "Margarita Maza",
+    "imagenes": []
+  },
+  "dolores-jimenez-muro-25053071": {
+    "nombre": "Dolores Jiménez y Muro",
+    "imagenes": []
+  },
+  "josefa-ortiz-dedominguez-99984608": {
+    "nombre": "Josefa Ortiz de Domínguez",
+    "imagenes": []
+  },
+  "madame-cuirie-392206229": {
+    "nombre": "Marie Curie",
+    "imagenes": []
+  },
+  "gabriela-mistral-32886048": {
+    "nombre": "Gabriela Mistral",
+    "imagenes": []
+  },
+  "dolores-del-rio-70905707": {
+    "nombre": "Dolores del Río",
+    "imagenes": []
+  },
+  "frida-kalho-38525493": {
+    "nombre": "Frida Kahlo",
+    "imagenes": [
+      {
+        "archivo": "File:El Museo de Frida Khalo (6086560243).jpg",
+        "pie": "El patio de la Casa Azul, en Coyoacán: «Frida y Diego vivieron en esta casa»"
+      },
+      {
+        "archivo": "File:Ciudad de México - Museo Frida Kahlo 7125.jpg",
+        "pie": "La prótesis que usó tras la amputación de su pierna, en 1953"
+      }
+    ]
+  },
+  "manuela-saenz-40879606": {
+    "nombre": "Manuela Sáenz",
+    "imagenes": []
+  },
+  "laura-mendez-de-cuenca-40879832": {
+    "nombre": "Laura Méndez de Cuenca",
+    "imagenes": []
+  },
+  "emilia-romero-de-valle-25154829": {
+    "nombre": "Emilia Romero de Valle",
+    "imagenes": []
+  },
+  "ana-maria-mier-25207086": {
+    "nombre": "Ana María Mier",
+    "imagenes": []
+  },
+  "matilde-marquez-38526111": {
+    "nombre": "Matilde Márquez",
+    "imagenes": []
+  },
+  "florencia-antillon-34071461": {
+    "nombre": "Florencia Antillón",
+    "imagenes": []
+  },
+  "maria-luisa-stampa-ortigoza-75039575": {
+    "nombre": "María Luisa Stampa Ortigoza",
+    "imagenes": []
+  },
+  "paz-montes-de-oca-25355285": {
+    "nombre": "Paz Montes de Oca",
+    "imagenes": []
+  },
+  "ma-de-la-luz-bringas-221672255": {
+    "nombre": "María de la Luz Bringas",
+    "imagenes": []
+  },
+  "prof-aurora-reza-69710986": {
+    "nombre": "Aurora Reza",
+    "imagenes": []
+  },
+  "josefina-prior-155907583": {
+    "nombre": "Josefina Prior",
+    "imagenes": []
+  },
+  "elisa-g-otis-56722040": {
+    "nombre": "Elisa G. Otis",
+    "imagenes": []
+  },
+  "rosa-maria-sequeira-40879639": {
+    "nombre": "Rosa María Sequeira",
+    "imagenes": []
+  },
+  "paula-peraldo-40879632": {
+    "nombre": "Paula Peraldo",
+    "imagenes": []
+  },
+  "catalina-buendia-40879676": {
+    "nombre": "Catalina Buendía",
+    "imagenes": []
+  },
+  "andrea-arrieta-27785857": {
+    "nombre": "Andrea Arrieta",
+    "imagenes": []
+  },
+  "carlota-armero-25399398": {
+    "nombre": "Carlota Armero",
+    "imagenes": []
+  }
+}

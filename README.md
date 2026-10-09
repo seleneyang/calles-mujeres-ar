@@ -7,6 +7,7 @@ geochicas-ar/
 ├── ar.html                  # App completa (HTML + CSS + JS, sin build ni dependencias)
 ├── calles_cdmx.json         # Datos de las 30 calles del mapa impreso
 ├── seleccion_30.json        # Curaduría: 15 con artículo + 15 sin artículo, y nombres corregidos
+├── contextos.json           # Curaduría: imágenes de contexto de cada mujer (para llenar)
 ├── impresion/               # ← ARCHIVOS PARA IMPRIMIR
 │   ├── mapa_calles_mujeres_320cm.pdf   # vectorial, 320 × 320 cm, para el plotter
 │   ├── mapa_calles_mujeres_preview.png # vista previa
@@ -14,6 +15,7 @@ geochicas-ar/
 │   └── tarjetas_qr_prueba.pdf          # los 30 QR en hojas carta para probar con el celular
 └── scripts/
     ├── generar_calles.py        # dataset de Geochicas → calles_cdmx.json
+    ├── enriquecer_contexto.py   # imágenes (Commons), línea de tiempo y temas (Wikidata), posiciones
     └── generar_mapa_impreso.py  # calles_cdmx.json + OpenFreeMap → PDF del plotter
 ```
 
@@ -96,6 +98,29 @@ El mapa impreso cubre un cuadrado de 25 × 25 km centrado en las 30 calles (esca
 - **El QR circular:** ocupa todo el interior del círculo del logo y está en el mismo color de Geochicas. La parte que la cámara lee es un QR cuadrado normal de 9.5 cm, versión 8 y corrección de errores nivel Q. Alrededor lleva módulos decorativos idénticos que completan el círculo. Entre el código y la decoración se dejan **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). En las pruebas, sin ese margen no se leyó ninguno (0/30), y con él ZXing leyó los 30 de frente, inclinados, girados y desenfocados. **No reduzcas esos valores sin volver a probar.**
 
 > ⚠️ Los QR llevan la URL de `--url-base`. Si cambias el dominio o el nombre del repositorio, **vuelve a generar el PDF antes de imprimir**.
+
+## Funciones interactivas de `ar.html`
+
+- **Su mundo:** detrás de la tarjeta pasan las imágenes de contexto elegidas en `contextos.json`, con un acercamiento lento y un efecto de profundidad al inclinar el teléfono. Arriba se muestra el pie de foto con su crédito y licencia. El botón «Ver cámara» las oculta.
+- **Marco vacío:** si una mujer no tiene imágenes, la tarjeta de brecha invita a subir una a Wikimedia Commons.
+- **Línea de tiempo:** nacimiento, muerte, obras, premios y cargos, tomados de Wikidata, en una pestaña aparte.
+- **Escuchar:** el teléfono lee la tarjeta en voz alta (`speechSynthesis`, sin servidor).
+- **Tu recorrido:** el teléfono guarda las calles que ya escaneaste (solo en ese teléfono) y muestra «3/30». La hoja del pasaporte incluye recorridos por tema (insurgentas, escritoras, artistas, científicas, educadoras y feministas), con un botón «Guíame».
+- **Siguiente en el mapa:** una flecha y la distancia real sobre el piso hasta el pin más cercano que falta, calculadas con `posiciones_qr.csv`.
+  - **Brújula:** el día del montaje, mide con la brújula de un teléfono hacia dónde apunta el norte del mapa impreso y escribe ese rumbo en `CONFIG.NORTE_MAPA_RUMBO` (en `ar.html`). Así la flecha usa la brújula del teléfono.
+  - **Sin ese dato:** la flecha indica la dirección «en el mapa», tomando la parte de arriba del mapa como norte.
+
+### Curaduría de imágenes (`contextos.json`)
+
+Para cada mujer se agregan de 2 a 4 imágenes de Wikimedia Commons (`archivo` + `pie`). El autor y la licencia se leen automáticamente. Después se ejecuta:
+
+```bash
+.venv/bin/python scripts/enriquecer_contexto.py
+```
+
+Orden completo de los scripts: `generar_calles.py` → `generar_mapa_impreso.py` → `enriquecer_contexto.py`. El último también agrega la línea de tiempo, los temas y la posición de cada pin. Si se vuelve a ejecutar `generar_calles.py`, hay que repetir los tres en ese orden.
+
+> ⚠️ **Derechos de autor:** la obra de Frida Kahlo (y la de cualquier autora fallecida hace menos de 100 años) está protegida en México. Usa fotos de lugares, objetos, documentos o imágenes en dominio público, no reproducciones de sus obras.
 
 ## Guía de despliegue gratuito en GitHub Pages
 
