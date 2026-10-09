@@ -1,0 +1,50 @@
+{
+  "_nota": "Calles curadas para el mapa impreso. 15 con artículo en Wikipedia en español y 15 sin artículo (verificado manualmente contra Wikipedia y Wikidata el 2026-10-09). Los calle_id no deben cambiar una vez impresos los QR.",
+  "con_articulo": [
+    "leona-vicario-24850916",
+    "rosario-castellanos-25154787",
+    "sor-juana-ines-de-la-cruz-24858788",
+    "eulalia-guzman-5849710",
+    "elena-arizmendi-25207088",
+    "luz-savinon-4842166",
+    "margarita-maza-de-juarez-78362513",
+    "dolores-jimenez-muro-25053071",
+    "josefa-ortiz-dedominguez-99984608",
+    "madame-cuirie-392206229",
+    "gabriela-mistral-32886048",
+    "dolores-del-rio-70905707",
+    "frida-kalho-38525493",
+    "manuela-saenz-40879606",
+    "laura-mendez-de-cuenca-40879832"
+  ],
+  "sin_articulo": [
+    "emilia-romero-de-valle-25154829",
+    "ana-maria-mier-25207086",
+    "matilde-marquez-38526111",
+    "florencia-antillon-34071461",
+    "maria-luisa-stampa-ortigoza-75039575",
+    "paz-montes-de-oca-25355285",
+    "ma-de-la-luz-bringas-221672255",
+    "prof-aurora-reza-69710986",
+    "josefina-prior-155907583",
+    "elisa-g-otis-56722040",
+    "rosa-maria-sequeira-40879639",
+    "paula-peraldo-40879632",
+    "catalina-buendia-40879676",
+    "andrea-arrieta-27785857",
+    "carlota-armero-25399398"
+  ],
+  "nombres": {
+    "josefa-ortiz-dedominguez-99984608": "Josefa Ortiz de Domínguez",
+    "madame-cuirie-392206229": "Marie Curie",
+    "frida-kalho-38525493": "Frida Kahlo",
+    "luz-savinon-4842166": "Luz Saviñón",
+    "dolores-del-rio-70905707": "Dolores del Río",
+    "dolores-jimenez-muro-25053071": "Dolores Jiménez y Muro",
+    "eulalia-guzman-5849710": "Eulalia Guzmán",
+    "margarita-maza-de-juarez-78362513": "Margarita Maza",
+    "ana-maria-mier-25207086": "Ana María Mier",
+    "prof-aurora-reza-69710986": "Aurora Reza",
+    "ma-de-la-luz-bringas-221672255": "María de la Luz Bringas"
+  }
+}

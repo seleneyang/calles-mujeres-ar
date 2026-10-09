@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a0b2e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%236b2fa0%22/%3E%3C/svg%3E">
+<meta name="description" content="Las Calles de las Mujeres en Realidad Aumentada — 10 años de Geochicas">
+<title>Las Calles de las Mujeres · AR</title>
+<link rel="preconnect" href="https://es.wikipedia.org" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --morado-950: #12061f;
+    --morado-900: #1a0b2e;
+    --morado-800: #2d1150;
+    --morado-600: #6b2fa0;
+    --morado-400: #a66ee8;
+    --lila-200:   #e3d0ff;
+    --lila-100:   #f3eaff;
+    --magenta:    #ff3d9a;
+    --ambar:      #ffc34d;
+    --texto:      #fbf7ff;
+    --texto-suave:#cdbbe6;
+    --vidrio:     rgba(26, 11, 46, 0.78);
+    --borde:      rgba(227, 208, 255, 0.22);
+    --radio:      22px;
+    --sombra:     0 24px 60px -12px rgba(8, 2, 18, 0.75);
+    --fuente:     "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --titular:    "Space Grotesk", var(--fuente);
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--fuente);
+    color: var(--texto);
+    background: var(--morado-950);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button, a { font: inherit; }
+
+  /* ---------- Capa 0: cámara ---------- */
+  #camara, #fondo {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  #fondo {
+    background:
+      radial-gradient(120% 80% at 50% 110%, var(--morado-600) 0%, transparent 60%),
+      radial-gradient(90% 60% at 10% 0%, #3b145f 0%, transparent 70%),
+      var(--morado-950);
+  }
+  #camara { opacity: 0; transition: opacity .6s ease; }
+  #camara.activa { opacity: 1; }
+  /* Velo para garantizar contraste del texto sobre cualquier imagen de cámara */
+  .velo {
+    position: fixed; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(18,6,31,.55) 0%, rgba(18,6,31,.15) 35%, rgba(18,6,31,.65) 100%);
+  }
+
+  /* ---------- Capa 1: escena AR (CSS 3D) ---------- */
+  .escena {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+    perspective: 900px;
+    perspective-origin: 50% 70%;
+  }
+  .ancla {
+    /* La transformación la escribe JS a partir de la orientación del dispositivo */
+    width: min(100%, 440px);
+    transform-style: preserve-3d;
+    will-change: transform;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .flotador { width: 100%; animation: flotar 6s ease-in-out infinite; transform-style: preserve-3d; }
+  @keyframes flotar {
+    0%, 100% { transform: translate3d(0, 0, 40px); }
+    50%      { transform: translate3d(0, -8px, 40px); }
+  }
+
+  /* Haz de luz + anillo: sugiere que el panel "brota" del QR en el suelo */
+  .haz {
+    width: 2px; height: 48px;
+    background: linear-gradient(var(--lila-200), transparent);
+    opacity: .7;
+  }
+  .anillo {
+    width: 120px; height: 34px; border-radius: 50%;
+    border: 2px solid var(--lila-200);
+    box-shadow: 0 0 24px var(--morado-400), inset 0 0 18px var(--morado-400);
+    transform: rotateX(60deg);
+    animation: pulso-anillo 2.4s ease-out infinite;
+  }
+  .es-brecha .anillo { border-color: var(--magenta); box-shadow: 0 0 28px var(--magenta), inset 0 0 18px var(--magenta); }
+  .es-brecha .haz { background: linear-gradient(var(--magenta), transparent); }
+  @keyframes pulso-anillo {
+    0%   { transform: rotateX(60deg) scale(.85); opacity: 1; }
+    100% { transform: rotateX(60deg) scale(1.25); opacity: .25; }
+  }
+
+  /* ---------- Paneles ---------- */
+  .panel {
+    position: relative;
+    background: var(--vidrio);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding: 22px 20px 20px;
+    max-height: calc(100dvh - 170px);
+    display: flex; flex-direction: column; gap: 14px;
+    animation: aparecer .7s cubic-bezier(.2, .9, .3, 1.2) both;
+  }
+  @keyframes aparecer {
+    from { opacity: 0; transform: translateY(40px) rotateX(25deg) scale(.92); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .etiqueta {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--lila-200);
+  }
+  .etiqueta::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--morado-400); box-shadow: 0 0 10px var(--morado-400);
+  }
+  .cabecera { display: flex; gap: 14px; align-items: center; }
+  .retrato {
+    flex: none; width: 64px; height: 64px; border-radius: 50%;
+    object-fit: cover; object-position: top;
+    border: 2px solid var(--lila-200);
+    background: var(--morado-800);
+  }
+  h1 {
+    font-family: var(--titular);
+    font-size: clamp(1.5rem, 6.5vw, 2rem);
+    line-height: 1.08; letter-spacing: -.01em;
+  }
+  .subtitulo { color: var(--texto-suave); font-size: .95rem; margin-top: 4px; }
+  .extracto {
+    font-size: 1rem; line-height: 1.55; color: var(--lila-100);
+    overflow-y: auto; overscroll-behavior: contain;
+    padding-right: 4px;
+    mask-image: linear-gradient(180deg, #000 85%, transparent);
+    -webkit-mask-image: linear-gradient(180deg, #000 85%, transparent);
+    padding-bottom: 12px;
+  }
+  .credito { font-size: .72rem; color: var(--texto-suave); opacity: .8; }
+  .credito a { color: inherit; }
+
+  .acciones { display: flex; flex-direction: column; gap: 10px; }
+  .boton {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 52px; padding: 14px 20px;
+    border: 0; border-radius: 999px;
+    font-weight: 600; font-size: 1rem; text-decoration: none; text-align: center;
+    color: var(--morado-950);
+    background: linear-gradient(135deg, var(--lila-100), var(--lila-200));
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .boton:active { transform: scale(.97); }
+  .boton:focus-visible { outline: 3px solid var(--ambar); outline-offset: 3px; }
+  .boton.secundario {
+    color: var(--texto); background: transparent;
+    border: 1.5px solid var(--borde);
+  }
+  .boton.texto { min-height: 40px; color: var(--texto-suave); background: none; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- Info Box de BRECHA: prioridad visual máxima ---------- */
+  .panel.brecha {
+    background:
+      linear-gradient(var(--morado-900), var(--morado-900)) padding-box,
+      linear-gradient(var(--angulo, 135deg), var(--magenta), var(--ambar), var(--morado-400), var(--magenta)) border-box;
+    border: 3px solid transparent;
+    box-shadow: 0 0 0 1px rgba(255,61,154,.25), 0 0 60px -6px rgba(255,61,154,.55), var(--sombra);
+    animation: aparecer .7s cubic-bezier(.2, .9, .3, 1.2) both, girar-borde 5s linear infinite;
+  }
+  @property --angulo { syntax: "<angle>"; inherits: false; initial-value: 135deg; }
+  @keyframes girar-borde { to { --angulo: 495deg; } }
+
+  .alerta {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--magenta); color: #fff;
+    font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    animation: latido 1.6s ease-in-out infinite;
+  }
+  @keyframes latido { 50% { box-shadow: 0 0 0 8px rgba(255,61,154,0); } 0%, 100% { box-shadow: 0 0 0 0 rgba(255,61,154,.6); } }
+  .mensaje-brecha {
+    font-family: var(--titular);
+    font-size: clamp(1.15rem, 5vw, 1.35rem); font-weight: 500; line-height: 1.35;
+  }
+  .mensaje-brecha strong { color: var(--ambar); font-weight: 700; }
+  .dato-brecha {
+    font-size: .88rem; color: var(--texto-suave);
+    border-left: 3px solid var(--magenta); padding-left: 10px;
+  }
+  .brecha .boton:not(.secundario):not(.texto) {
+    color: #fff;
+    background: linear-gradient(135deg, var(--magenta), #c3248a);
+    box-shadow: 0 10px 30px -8px rgba(255,61,154,.8);
+  }
+
+  /* ---------- Portada / permisos ---------- */
+  .portada {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; justify-content: flex-end; gap: 18px;
+    padding: max(24px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom));
+    background:
+      radial-gradient(120% 70% at 50% 0%, rgba(107,47,160,.55), transparent 65%),
+      linear-gradient(180deg, transparent, var(--morado-950) 70%),
+      var(--morado-900);
+    transition: opacity .4s ease, visibility .4s;
+  }
+  .portada.oculta { opacity: 0; visibility: hidden; }
+  .sello {
+    position: absolute; top: max(24px, env(safe-area-inset-top)); left: 20px;
+    font-family: var(--titular); font-weight: 700; letter-spacing: .04em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sello span {
+    display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%;
+    background: var(--lila-200); color: var(--morado-900); font-size: .95rem;
+  }
+  .portada h2 { font-family: var(--titular); font-size: clamp(2rem, 9vw, 2.6rem); line-height: 1.02; }
+  .portada p { color: var(--texto-suave); line-height: 1.5; max-width: 34ch; }
+  #calle-previa { color: var(--lila-200); font-weight: 600; min-height: 1.5em; }
+
+  .aviso {
+    position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
+    z-index: 5; max-width: calc(100% - 32px);
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(18,6,31,.8); border: 1px solid var(--borde);
+    font-size: .8rem; color: var(--texto-suave); text-align: center;
+  }
+  .aviso:empty { display: none; }
+
+  .cargando { display: flex; flex-direction: column; align-items: center; gap: 16px; color: var(--texto-suave); }
+  .spinner {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 3px solid rgba(227,208,255,.2); border-top-color: var(--lila-200);
+    animation: girar 0.9s linear infinite;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  @media (min-height: 700px) { .panel { padding: 26px 24px 22px; } }
+</style>
+</head>
+<body>
+
+<video id="camara" autoplay playsinline muted aria-hidden="true"></video>
+<div id="fondo" aria-hidden="true"></div>
+<div class="velo" aria-hidden="true"></div>
+
+<div id="aviso" class="aviso" role="status"></div>
+
+<main class="escena" id="escena">
+  <div class="ancla" id="ancla">
+    <div class="flotador" id="contenido">
+      <div class="cargando"><div class="spinner"></div><span>Buscando su historia…</span></div>
+    </div>
+    <div class="haz" aria-hidden="true"></div>
+    <div class="anillo" aria-hidden="true"></div>
+  </div>
+</main>
+
+<section class="portada" id="portada" aria-labelledby="portada-titulo">
+  <div class="sello"><span>10</span>GEOCHICAS</div>
+  <p id="calle-previa" aria-live="polite"></p>
+  <h2 id="portada-titulo">Las calles<br>de las mujeres</h2>
+  <p>Apunta tu cámara al suelo del mapa y descubre la historia detrás de este nombre.</p>
+  <div class="acciones">
+    <button class="boton" id="btn-ar" type="button">Activar realidad aumentada</button>
+    <button class="boton texto" id="btn-sin-camara" type="button">Continuar sin cámara</button>
+  </div>
+</section>
+
+<div class="sr" id="lector" aria-live="assertive"></div>
+
+<script type="module">
+// ============================================================================
+// Configuración
+// ============================================================================
+const CONFIG = {
+  DATOS_URL: './calles_cdmx.json',
+  WIKI_REST: 'https://es.wikipedia.org/api/rest_v1/page/summary/',
+  WIKI_EDITAR: 'https://es.wikipedia.org/w/index.php',
+  WIKIDATA_API: 'https://www.wikidata.org/w/api.php',
+  AYUDA_PRIMER_ARTICULO: 'https://es.wikipedia.org/wiki/Ayuda:Tu_primer_art%C3%ADculo',
+  // TODO: reemplazar por la guía de edición oficial de Geochicas cuando esté publicada.
+  GUIA_GEOCHICAS_URL: 'https://geochicasosm.github.io/lascallesdelasmujeres/',
+  TIEMPO_MAX_MS: 7000,
+};
+
+const MENSAJE_BRECHA =
+  'Este artículo de Wikipedia aún no existe. La historia de esta mujer sigue invisibilizada ' +
+  'en la enciclopedia libre. ¿Te gustaría ser quien lo escriba y cierre esta brecha?';
+
+const $ = (sel) => document.querySelector(sel);
+const contenido = $('#contenido');
+const ancla = $('#ancla');
+
+// Crea elementos sin innerHTML: todo texto externo (Wikipedia/JSON) entra como textContent.
+function el(tag, attrs = {}, ...hijos) {
+  const nodo = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === 'class') nodo.className = v;
+    else if (k.startsWith('on')) nodo.addEventListener(k.slice(2), v);
+    else nodo.setAttribute(k, v);
+  }
+  for (const h of hijos.flat()) if (h != null) nodo.append(h);
+  return nodo;
+}
+
+function enlaceExterno(texto, href, clase = 'boton') {
+  return el('a', { class: clase, href, target: '_blank', rel: 'noopener' }, texto);
+}
+
+function avisar(texto) { $('#aviso').textContent = texto; }
+
+// ============================================================================
+// Paso A — Detección: leer ?calle_id= de la URL
+// ============================================================================
+function leerCalleId() {
+  const id = new URLSearchParams(location.search).get('calle_id');
+  return id && /^[a-z0-9-]{1,120}$/i.test(id) ? id.toLowerCase() : null;
+}
+
+// ============================================================================
+// Paso B — Consulta de datos (JSON local + Wikipedia en vivo)
+// ============================================================================
+class SinRed extends Error {}
+
+async function obtener(url) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), CONFIG.TIEMPO_MAX_MS);
+  try {
+    return await fetch(url, { signal: ctrl.signal, headers: { Accept: 'application/json' } });
+  } catch (e) {
+    throw new SinRed(e.message); // sin conexión, timeout o CORS
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function cargarDatos() {
+  const r = await obtener(CONFIG.DATOS_URL);
+  if (!r.ok) throw new Error(`No se pudo leer ${CONFIG.DATOS_URL} (${r.status})`);
+  return r.json();
+}
+
+// Devuelve el resumen si el artículo existe, o null si NO existe (404 / desambiguación).
+// Lanza SinRed si no se pudo comprobar.
+async function resumenWikipedia(titulo) {
+  const r = await obtener(CONFIG.WIKI_REST + encodeURIComponent(titulo.replace(/ /g, '_')));
+  if (r.status === 404) return null;
+  if (!r.ok) throw new SinRed(`Wikipedia respondió ${r.status}`);
+  const datos = await r.json();
+  return datos.type === 'disambiguation' ? null : datos;
+}
+
+// Si el título del JSON no existe, pregunta a Wikidata si ya hay artículo en eswiki
+// (por ejemplo, alguien lo escribió DESPUÉS de imprimir el mapa).
+async function tituloDesdeWikidata(qid) {
+  if (!qid) return null;
+  const q = new URLSearchParams({
+    action: 'wbgetentities', ids: qid, props: 'sitelinks', sitefilter: 'eswiki',
+    format: 'json', origin: '*',
+  });
+  const r = await obtener(`${CONFIG.WIKIDATA_API}?${q}`);
+  if (!r.ok) return null;
+  const d = await r.json();
+  return d.entities?.[qid]?.sitelinks?.eswiki?.title ?? null;
+}
+
+// ============================================================================
+// Paso C — Condicional: ¿existe el artículo?
+// ============================================================================
+async function resolverArticulo(mujer) {
+  try {
+    let resumen = await resumenWikipedia(mujer.wikipedia_titulo);
+    if (!resumen) {
+      const titulo = await tituloDesdeWikidata(mujer.wikidata_id);
+      if (titulo && titulo !== mujer.wikipedia_titulo) resumen = await resumenWikipedia(titulo);
+    }
+    return resumen ? { estado: 'existe', resumen } : { estado: 'no-existe' };
+  } catch (e) {
+    if (!(e instanceof SinRed)) throw e;
+    // Sin conexión: recurrimos a lo verificado al generar el JSON.
+    avisar('Sin conexión estable: mostrando datos guardados');
+    if (mujer.tiene_articulo) {
+      return {
+        estado: 'existe',
+        resumen: {
+          title: mujer.wikipedia_titulo,
+          extract: mujer.extracto_respaldo || 'Su biografía está disponible en Wikipedia.',
+          content_urls: { mobile: { page: `https://es.m.wikipedia.org/wiki/${encodeURIComponent(mujer.wikipedia_titulo.replace(/ /g, '_'))}` } },
+        },
+      };
+    }
+    return { estado: 'no-existe' };
+  }
+}
+
+// ============================================================================
+// Render de la UI
+// ============================================================================
+function pintar(nodo, { brecha = false } = {}) {
+  document.body.classList.toggle('es-brecha', brecha);
+  contenido.replaceChildren(nodo);
+}
+
+// En CDMX muchas calles se llaman igual que la mujer ("Leona Vicario"): no repetir.
+function subtitulo(calle, nombre) {
+  return calle.nombre_calle.includes(nombre) ? null : el('p', { class: 'subtitulo' }, `En honor a ${nombre}`);
+}
+
+function panelArticulo(calle, resumen) {
+  const url = resumen.content_urls?.mobile?.page || resumen.content_urls?.desktop?.page;
+  const foto = resumen.thumbnail?.source;
+  return el('article', { class: 'panel', 'aria-labelledby': 'titulo-calle' },
+    el('span', { class: 'etiqueta' }, 'Calle con nombre de mujer'),
+    el('div', { class: 'cabecera' },
+      foto && el('img', { class: 'retrato', src: foto, alt: `Retrato de ${calle.mujer.nombre}` }),
+      el('div', {},
+        el('h1', { id: 'titulo-calle' }, calle.nombre_calle),
+        subtitulo(calle, resumen.title),
+      ),
+    ),
+    el('p', { class: 'extracto' }, resumen.extract),
+    el('div', { class: 'acciones' }, url && enlaceExterno('Leer artículo completo →', url)),
+    el('p', { class: 'credito' },
+      'Texto: ', el('a', { href: url, target: '_blank', rel: 'noopener' }, 'Wikipedia'),
+      ' · CC BY-SA 4.0 · Datos: Geochicas / OpenStreetMap'),
+  );
+}
+
+function panelBrecha(calle, datos) {
+  const titulo = calle.mujer.wikipedia_titulo || calle.mujer.nombre;
+  const crear = `${CONFIG.WIKI_EDITAR}?${new URLSearchParams({ title: titulo, action: 'edit', redlink: '1' })}`;
+
+  const calles = Object.values(datos.calles || {});
+  const sinArticulo = calles.filter((c) => !c.mujer.tiene_articulo).length;
+  const dato = calles.length > 2
+    ? el('p', { class: 'dato-brecha' },
+        `En este mapa, ${sinArticulo} de ${calles.length} calles con nombre de mujer no tienen artículo en Wikipedia en español.`)
+    : null;
+
+  return el('article', { class: 'panel brecha', role: 'alert', 'aria-labelledby': 'titulo-calle' },
+    el('span', { class: 'alerta' }, '⚠ Brecha de datos'),
+    el('div', {},
+      el('h1', { id: 'titulo-calle' }, calle.nombre_calle),
+      subtitulo(calle, calle.mujer.nombre),
+    ),
+    el('p', { class: 'mensaje-brecha' },
+      'Este artículo de Wikipedia ', el('strong', {}, 'aún no existe'),
+      '. La historia de esta mujer sigue invisibilizada en la enciclopedia libre. ',
+      '¿Te gustaría ser quien lo escriba y cierre esta brecha?'),
+    dato,
+    el('div', { class: 'acciones' },
+      enlaceExterno('Escribir este artículo', crear),
+      enlaceExterno('Guía de edición de Geochicas', CONFIG.GUIA_GEOCHICAS_URL, 'boton secundario'),
+      enlaceExterno('¿Primera vez? Cómo crear un artículo', CONFIG.AYUDA_PRIMER_ARTICULO, 'boton texto'),
+    ),
+  );
+}
+
+function panelError(titulo, texto) {
+  return el('article', { class: 'panel' },
+    el('span', { class: 'etiqueta' }, 'Las Calles de las Mujeres'),
+    el('h1', {}, titulo),
+    el('p', { class: 'extracto' }, texto),
+  );
+}
+
+// ============================================================================
+// Cámara (getUserMedia) + anclaje por orientación del dispositivo
+// ============================================================================
+async function iniciarCamara() {
+  if (!navigator.mediaDevices?.getUserMedia) throw new Error('Este navegador no permite usar la cámara.');
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: false,
+    video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+  });
+  const video = $('#camara');
+  video.srcObject = stream;
+  await video.play();
+  video.classList.add('activa');
+}
+
+// El panel contra-rota cuando la persona inclina el teléfono, de modo que parece
+// quedarse "suspendido" sobre el QR del suelo en lugar de pegado a la pantalla.
+function iniciarAnclaje() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let base = null, objetivo = { x: 0, y: 0 }, actual = { x: 0, y: 0 };
+  const limitar = (v, m) => Math.max(-m, Math.min(m, v));
+
+  addEventListener('deviceorientation', (e) => {
+    if (e.beta == null) return;
+    base ??= { beta: e.beta, gamma: e.gamma };
+    objetivo = { x: limitar(e.gamma - base.gamma, 25), y: limitar(e.beta - base.beta, 25) };
+  });
+
+  (function cuadro() {
+    actual.x += (objetivo.x - actual.x) * 0.12;
+    actual.y += (objetivo.y - actual.y) * 0.12;
+    ancla.style.transform =
+      `translate3d(${-actual.x * 2.2}px, ${-actual.y * 1.6}px, 0) ` +
+      `rotateY(${actual.x * 0.6}deg) rotateX(${-actual.y * 0.5}deg)`;
+    requestAnimationFrame(cuadro);
+  })();
+}
+
+async function pedirOrientacion() {
+  // iOS 13+ exige permiso explícito y debe pedirse dentro de un gesto del usuario.
+  const DOE = window.DeviceOrientationEvent;
+  if (typeof DOE?.requestPermission === 'function') {
+    try { return (await DOE.requestPermission()) === 'granted'; } catch { return false; }
+  }
+  return 'DeviceOrientationEvent' in window;
+}
+
+// ============================================================================
+// Arranque
+// ============================================================================
+async function flujoDatos() {
+  const calleId = leerCalleId();
+  if (!calleId) {
+    return () => pintar(panelError('Escanea un código QR',
+      'Busca los códigos QR junto a las calles con nombre de mujer en el mapa y escanéalos con la cámara de tu teléfono.'));
+  }
+
+  const datos = await cargarDatos();
+  const calle = datos.calles?.[calleId];
+  if (!calle) {
+    return () => pintar(panelError('Calle no encontrada',
+      `No encontramos la calle “${calleId}”. Intenta escanear de nuevo el código QR.`));
+  }
+  $('#calle-previa').textContent = calle.nombre_calle;
+  document.title = `${calle.nombre_calle} · Las Calles de las Mujeres`;
+
+  const resultado = await resolverArticulo(calle.mujer);
+  if (resultado.estado === 'existe') {
+    return () => {
+      pintar(panelArticulo(calle, resultado.resumen));
+      $('#lector').textContent = `${calle.nombre_calle}. ${resultado.resumen.extract}`;
+    };
+  }
+  return () => {
+    pintar(panelBrecha(calle, datos), { brecha: true });
+    navigator.vibrate?.([60, 40, 60]);
+    $('#lector').textContent = `${calle.nombre_calle}. ${MENSAJE_BRECHA}`;
+  };
+}
+
+// Los datos se piden en cuanto carga la página, en paralelo con la decisión
+// de la persona sobre los permisos: al entrar a la escena ya suelen estar listos.
+const datosListos = flujoDatos().catch((e) => {
+  console.error(e);
+  return () => pintar(panelError('Algo salió mal', 'No pudimos cargar la información. Revisa tu conexión e inténtalo de nuevo.'));
+});
+
+async function entrar(conCamara) {
+  $('#portada').classList.add('oculta');
+  if (conCamara) {
+    const [orientacion] = await Promise.all([
+      pedirOrientacion(),
+      iniciarCamara().catch((e) => {
+        console.warn(e);
+        avisar('No se pudo abrir la cámara: mostrando sin realidad aumentada');
+      }),
+    ]);
+    if (orientacion) iniciarAnclaje();
+  }
+  (await datosListos)();
+}
+
+$('#btn-ar').addEventListener('click', () => entrar(true));
+$('#btn-sin-camara').addEventListener('click', () => entrar(false));
+</script>
+</body>
+</html>

@@ -1,0 +1,699 @@
+{
+  "version": "1.0.0",
+  "generado": "2026-10-09",
+  "fuente": {
+    "proyecto": "Las Calles de las Mujeres — Geochicas",
+    "url": "https://geochicasosm.github.io/lascallesdelasmujeres/",
+    "licencia_datos": "ODbL (© colaboradores de OpenStreetMap)"
+  },
+  "mapa_fisico": {
+    "ancho_cm": 320.0,
+    "alto_cm": 320.9,
+    "bbox": [
+      -99.2376,
+      19.2964,
+      -98.9995,
+      19.5216
+    ]
+  },
+  "calles": {
+    "ana-maria-mier-25207086": {
+      "calle_id": "ana-maria-mier-25207086",
+      "nombre_calle": "Ana Maria Mier",
+      "mujer": {
+        "nombre": "Ana María Mier",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Ana María Mier",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.398021,
+        "lon": -99.1614,
+        "osm_way_ids": [
+          25207086
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 102.4,
+        "y_cm": 176.1
+      }
+    },
+    "andrea-arrieta-27785857": {
+      "calle_id": "andrea-arrieta-27785857",
+      "nombre_calle": "Andrea Arrieta",
+      "mujer": {
+        "nombre": "Andrea Arrieta",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Andrea Arrieta",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.379753,
+        "lon": -99.018997,
+        "osm_way_ids": [
+          27785857
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 293.8,
+        "y_cm": 202.1
+      }
+    },
+    "carlota-armero-25399398": {
+      "calle_id": "carlota-armero-25399398",
+      "nombre_calle": "Carlota Armero",
+      "mujer": {
+        "nombre": "Carlota Armero",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Carlota Armero",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.311073,
+        "lon": -99.110836,
+        "osm_way_ids": [
+          25399398,
+          220961598
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 170.4,
+        "y_cm": 300.0
+      }
+    },
+    "catalina-buendia-40879676": {
+      "calle_id": "catalina-buendia-40879676",
+      "nombre_calle": "Catalina Buendía",
+      "mujer": {
+        "nombre": "Catalina Buendía",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Catalina Buendía",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.323941,
+        "lon": -99.108866,
+        "osm_way_ids": [
+          40879676
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 173.0,
+        "y_cm": 281.7
+      }
+    },
+    "dolores-del-rio-70905707": {
+      "calle_id": "dolores-del-rio-70905707",
+      "nombre_calle": "Dolores Del Rio",
+      "mujer": {
+        "nombre": "Dolores del Río",
+        "wikidata_id": "Q124057",
+        "wikipedia_titulo": "Dolores del Río",
+        "tiene_articulo": true,
+        "extracto_respaldo": "María de los Dolores Asúnsolo y López Negrete (Victoria de Durango, 3 de agosto de 1904-Newport Beach, California, 11 de abril de 1983), conocida como Dolores Del Río, fue una actriz mexicana. \nCon una carrera de más de cincuenta años en el mundo del entretenimiento, es reconocida como la primera actriz hispanoamericana en lograr el estrellato en Hollywood, donde consolidó una destacada carrera en las décadas de 1920 y 1930.​ También es considerada como una de las figuras principales de la Época de Oro del cine mexicano en las décadas de 1940 y 1950.​ \nDespués de ser descubierta en México, Dolores comenzó su carrera en Hollywood en 1925. Alcanzó reconocimiento al estelarizar películas como Resurrection (1927), Ramona (1928) y Evangeline (1929)."
+      },
+      "geo": {
+        "lat": 19.370782,
+        "lon": -99.214735,
+        "osm_way_ids": [
+          70905707
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 30.7,
+        "y_cm": 214.9
+      }
+    },
+    "dolores-jimenez-muro-25053071": {
+      "calle_id": "dolores-jimenez-muro-25053071",
+      "nombre_calle": "Dolores Jiménez Muro",
+      "mujer": {
+        "nombre": "Dolores Jiménez y Muro",
+        "wikidata_id": "Q5289532",
+        "wikipedia_titulo": "Dolores Jiménez y Muro",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Dolores Jiménez y Muro (Aguascalientes, 7 de junio de 1848-Ciudad de México, 15 de octubre de 1925)​fue una maestra y revolucionaria mexicana durante la Revolución mexicana (1910-20).​ Compartía con los zapatistas la lucha por la restitución de tierras y reforma agraria con los que estuvo desde 1914 hasta 1918"
+      },
+      "geo": {
+        "lat": 19.447548,
+        "lon": -99.218411,
+        "osm_way_ids": [
+          25053071
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 25.8,
+        "y_cm": 105.5
+      }
+    },
+    "elena-arizmendi-25207088": {
+      "calle_id": "elena-arizmendi-25207088",
+      "nombre_calle": "Priv. Elena Arizmendi",
+      "mujer": {
+        "nombre": "Elena Arizmendi",
+        "wikidata_id": "Q19864610",
+        "wikipedia_titulo": "Elena Arizmendi Mejía",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Elena Arizmendi Mejía (Ciudad de México, 18 de enero de 1884–Ib., 3 de noviembre de 1949) fue una feminista mexicana que fundó la Cruz Blanca Neutral durante la Revolución Mexicana, institución que brindaba atención médica a los soldados rebeldes. Fue de las primeras activistas del feminismo en el país y también creó organizaciones como «Las Mujeres de la raza» y la Liga Internacional de Mujeres Ibéricas e Hispanoamericanas en colaboración con Sofía Villa de Buentello."
+      },
+      "geo": {
+        "lat": 19.396991,
+        "lon": -99.161624,
+        "osm_way_ids": [
+          25207088
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 102.1,
+        "y_cm": 177.6
+      }
+    },
+    "elisa-g-otis-56722040": {
+      "calle_id": "elisa-g-otis-56722040",
+      "nombre_calle": "Elisa G. Otis",
+      "mujer": {
+        "nombre": "Elisa G. Otis",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Elisa G. Otis",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.330546,
+        "lon": -99.096179,
+        "osm_way_ids": [
+          56722040
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 190.1,
+        "y_cm": 272.2
+      }
+    },
+    "emilia-romero-de-valle-25154829": {
+      "calle_id": "emilia-romero-de-valle-25154829",
+      "nombre_calle": "Emilia Romero de Valle",
+      "mujer": {
+        "nombre": "Emilia Romero de Valle",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Emilia Romero de Valle",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.417987,
+        "lon": -99.122576,
+        "osm_way_ids": [
+          25154829
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 154.6,
+        "y_cm": 147.6
+      }
+    },
+    "eulalia-guzman-5849710": {
+      "calle_id": "eulalia-guzman-5849710",
+      "nombre_calle": "Eulalia Guzmán",
+      "mujer": {
+        "nombre": "Eulalia Guzmán",
+        "wikidata_id": "Q5850675",
+        "wikipedia_titulo": "Eulalia Guzmán Barrón",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Eulalia Guzmán Barrón (San Pedro Piedra Gorda, Cuauhtémoc, Zacatecas, 12 de febrero de 1890 - Ciudad de México, 1 de enero de 1985)​ fue una maestra y arqueóloga mexicana.​ Dedicó parte de su actividad profesional a impulsar la educación de las mujeres, en especial de las trabajadoras y de las clases sociales más desfavorecidas.​​​"
+      },
+      "geo": {
+        "lat": 19.457843,
+        "lon": -99.151974,
+        "osm_way_ids": [
+          5849710,
+          396591441
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 115.1,
+        "y_cm": 90.9
+      }
+    },
+    "florencia-antillon-34071461": {
+      "calle_id": "florencia-antillon-34071461",
+      "nombre_calle": "Florencia Antillón",
+      "mujer": {
+        "nombre": "Florencia Antillón",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Florencia Antillón",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.484246,
+        "lon": -99.107894,
+        "osm_way_ids": [
+          34071461
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 174.3,
+        "y_cm": 53.2
+      }
+    },
+    "frida-kalho-38525493": {
+      "calle_id": "frida-kalho-38525493",
+      "nombre_calle": "Calle Frida Kalho",
+      "mujer": {
+        "nombre": "Frida Kahlo",
+        "wikidata_id": "Q5588",
+        "wikipedia_titulo": "Frida Kahlo",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Magdalena Frida Carmen Kahlo y Calderón (Coyoacán, Ciudad de México, 6 de julio de 1907-Coyoacán, Ciudad de México, 13 de julio de 1954), conocida como Frida Kahlo, fue una pintora mexicana. Su obra gira temáticamente en torno a las vivencias de su vida personal. Realizó un total de 150 obras, principalmente autorretratos, en los que proyectó sus dificultades por sobrevivir."
+      },
+      "geo": {
+        "lat": 19.489533,
+        "lon": -99.034752,
+        "osm_way_ids": [
+          38525493
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 272.6,
+        "y_cm": 45.7
+      }
+    },
+    "gabriela-mistral-32886048": {
+      "calle_id": "gabriela-mistral-32886048",
+      "nombre_calle": "Gabriela Mistral",
+      "mujer": {
+        "nombre": "Gabriela Mistral",
+        "wikidata_id": "Q80871",
+        "wikipedia_titulo": "Gabriela Mistral",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Lucila de María Godoy Alcayaga​ (Vicuña, 7 de abril de 1889-Hempstead, 10 de enero de 1957),​ conocida como Gabriela Mistral, fue una poeta, diplomática, profesora y pedagoga chilena.\nEn 1945 recibió el Premio Nobel de Literatura «por su poesía lírica que, inspirada por poderosas emociones, ha convertido su nombre en un símbolo de las aspiraciones idealistas de todo el mundo latinoamericano»,​ constituyendo el primer reconocimiento de la Academia Sueca a las letras latinoamericanas​ y la segunda persona latinoamericana​ en recibir un Premio Nobel.\nNacida en una familia de recursos modestos, se desempeñó como profesora en diversas escuelas, se convirtió en una importante pensadora respecto al papel de la educación pública y llegó a participar en la reforma del sistema educacional mexicano.​ A partir de la década de 1920, Mistral tuvo una vida itinerante al desempeñarse como cónsul y representante en organismos internacionales en América y Europa."
+      },
+      "geo": {
+        "lat": 19.36891,
+        "lon": -99.069631,
+        "osm_way_ids": [
+          32886048,
+          392206228,
+          454057481
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 225.7,
+        "y_cm": 217.6
+      }
+    },
+    "josefa-ortiz-dedominguez-99984608": {
+      "calle_id": "josefa-ortiz-dedominguez-99984608",
+      "nombre_calle": "Josefa Ortiz deDomínguez",
+      "mujer": {
+        "nombre": "Josefa Ortiz de Domínguez",
+        "wikidata_id": "Q462142",
+        "wikipedia_titulo": "Josefa Ortiz de Domínguez",
+        "tiene_articulo": true,
+        "extracto_respaldo": "María Josefa Crescencia Ortiz Téllez-Girón (Valladolid de Michoacán, 8 de septiembre de 1768-Ciudad de México, 2 de marzo de 1829), más conocida como Josefa Ortiz de Domínguez,​​​​ (nombre de casada) fue esposa del corregidor de Querétaro, Miguel Domínguez, por lo que es conocida popularmente como La Corregidora,​ y una insurgente durante la Independencia de México, considerada una de las primeras participantes en la conspiración de Querétaro y pieza clave para el inicio de la lucha que encabezó el cura Miguel Hidalgo y Costilla en Dolores Hidalgo."
+      },
+      "geo": {
+        "lat": 19.357095,
+        "lon": -99.169945,
+        "osm_way_ids": [
+          99984608
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 90.9,
+        "y_cm": 234.4
+      }
+    },
+    "josefina-prior-155907583": {
+      "calle_id": "josefina-prior-155907583",
+      "nombre_calle": "Josefina Prior",
+      "mujer": {
+        "nombre": "Josefina Prior",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Josefina Prior",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.345742,
+        "lon": -99.187228,
+        "osm_way_ids": [
+          155907583
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 67.7,
+        "y_cm": 250.6
+      }
+    },
+    "laura-mendez-de-cuenca-40879832": {
+      "calle_id": "laura-mendez-de-cuenca-40879832",
+      "nombre_calle": "Laura Méndez de Cuenca",
+      "mujer": {
+        "nombre": "Laura Méndez de Cuenca",
+        "wikidata_id": "Q5576798",
+        "wikipedia_titulo": "Laura Méndez de Cuenca",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Laura Méndez de Cuenca (Hacienda de Tamariz, Ayapango, Estado de México, 18 de agosto de 1853 - Ciudad de México, 1 de noviembre de 1928), fue una profesora, feminista, escritora, articulista y poetisa mexicana."
+      },
+      "geo": {
+        "lat": 19.319615,
+        "lon": -99.10244,
+        "osm_way_ids": [
+          40879832
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 181.7,
+        "y_cm": 287.8
+      }
+    },
+    "leona-vicario-24850916": {
+      "calle_id": "leona-vicario-24850916",
+      "nombre_calle": "Leona Vicario",
+      "mujer": {
+        "nombre": "Leona Vicario",
+        "wikidata_id": "Q2525584",
+        "wikipedia_titulo": "Leona Vicario",
+        "tiene_articulo": true,
+        "extracto_respaldo": "María de la Soledad Leona Camila Vicario Fernández de San Salvador, conocida como Leona Vicario (Ciudad de México; 10 de abril de 1789 -  Ciudad de México; 21 de agosto de 1842),​ fue una de las figuras más destacadas de la Independencia de México.\nPerteneció al grupo de Los Guadalupes, y financió con su propia fortuna la insurgencia.​ Se enfrentó a numerosos riesgos por apoyar la causa independentista.​ Contrajo matrimonio con el también independentista Andrés Quintana Roo.\nFue nombrada Benemérita y Dulcísima Madre de la Patria, y también es la única mujer en México a quien se le han rendido funerales de Estado."
+      },
+      "geo": {
+        "lat": 19.435887,
+        "lon": -99.126644,
+        "osm_way_ids": [
+          24850916
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 149.1,
+        "y_cm": 122.1
+      }
+    },
+    "luz-savinon-4842166": {
+      "calle_id": "luz-savinon-4842166",
+      "nombre_calle": "Luz Saviñon",
+      "mujer": {
+        "nombre": "Luz Saviñón",
+        "wikidata_id": "Q20017142",
+        "wikipedia_titulo": "Luz Saviñón",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Luz Saviñón de Saviñón (Puebla, Puebla 1832-Ciudad de México, 1902) fue hija del industrial poblano Gumersindo Saviñón, uno de los fundadores de la empresa textil La Constancia Mexicana. Se casó con Bartolomé Saviñón y Rubín de Celis. Como no tuvieron descendencia, cuando enviudó ella dispuso que su fortuna personal y la que heredó de su marido se dedicaran a la creación de dos instituciones sociales: un colegio y un montepío."
+      },
+      "geo": {
+        "lat": 19.39043,
+        "lon": -99.154145,
+        "osm_way_ids": [
+          4842166
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 112.2,
+        "y_cm": 186.9
+      }
+    },
+    "ma-de-la-luz-bringas-221672255": {
+      "calle_id": "ma-de-la-luz-bringas-221672255",
+      "nombre_calle": "Ma. de la Luz Bringas",
+      "mujer": {
+        "nombre": "María de la Luz Bringas",
+        "wikidata_id": null,
+        "wikipedia_titulo": "María de la Luz Bringas",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.369973,
+        "lon": -99.179858,
+        "osm_way_ids": [
+          221672255,
+          221672256,
+          337430637
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 77.6,
+        "y_cm": 216.1
+      }
+    },
+    "madame-cuirie-392206229": {
+      "calle_id": "madame-cuirie-392206229",
+      "nombre_calle": "Madame Cuirie",
+      "mujer": {
+        "nombre": "Marie Curie",
+        "wikidata_id": "Q7186",
+        "wikipedia_titulo": "Marie Curie",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Maria Salomea Skłodowska-Curie,​​ más conocida como Marie Curie​​ o Madame Curie (Varsovia, 7 de noviembre de 1867-Passy, 4 de julio de 1934), fue una física y química polaca, luego naturalizada francesa. Pionera en el campo de la radiactividad, es la primera y única persona en recibir dos premios Nobel en distintas especialidades científicas: Física y Química.​ También fue la primera mujer en ocupar el puesto de profesora en la Universidad de París y la primera en recibir sepultura con honores en el Panteón de París por méritos propios en 1995.​\nNació en Varsovia, en lo que entonces era el Zarato de Polonia (territorio administrado por el Imperio ruso). Estudió clandestinamente en la «universidad flotante» de Varsovia y comenzó su formación científica en dicha ciudad."
+      },
+      "geo": {
+        "lat": 19.369112,
+        "lon": -99.070415,
+        "osm_way_ids": [
+          392206229
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 224.7,
+        "y_cm": 217.3
+      }
+    },
+    "manuela-saenz-40879606": {
+      "calle_id": "manuela-saenz-40879606",
+      "nombre_calle": "Manuela Sáenz",
+      "mujer": {
+        "nombre": "Manuela Sáenz",
+        "wikidata_id": "Q372074",
+        "wikipedia_titulo": "Manuela Sáenz",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Manuela Sáenz de Vergara y Aizpuru o Manuela Sáenz de Thorne (Quito, 27 de diciembre de 1797-Paita, 23 de noviembre de 1856), conocida también como Manuelita Sáenz, fue una política y militar ecuatoriana prócer de la independencia hispanoamericana.\nPor sus actividades heroicas en favor de la Independencia del Imperio español, recibió la orden peruana de «caballeresa del Sol» en 1822, por el general José de San Martín, el rango de coronel por el Congreso de la Gran Colombia por su participación en la batalla de Junín, igualmente recibió el título de Libertadora del Libertador que le otorgó Simón Bolívar al salvarle la vida durante la Conspiración Septembrina en Bogotá.​\nSostuvo con Bolívar una épica relación sentimental, intelectual y de ideales de la campaña libertadora, donde se le atribuye la concepción de la Patria Grande. Ella tomó parte activa en la guerra: montaba a caballo, manejaba las armas, muchas veces utilizó el uniforme militar y fue capaz de sofocar un motín en la plaza de Quito."
+      },
+      "geo": {
+        "lat": 19.323947,
+        "lon": -99.117908,
+        "osm_way_ids": [
+          40879606,
+          40879607,
+          54383251,
+          56496303,
+          56496313,
+          395933832
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 160.9,
+        "y_cm": 281.6
+      }
+    },
+    "margarita-maza-de-juarez-78362513": {
+      "calle_id": "margarita-maza-de-juarez-78362513",
+      "nombre_calle": "Margarita Maza de Juárez",
+      "mujer": {
+        "nombre": "Margarita Maza",
+        "wikidata_id": "Q2170038",
+        "wikipedia_titulo": "Margarita Maza",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Margarita Eustaquia Maza Parada​ (Oaxaca, 29 de marzo de 1826 - Ciudad de México, 2 de enero de 1871), de casada Margarita Maza de Juárez, fue activista, diplomática y esposa del presidente Benito Juárez y primera dama de México entre 1858 y 1871."
+      },
+      "geo": {
+        "lat": 19.506574,
+        "lon": -99.156623,
+        "osm_way_ids": [
+          78362513,
+          359868763
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 108.8,
+        "y_cm": 21.4
+      }
+    },
+    "maria-luisa-stampa-ortigoza-75039575": {
+      "calle_id": "maria-luisa-stampa-ortigoza-75039575",
+      "nombre_calle": "María Luisa Stampa Ortigoza",
+      "mujer": {
+        "nombre": "María Luisa Stampa Ortigoza",
+        "wikidata_id": null,
+        "wikipedia_titulo": "María Luisa Stampa Ortigoza",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.503069,
+        "lon": -99.144748,
+        "osm_way_ids": [
+          75039575,
+          168102147
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 124.8,
+        "y_cm": 26.4
+      }
+    },
+    "matilde-marquez-38526111": {
+      "calle_id": "matilde-marquez-38526111",
+      "nombre_calle": "Matilde Márquez",
+      "mujer": {
+        "nombre": "Matilde Márquez",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Matilde Márquez",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.438484,
+        "lon": -99.084023,
+        "osm_way_ids": [
+          38526111,
+          320686993
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 206.4,
+        "y_cm": 118.4
+      }
+    },
+    "paula-peraldo-40879632": {
+      "calle_id": "paula-peraldo-40879632",
+      "nombre_calle": "Paula Peraldo",
+      "mujer": {
+        "nombre": "Paula Peraldo",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Paula Peraldo",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.323447,
+        "lon": -99.121095,
+        "osm_way_ids": [
+          40879632
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 156.6,
+        "y_cm": 282.4
+      }
+    },
+    "paz-montes-de-oca-25355285": {
+      "calle_id": "paz-montes-de-oca-25355285",
+      "nombre_calle": "Paz Montes de Oca",
+      "mujer": {
+        "nombre": "Paz Montes de Oca",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Paz Montes de Oca",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.361409,
+        "lon": -99.158351,
+        "osm_way_ids": [
+          25355285
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 106.5,
+        "y_cm": 228.3
+      }
+    },
+    "prof-aurora-reza-69710986": {
+      "calle_id": "prof-aurora-reza-69710986",
+      "nombre_calle": "Prof. Aurora Reza",
+      "mujer": {
+        "nombre": "Aurora Reza",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Aurora Reza",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.337595,
+        "lon": -99.157538,
+        "osm_way_ids": [
+          69710986
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 107.6,
+        "y_cm": 262.2
+      }
+    },
+    "rosa-maria-sequeira-40879639": {
+      "calle_id": "rosa-maria-sequeira-40879639",
+      "nombre_calle": "Rosa María Sequeira",
+      "mujer": {
+        "nombre": "Rosa María Sequeira",
+        "wikidata_id": null,
+        "wikipedia_titulo": "Rosa María Sequeira",
+        "tiene_articulo": false,
+        "extracto_respaldo": null
+      },
+      "geo": {
+        "lat": 19.324569,
+        "lon": -99.119135,
+        "osm_way_ids": [
+          40879639,
+          40879639,
+          395933833,
+          395933834
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 159.2,
+        "y_cm": 280.8
+      }
+    },
+    "rosario-castellanos-25154787": {
+      "calle_id": "rosario-castellanos-25154787",
+      "nombre_calle": "Rosario Castellanos",
+      "mujer": {
+        "nombre": "Rosario Castellanos",
+        "wikidata_id": "Q260862",
+        "wikipedia_titulo": "Rosario Castellanos",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Rosario Alicia Castellanos Figueroa (Ciudad de México, 25 de mayo de 1925-Tel Aviv, Israel, 7 de agosto de 1974) fue una escritora, periodista y diplomática mexicana, considerada una de las literatas mexicanas más importantes del siglo XX. Fue embajadora de México en Israel hasta su fallecimiento en 1974."
+      },
+      "geo": {
+        "lat": 19.410039,
+        "lon": -99.125316,
+        "osm_way_ids": [
+          25154787
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 150.9,
+        "y_cm": 159.0
+      }
+    },
+    "sor-juana-ines-de-la-cruz-24858788": {
+      "calle_id": "sor-juana-ines-de-la-cruz-24858788",
+      "nombre_calle": "Sor Juana Inés de la Cruz",
+      "mujer": {
+        "nombre": "Sor Juana Inés de la Cruz",
+        "wikidata_id": "Q183074",
+        "wikipedia_titulo": "Juana Inés de la Cruz",
+        "tiene_articulo": true,
+        "extracto_respaldo": "Juana Inés de Asbaje Ramírez de Santillana​ (San Miguel Nepantla, Tepetlixpa, 12 de noviembre de 1648 o 1651-Ciudad de México, 17 de abril de 1695),​ más conocida como sor Juana Inés de la Cruz o Juana de Asbaje, fue una religiosa jerónima, escritora y filósofa​​ novohispana​​​ (considerada mexicana para muchos autores)​​​ de origen vasco,​ exponente del Siglo de Oro de la literatura en español. También incorporó el náhuatl a su creación poética.​​ Algunos autores la consideran una de las mayores exponentes de la literatura barroca en lengua hispana.​​\nConocida como la décima musa, cultivó la lírica, el auto sacramental y el teatro, así como la prosa. A muy temprana edad aprendió a leer y a escribir."
+      },
+      "geo": {
+        "lat": 19.445371,
+        "lon": -99.158795,
+        "osm_way_ids": [
+          24858788,
+          396113208
+        ]
+      },
+      "mapa_fisico": {
+        "x_cm": 105.9,
+        "y_cm": 108.6
+      }
+    }
+  }
+}
