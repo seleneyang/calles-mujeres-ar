@@ -427,9 +427,13 @@ function pintar(nodo, { brecha = false } = {}) {
   contenido.replaceChildren(nodo);
 }
 
-// En CDMX muchas calles se llaman igual que la mujer ("Leona Vicario"): no repetir.
+// Se muestra el nombre corregido de la mujer (mujer.nombre), no el de OSM, que tiene erratas
+// ("Calle Frida Kalho"). El subtítulo solo aparece si Wikipedia la conoce por otro nombre.
 function subtitulo(calle, nombre) {
-  return calle.nombre_calle.includes(nombre) ? null : el('p', { class: 'subtitulo' }, `En honor a ${nombre}`);
+  const visible = calle.mujer.nombre;
+  return visible.includes(nombre) || nombre.includes(visible)
+    ? null
+    : el('p', { class: 'subtitulo' }, `En honor a ${nombre}`);
 }
 
 function panelArticulo(calle, resumen) {
@@ -440,7 +444,7 @@ function panelArticulo(calle, resumen) {
     el('div', { class: 'cabecera' },
       foto && el('img', { class: 'retrato', src: foto, alt: `Retrato de ${calle.mujer.nombre}` }),
       el('div', {},
-        el('h1', { id: 'titulo-calle' }, calle.nombre_calle),
+        el('h1', { id: 'titulo-calle' }, calle.mujer.nombre),
         subtitulo(calle, resumen.title),
       ),
     ),
@@ -466,8 +470,7 @@ function panelBrecha(calle, datos) {
   return el('article', { class: 'panel brecha', role: 'alert', 'aria-labelledby': 'titulo-calle' },
     el('span', { class: 'alerta' }, '⚠ Brecha de datos'),
     el('div', {},
-      el('h1', { id: 'titulo-calle' }, calle.nombre_calle),
-      subtitulo(calle, calle.mujer.nombre),
+      el('h1', { id: 'titulo-calle' }, calle.mujer.nombre),
     ),
     el('p', { class: 'mensaje-brecha' },
       'Este artículo de Wikipedia ', el('strong', {}, 'aún no existe'),
@@ -553,20 +556,20 @@ async function flujoDatos() {
     return () => pintar(panelError('Calle no encontrada',
       `No encontramos la calle “${calleId}”. Intenta escanear de nuevo el código QR.`));
   }
-  $('#calle-previa').textContent = calle.nombre_calle;
-  document.title = `${calle.nombre_calle} · Las Calles de las Mujeres`;
+  $('#calle-previa').textContent = calle.mujer.nombre;
+  document.title = `${calle.mujer.nombre} · Las Calles de las Mujeres`;
 
   const resultado = await resolverArticulo(calle.mujer);
   if (resultado.estado === 'existe') {
     return () => {
       pintar(panelArticulo(calle, resultado.resumen));
-      $('#lector').textContent = `${calle.nombre_calle}. ${resultado.resumen.extract}`;
+      $('#lector').textContent = `${calle.mujer.nombre}. ${resultado.resumen.extract}`;
     };
   }
   return () => {
     pintar(panelBrecha(calle, datos), { brecha: true });
     navigator.vibrate?.([60, 40, 60]);
-    $('#lector').textContent = `${calle.nombre_calle}. ${MENSAJE_BRECHA}`;
+    $('#lector').textContent = `${calle.mujer.nombre}. ${MENSAJE_BRECHA}`;
   };
 }
 
