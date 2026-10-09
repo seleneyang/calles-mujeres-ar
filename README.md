@@ -1,6 +1,6 @@
 # Las Calles de las Mujeres · AR (10 años de Geochicas)
 
-Una experiencia WebAR para un mapa impreso de la CDMX de 2.00 × 1.50 m que se monta en una pared. Las 30 calles seleccionadas con nombre de mujer tienen un pin con un QR. Al escanearlo se abre `ar.html?calle_id=…`, que muestra la biografía de la mujer (desde Wikipedia) o, si su artículo no existe, una invitación a escribirlo.
+Una experiencia WebAR para un mapa impreso de la CDMX de 3.20 × 2.40 m que se coloca en el piso (lona mate de una sola pieza, para un evento de un día). Las 30 calles seleccionadas con nombre de mujer tienen un pin con un QR. Al escanearlo se abre `ar.html?calle_id=…`, que muestra la biografía de la mujer (desde Wikipedia) o, si su artículo no existe, una invitación a escribirlo.
 
 ```
 geochicas-ar/
@@ -9,8 +9,8 @@ geochicas-ar/
 ├── seleccion_30.json        # Curaduría: 15 con artículo + 15 sin artículo, y nombres corregidos
 ├── contextos.json           # Curaduría: imágenes de contexto de cada mujer (para llenar)
 ├── impresion/               # ← ARCHIVOS PARA IMPRIMIR
-│   ├── PARA_IMPRESION_mapa_200x150cm_CMYK_curvas.pdf  # ← EL QUE VA A LA IMPRENTA
-│   ├── mapa_calles_mujeres_200x150cm.pdf  # el mismo en RGB, para revisar en pantalla
+│   ├── PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf  # ← EL QUE VA A LA IMPRENTA
+│   ├── mapa_calles_mujeres_320x240cm.pdf  # el mismo en RGB, para revisar en pantalla
 │   ├── mapa_calles_mujeres_preview.png # vista previa
 │   ├── posiciones_qr.csv               # dónde queda cada QR (cm) para revisar en sitio
 │   └── tarjetas_qr_prueba.pdf          # los 30 QR en hojas carta para probar con el celular
@@ -90,22 +90,22 @@ python3 -m venv .venv && .venv/bin/pip install segno mapbox-vector-tile matplotl
 .venv/bin/python scripts/generar_mapa_impreso.py --url-base https://seleneyang.github.io/calles-mujeres-ar/
 ```
 
-El mapa impreso se monta **en pared**. Mide 200 × 150 cm, cubre unos 32.7 × 24.5 km centrados en las 30 calles (escala aproximada de 1 cm por cada 163 m) y sale de una sola pieza de vinil. Si se coloca con el borde inferior a 50 cm del piso, todos los QR quedan entre 0.64 y 1.87 m de altura. Incluye:
+El mapa impreso va **en el piso**. Mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las 30 calles (escala aproximada de 1 cm por cada 102 m). Incluye:
 
 - **Mapa base:** teselas vectoriales de OpenFreeMap con la paleta Positron. Es la misma que usa la app y no necesita API key. Las teselas se guardan en `.cache/`.
 - **Calles con nombre de mujer:** todas las del dataset, pintadas en lila.
 - **Tarjeta de leyenda:** lleva el título, el logotipo horizontal de Geochicas en vectores (`assets/logo_geochicas_horizontal.json`, extraído de `assets/logo_geochicas_horizontal.pdf`), el texto de presentación, las instrucciones, la leyenda, la escala y los créditos. Su tamaño se calcula a partir del texto real, para que no quede espacio vacío.
 - **Las 30 seleccionadas:** todas se ven iguales, con el mismo color de calle y el mismo pin. Desde el mapa no se puede saber cuál tiene artículo en Wikipedia: cada persona lo descubre al escanear.
-- **Los pines:** son el logo de Geochicas (vectorizado en `assets/logo_geochicas.json` a partir de `assets/logo_geochicas.webp`), de unos 11 × 15 cm, con la punta sobre la calle. Si dos pines chocan, uno se desplaza y una línea lo une a su calle. El script prueba 300 órdenes de colocación y se queda con el de líneas más cortas y sin cruces; usa una semilla fija, así que el resultado es siempre el mismo.
-- **El QR circular:** ocupa todo el interior del círculo del logo y está en el color de Geochicas. La parte que la cámara lee es un QR cuadrado de **5 cm** (pensado para escanearse a 40–60 cm de la pared), versión 5 (37 × 37 módulos de unos 1.35 mm) y corrección de errores nivel Q, rodeado de módulos decorativos que completan el círculo. Entre el código y la decoración hay **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). Sin ese margen no se leyó ninguno (0/30). **No reduzcas esos valores sin volver a probar.**
+- **Los pines:** son el logo de Geochicas (vectorizado en `assets/logo_geochicas.json` a partir de `assets/logo_geochicas.webp`), de unos 18 × 24.5 cm, con la punta sobre la calle. Si dos pines chocan, uno se desplaza y una línea lo une a su calle. El script prueba 300 órdenes de colocación y se queda con el de líneas más cortas y sin cruces; usa una semilla fija, así que el resultado es siempre el mismo.
+- **El QR circular:** ocupa todo el interior del círculo del logo y está en el color de Geochicas. La parte que la cámara lee es un QR cuadrado de **8 cm** (para escanearse de pie desde el piso), versión 5 (37 × 37 módulos de unos 2.2 mm) y corrección de errores nivel Q, rodeado de módulos decorativos que completan el círculo. Entre el código y la decoración hay **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). Sin ese margen no se leyó ninguno (0/30). **No reduzcas esos valores sin volver a probar.**
   - **URL corta:** el QR lleva `https://seleneyang.github.io/calles-mujeres-ar/?calle_id=xxx`. El código de 3 caracteres sale del `calle_id` (`codigo_corto()`) y no revela nada de la calle. `index.html` redirige a `ar.html` conservando el parámetro, y `ar.html` acepta tanto el código como el `calle_id` completo. Una URL más corta significa menos módulos, cada uno más grande: en las pruebas, este QR de 8 cm se leyó en condiciones donde el anterior de 9.5 cm (49 × 49) ya fallaba.
 
-> 🖨️ **Para la imprenta usa `PARA_IMPRESION_mapa_200x150cm_CMYK_curvas.pdf`.** Cumple la ficha técnica de la imprenta (Sinergia Publicitaria):
-> - **Tamaño:** real, 200 × 150 cm. Como mide menos de 3 m, va al 100 %. Sale **de una sola pieza** en su vinil de 1.50 m de ancho.
-> - **Color:** en CMYK, sin RGB ni Pantone. Usa el perfil por omisión de Ghostscript; el morado de Geochicas (#871657) queda en C42 M100 Y40 K19.
-> - **Textos:** convertidos a curvas.
+> 🖨️ **Para la imprenta usa `PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf`.** Cumple la ficha técnica de la imprenta (Sinergia Publicitaria):
+> - **Tamaño:** al 20 % (64 × 48 cm), porque la pieza mide más de 3 m. Se imprime **al 500 %** en **lona mate de una sola pieza** (su ancho máximo es 3.20 m). Hay 4 cm libres en cada borde.
+> - **Color y textos:** CMYK, sin RGB ni Pantone, con los textos convertidos a curvas.
+> - **Montaje en piso:** fijar la lona **por todo el borde** con cinta para piso. Es para un solo día; para más tiempo conviene vinil de piso con laminado antiderrapante.
 >
-> Lo genera `generar_mapa_impreso.py` (requiere `brew install ghostscript`). Si el mapa vuelve a medir más de 3 m, el script lo entrega al 20 %, como pide la ficha.
+> El script tiene dos montajes: `--montaje piso` (por omisión: 320 × 240 cm, QR de 8 cm) y `--montaje pared` (200 × 150 cm, QR de 5 cm). En `ar.html`, `CONFIG.MONTAJE` debe coincidir con el montaje elegido.
 
 > ⚠️ Los QR llevan la URL de `--url-base`. Si cambias el dominio o el nombre del repositorio, **vuelve a generar el PDF antes de imprimir**.
 
@@ -116,7 +116,7 @@ El mapa impreso se monta **en pared**. Mide 200 × 150 cm, cubre unos 32.7 × 24
 - **Línea de tiempo:** nacimiento, muerte, obras, premios y cargos, tomados de Wikidata, en una pestaña aparte.
 - **Escuchar:** el teléfono lee la tarjeta en voz alta (`speechSynthesis`, sin servidor). Elige una voz latinoamericana (México, EE. UU. hispano, Colombia, Argentina…; España queda al final) y acerca el tono al centro para que suene lo más neutra posible.
 - **Tu recorrido:** el teléfono guarda las calles que ya escaneaste (solo en ese teléfono) y muestra «3/30». La hoja del pasaporte incluye recorridos por tema (insurgentas, escritoras, artistas, científicas, educadoras y feministas), con un botón «Guíame».
-- **Siguiente en el mapa:** una flecha y la distancia real sobre el mapa hasta el pin más cercano que falta, calculadas con `posiciones_qr.csv`. Con `CONFIG.MONTAJE = 'pared'` (el valor actual), la flecha y el texto indican arriba, abajo, izquierda o derecha sobre el mapa, sin brújula. Con `'piso'`, se usa la calibración automática con brújula que se describe abajo.
+- **Siguiente en el mapa:** una flecha y la distancia real sobre el mapa hasta el pin más cercano que falta, calculadas con `posiciones_qr.csv`. Con `CONFIG.MONTAJE = 'pared'`, la flecha y el texto indican arriba, abajo, izquierda o derecha sobre el mapa, sin brújula. Con `'piso'` (el valor actual), se usa la calibración automática con brújula que se describe abajo.
   - **Calibración automática de la brújula:** no hay que medir nada al montar. Todos los QR están impresos derechos, con su borde de arriba hacia el norte del mapa. Cuando la cámara ve un QR del piso, la app mide qué tan girado aparece y le suma el rumbo de la brújula del teléfono: el resultado es hacia dónde queda el norte del mapa en la sala.
     - Toma 5 lecturas estables y guarda el resultado en ese teléfono durante 24 horas. Usa [jsQR](https://github.com/cozmo/jsQR), que solo se descarga si la persona activa la cámara.
     - Si el teléfono no tiene brújula o la persona no usa la cámara, la flecha indica la dirección «en el mapa», tomando la parte de arriba del mapa como norte.
@@ -133,6 +133,17 @@ Para cada mujer se agregan de 2 a 4 imágenes de Wikimedia Commons (`archivo` + 
 Orden completo de los scripts: `generar_calles.py` → `generar_mapa_impreso.py` → `enriquecer_contexto.py`. El último también agrega la línea de tiempo, los temas y la posición de cada pin. Si se vuelve a ejecutar `generar_calles.py`, hay que repetir los tres en ese orden.
 
 > ⚠️ **Derechos de autor:** la obra de Frida Kahlo (y la de cualquier autora fallecida hace menos de 100 años) está protegida en México. Usa fotos de lugares, objetos, documentos o imágenes en dominio público, no reproducciones de sus obras.
+
+## Android: cámara y movimiento
+
+En Android hay más motivos que en iPhone para que fallen la cámara o los sensores de movimiento. La app atiende estos casos:
+- **Navegador dentro de otra app** (Google Lens, Instagram, Facebook…): suelen bloquear la cámara. La app lo detecta y ofrece un enlace **«Ábrela en Chrome»**.
+- **Cámara ocupada** por la app que leyó el QR: la app reintenta hasta 4 veces y, si hace falta, pide una resolución menor.
+- **Sensores de movimiento bloqueados** para el sitio: la app lo detecta y explica cómo activarlos. Si en 2 s no llegan datos del giroscopio, la flecha usa la dirección del mapa.
+- **«Quitar animaciones» o ahorro de batería**: se respeta (sin efecto de profundidad), pero el resto funciona.
+- **Permiso explícito de movimiento:** versiones nuevas de Chrome también lo piden, igual que iPhone. Se solicita al tocar «Activar realidad aumentada».
+
+**Modo diagnóstico:** agrega `&diagnostico=1` a cualquier URL, por ejemplo `https://seleneyang.github.io/calles-mujeres-ar/ar.html?calle_id=8o8&diagnostico=1`. Muestra el navegador, el estado de la cámara (con el error exacto), los sensores, los eventos de movimiento recibidos y la brújula. Si algo falla en un teléfono, una captura de esa caja basta para diagnosticarlo.
 
 ## Guía de despliegue gratuito en GitHub Pages
 

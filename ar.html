@@ -476,7 +476,7 @@ const CONFIG = {
   SEGUNDOS_POR_IMAGEN: 7,
   // Dónde está montado el mapa impreso. 'pared': la flecha señala arriba/abajo/izquierda/derecha sobre el
   // mapa (la brújula no sirve con el mapa vertical). 'piso': la flecha usa la brújula, calibrada con el QR.
-  MONTAJE: 'pared',
+  MONTAJE: 'piso',
   // Solo para MONTAJE 'piso'. Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso en la sala.
   // No hace falta medirlo: cada teléfono lo calcula solo al ver un QR del piso con la cámara
   // (ver calibrarConQR). Solo se escribe aquí para forzar un valor fijo.
@@ -724,12 +724,45 @@ function panelError(titulo, texto) {
 // ============================================================================
 // Cámara (getUserMedia) + anclaje por orientación del dispositivo
 // ============================================================================
+// Navegadores dentro de otras apps (Google Lens, Instagram, Facebook, WebView de Android…): suelen bloquear
+// la cámara sin preguntar. Se detectan para ofrecer abrir la página en el navegador del teléfono.
+function navegadorDentroDeApp() {
+  const ua = navigator.userAgent;
+  return /; wv\)|GSA\/|FBAN|FBAV|Instagram|Line\/|Snapchat|TikTok|musical_ly|Twitter/i.test(ua);
+}
+
+function enlaceAbrirEnNavegador() {
+  if (/Android/i.test(navigator.userAgent)) {
+    // Intent de Android: abre la misma URL en Chrome (o en el navegador por omisión si no hay Chrome)
+    const sinEsquema = location.href.replace(/^https?:\/\//, '');
+    return `intent://${sinEsquema}#Intent;scheme=https;package=com.android.chrome;` +
+      `S.browser_fallback_url=${encodeURIComponent(location.href)};end`;
+  }
+  return null; // en iOS no hay forma de forzarlo: se indica con texto
+}
+
+const diagnostico = { camara: 'sin intentar', orientacion: 'sin intentar', eventos: 0, intentos: 0 };
+
 async function iniciarCamara() {
   if (!navigator.mediaDevices?.getUserMedia) throw new Error('Este navegador no permite usar la cámara.');
-  const stream = await navigator.mediaDevices.getUserMedia({
-    audio: false,
-    video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-  });
+  const pedir = (video) => navigator.mediaDevices.getUserMedia({ audio: false, video });
+  let stream = null;
+  // En Android la app de cámara que leyó el QR puede seguir usando la cámara unos instantes:
+  // si está ocupada (NotReadableError / AbortError) se reintenta, y si la resolución pedida no
+  // existe (OverconstrainedError) se pide cualquier cámara trasera.
+  for (let intento = 1; intento <= 4 && !stream; intento++) {
+    diagnostico.intentos = intento;
+    try {
+      stream = await pedir(intento < 3
+        ? { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+        : { facingMode: 'environment' });
+    } catch (e) {
+      diagnostico.camara = `${e.name}: ${e.message}`;
+      if (e.name === 'NotAllowedError' || e.name === 'SecurityError' || intento === 4) throw e;
+      await new Promise((r) => setTimeout(r, 700 * intento));
+    }
+  }
+  diagnostico.camara = 'activa';
   const video = $('#camara');
   video.srcObject = stream;
   await video.play();
@@ -739,12 +772,19 @@ async function iniciarCamara() {
 // El panel contra-rota cuando la persona inclina el teléfono, de modo que parece
 // quedarse "suspendido" sobre el QR del suelo en lugar de pegado a la pantalla.
 function iniciarAnclaje() {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Si el teléfono pide reducir movimiento (accesibilidad o ahorro de batería en algunos Android),
+  // se respeta: sin efecto de profundidad, pero los datos del giroscopio se siguen contando.
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    diagnostico.orientacion += ' · reducir movimiento activado';
+    addEventListener('deviceorientation', (e) => { if (e.beta != null) diagnostico.eventos++; });
+    return;
+  }
   let base = null, objetivo = { x: 0, y: 0 }, actual = { x: 0, y: 0 };
   const limitar = (v, m) => Math.max(-m, Math.min(m, v));
 
   addEventListener('deviceorientation', (e) => {
     if (e.beta == null) return;
+    diagnostico.eventos++;
     base ??= { beta: e.beta, gamma: e.gamma };
     objetivo = { x: limitar(e.gamma - base.gamma, 25), y: limitar(e.beta - base.beta, 25) };
   });
@@ -762,12 +802,55 @@ function iniciarAnclaje() {
 }
 
 async function pedirOrientacion() {
-  // iOS 13+ exige permiso explícito y debe pedirse dentro de un gesto del usuario.
+  // iOS 13+ (y versiones nuevas de Chrome) exigen permiso explícito, pedido dentro de un gesto del usuario.
   const DOE = window.DeviceOrientationEvent;
   if (typeof DOE?.requestPermission === 'function') {
-    try { return (await DOE.requestPermission()) === 'granted'; } catch { return false; }
+    try {
+      const ok = (await DOE.requestPermission()) === 'granted';
+      diagnostico.orientacion = ok ? 'permitida (con permiso explícito)' : 'denegada (con permiso explícito)';
+      return ok;
+    } catch (e) { diagnostico.orientacion = `error al pedir permiso: ${e.name}`; return false; }
   }
-  return 'DeviceOrientationEvent' in window;
+  if (!('DeviceOrientationEvent' in window)) { diagnostico.orientacion = 'no disponible'; return false; }
+  // Android/Chrome no pide permiso, pero el sitio puede tener bloqueados los "sensores de movimiento"
+  try {
+    const estados = await Promise.all(['accelerometer', 'gyroscope'].map((n) =>
+      navigator.permissions?.query({ name: n }).then((r) => r.state).catch(() => 'desconocido')));
+    diagnostico.orientacion = `sensores: ${estados.join(', ')}`;
+    if (estados.includes('denied')) {
+      avisar('Los sensores de movimiento están bloqueados para esta página: actívalos en ⋮ › Configuración del sitio');
+      return false;
+    }
+  } catch { /* navegador sin Permissions API */ }
+  return true;
+}
+
+// Si en 2 s no llega ningún dato del giroscopio, el teléfono no lo está entregando: se avisa
+function vigilarSensores() {
+  setTimeout(() => {
+    if (diagnostico.eventos === 0 && CONFIG.MONTAJE === 'piso') {
+      avisar('Tu teléfono no está enviando datos de movimiento: la flecha usará la dirección del mapa');
+      setTimeout(() => avisar(''), 5000);
+    }
+  }, 2000);
+}
+
+function avisarFalloCamara(e) {
+  const dentroDeApp = navegadorDentroDeApp();
+  const enlace = enlaceAbrirEnNavegador();
+  if (dentroDeApp && enlace) {
+    const aviso = $('#aviso');
+    aviso.replaceChildren('La cámara está bloqueada en este navegador. ',
+      el('a', { href: enlace, style: 'color:#ffc34d;font-weight:600' }, 'Ábrela en Chrome'));
+  } else if (dentroDeApp) {
+    avisar('La cámara está bloqueada en este navegador: abre la página en Safari (botón “Abrir en el navegador”)');
+  } else if (e?.name === 'NotAllowedError') {
+    avisar('Permiso de cámara denegado: actívalo en la configuración del sitio y recarga');
+  } else if (e?.name === 'NotReadableError') {
+    avisar('La cámara está ocupada por otra app: ciérrala y recarga la página');
+  } else {
+    avisar('No se pudo abrir la cámara: mostrando sin realidad aumentada');
+  }
 }
 
 // ============================================================================
@@ -1146,11 +1229,12 @@ async function entrar(conCamara) {
       pedirOrientacion(),
       iniciarCamara().catch((e) => {
         console.warn(e);
-        avisar('No se pudo abrir la cámara: mostrando sin realidad aumentada');
+        avisarFalloCamara(e);
       }),
     ]);
     if (orientacion) {
       iniciarAnclaje();
+      vigilarSensores();
       if (CONFIG.MONTAJE === 'piso') {
         escucharBrujula();
         if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
@@ -1158,6 +1242,23 @@ async function entrar(conCamara) {
     }
   }
   (await datosListos)();
+}
+
+// ?diagnostico=1 → muestra qué pasa con cámara y sensores (para probar en teléfonos Android)
+if (new URLSearchParams(location.search).has('diagnostico')) {
+  const caja = el('pre', { style: 'position:fixed;left:8px;right:8px;top:8px;z-index:50;margin:0;padding:10px;pointer-events:none;opacity:.92;' +
+    'background:rgba(0,0,0,.85);color:#9f9;font:12px/1.4 monospace;white-space:pre-wrap;border-radius:10px' });
+  document.body.append(caja);
+  setInterval(() => {
+    caja.textContent = [
+      `Navegador: ${navigator.userAgent}`,
+      `Dentro de otra app: ${navegadorDentroDeApp() ? 'sí' : 'no'}`,
+      `Cámara: ${diagnostico.camara} (intentos: ${diagnostico.intentos})`,
+      `Movimiento: ${diagnostico.orientacion} · eventos recibidos: ${diagnostico.eventos}`,
+      `Reducir movimiento: ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'sí' : 'no'}`,
+      `Brújula: ${rumboTelefono == null ? 'sin datos' : Math.round(rumboTelefono) + '°'} · norte del mapa: ${norteMapa == null ? 'sin calibrar' : Math.round(norteMapa) + '°'}`,
+    ].join('\n');
+  }, 500);
 }
 
 $('#btn-ar').addEventListener('click', () => entrar(true));

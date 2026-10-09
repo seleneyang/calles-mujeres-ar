@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Genera el mapa impreso para PARED (200 × 150 cm, una sola pieza de vinil): pines con el logo de Geochicas y un QR circular
+Genera el mapa impreso. Montaje por omisión: PISO, 320 × 240 cm en lona mate de una sola pieza
+(--montaje pared: 200 × 150 cm en vinil).: pines con el logo de Geochicas y un QR circular
 adentro, con la punta sobre cada calle.
 
     .venv/bin/python scripts/generar_mapa_impreso.py \
         --url-base https://seleneyang.github.io/calles-mujeres-ar/
 
 Salidas en impresion/:
-    mapa_calles_mujeres_200x150cm.pdf   vectorial, tamaño real, en RGB (para revisar en pantalla)
-    PARA_IMPRESION_mapa_200x150cm_CMYK_curvas.pdf   ESTA es la que va a la imprenta: tamaño real, CMYK y
-                                    textos en curvas, según la ficha técnica (requiere: brew install ghostscript)
+    mapa_calles_mujeres_<medida>.pdf   vectorial, tamaño real, en RGB (para revisar en pantalla)
+    PARA_IMPRESION_mapa_<medida>_…CMYK_curvas.pdf   ESTA es la que va a la imprenta: CMYK y textos en curvas;
+                                    al 20 % si mide más de 3 m, como pide la ficha técnica (requiere Ghostscript)
     mapa_calles_mujeres_preview.png vista previa
     posiciones_qr.csv               dónde queda cada QR (cm desde la esquina superior izquierda)
     tarjetas_qr_prueba.pdf          los 30 pines QR en hojas carta para probar con el celular
@@ -57,8 +58,14 @@ GEOJSON_URL = (
 )
 UA = {"User-Agent": "GeochicasAR-print/1.0 (mapa impreso exposicion Geochicas)"}
 
-# Montaje en PARED, una sola pieza: el vinil de la imprenta mide máximo 1.50 m de ancho
-ANCHO_CM, ALTO_CM = 200.0, 150.0
+# Medidas según el montaje (--montaje). Los valores se aplican en aplicar_montaje().
+MONTAJES = {
+    # PISO: lona mate de una sola pieza (ancho máximo de la lona: 3.20 m); QR de 8 cm para escanear de pie
+    "piso": dict(ancho=320.0, alto=240.0, qr=8.0, leyenda=1.0, trazo=1.0, margen=4.0),
+    # PARED: vinil de una sola pieza (ancho máximo 1.50 m); QR de 5 cm para escanear a 40–60 cm
+    "pared": dict(ancho=200.0, alto=150.0, qr=5.0, leyenda=0.6, trazo=0.7, margen=3.0),
+}
+ANCHO_CM, ALTO_CM = 320.0, 240.0
 ALTO_KM = 24.5                       # las 30 calles abarcan ~22 km de norte a sur
 ANCHO_KM = ALTO_KM * ANCHO_CM / ALTO_CM
 CENTRO = (19.409, -99.1185)  # lat, lon: centro de las 30 calles seleccionadas
@@ -82,16 +89,25 @@ MARCA = "#871657"         # color del logo de Geochicas: pines y QR
 MARCA_CLARA = "#b23a7e"   # las 30 calles con QR (todas iguales)
 MORADO_OSCURO = "#1a0b2e"
 
-QR_CM = 5.0               # lado del QR (en pared se escanea a 40–60 cm; en piso harían falta ≥ 8 cm)
+QR_CM = 8.0               # lado del QR cuadrado inscrito en el círculo del logo
 QR_VERSION = 5            # fija para que todos los pines midan igual (37 × 37 módulos ≈ 2.2 mm c/u)
 QR_MODULOS = 17 + 4 * QR_VERSION
 QR_SILENCIO = 1           # módulos blancos entre el código y el relleno decorativo
 QR_SILENCIO_BUSCADORES = 2
-MARGEN_CM = 3.0
-# Escalas de diseño respecto al mapa original de piso (QR de 8 cm, 3.20 m de ancho)
+MARGEN_CM = 4.0
+# Escalas de diseño respecto al mapa de piso (QR de 8 cm, 3.20 m de ancho)
 E_PIN = QR_CM / 8.0       # etiquetas y contornos de los pines
-E_LEY = 0.6               # tarjeta de leyenda
-E_TRAZO = 0.7             # grosor de calles y tamaño de etiquetas de colonias
+E_LEY = 1.0               # tarjeta de leyenda
+E_TRAZO = 1.0             # grosor de calles y tamaño de etiquetas de colonias
+
+
+def aplicar_montaje(nombre):
+    global ANCHO_CM, ALTO_CM, ANCHO_KM, QR_CM, E_PIN, E_LEY, E_TRAZO, MARGEN_CM, PAD, SANGRIA_LEYENDA, FILA_LEYENDA
+    m = MONTAJES[nombre]
+    ANCHO_CM, ALTO_CM, QR_CM = m["ancho"], m["alto"], m["qr"]
+    ANCHO_KM = ALTO_KM * ANCHO_CM / ALTO_CM
+    E_PIN, E_LEY, E_TRAZO, MARGEN_CM = QR_CM / 8.0, m["leyenda"], m["trazo"], m["margen"]
+    PAD, SANGRIA_LEYENDA, FILA_LEYENDA = 4.0 * E_LEY, 8.0 * E_LEY, 3.4 * E_LEY
 
 
 # ---------------------------------------------------------------- utilidades
@@ -356,8 +372,9 @@ def etiqueta(nombre):
     return lineas_txt, ancho, alto
 
 
-def caja_marcador(logo, k, tx, ty, nombre, pad=0.8 * E_PIN):
+def caja_marcador(logo, k, tx, ty, nombre, pad=None):
     """Rectángulo que ocupa el marcador (logo + nombre encima) con la punta en (tx, ty)."""
+    pad = 0.8 * E_PIN if pad is None else pad
     _, ancho, alto = etiqueta(nombre)
     arriba = ty - logo.arriba * k - alto - 0.6 * E_PIN
     izq = min(tx - logo.izq * k, tx - ancho / 2)
@@ -615,7 +632,10 @@ def main():
     ap.add_argument("--url-base", required=True, help="URL pública de ar.html (sin ?calle_id)")
     ap.add_argument("--datos", default=str(RAIZ / "calles_cdmx.json"))
     ap.add_argument("--dpi-preview", type=int, default=12)
+    ap.add_argument("--montaje", choices=list(MONTAJES), default="piso",
+                    help="piso: 320 × 240 cm, QR 8 cm · pared: 200 × 150 cm, QR 5 cm")
     a = ap.parse_args()
+    aplicar_montaje(a.montaje)
 
     SALIDA.mkdir(exist_ok=True)
     fuentes = {
