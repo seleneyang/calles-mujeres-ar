@@ -7,7 +7,9 @@ adentro, con la punta sobre cada calle.
         --url-base https://seleneyang.github.io/calles-mujeres-ar/
 
 Salidas en impresion/:
-    mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, para el plotter
+    mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, en RGB (para revisar en pantalla)
+    PARA_IMPRESION_mapa_calles_mujeres_320x240cm_CMYK.pdf   la misma, en CMYK: ESTA es la que va a la imprenta
+                                    (requiere Ghostscript: brew install ghostscript)
     mapa_calles_mujeres_preview.png vista previa
     posiciones_qr.csv               dónde queda cada QR (cm desde la esquina superior izquierda)
     tarjetas_qr_prueba.pdf          los 30 pines QR en hojas carta para probar con el celular
@@ -36,6 +38,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import segno  # noqa: E402
+import shutil  # noqa: E402
+import subprocess  # noqa: E402
 from matplotlib import font_manager  # noqa: E402
 from matplotlib.collections import LineCollection, PatchCollection, PathCollection  # noqa: E402
 from matplotlib.patches import Circle, FancyBboxPatch, PathPatch, Rectangle  # noqa: E402
@@ -577,6 +581,20 @@ def tarjetas_prueba(calles, urls, fuentes, logo, destino):
             plt.close(fig)
 
 
+def convertir_a_cmyk(origen, destino):
+    """Copia en CMYK para imprenta (matplotlib solo escribe RGB). Usa el perfil CMYK por omisión de Ghostscript."""
+    gs = shutil.which("gs")
+    if not gs:
+        print("  ⚠️  Ghostscript no está instalado: no se generó la versión CMYK (brew install ghostscript)")
+        return
+    subprocess.run([gs, "-q", "-o", str(destino), "-sDEVICE=pdfwrite",
+                    "-sColorConversionStrategy=CMYK", "-sProcessColorModel=DeviceCMYK", "-dOverrideICC=true",
+                    "-dCompatibilityLevel=1.6", "-dAutoRotatePages=/None", "-dEmbedAllFonts=true",
+                    "-dSubsetFonts=true", "-dDownsampleColorImages=false", "-dDownsampleGrayImages=false",
+                    str(origen)], check=True)
+    print(f"  CMYK para imprenta → {destino.name}")
+
+
 # ---------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -683,6 +701,7 @@ def main():
         w.writerows(sorted(filas, key=lambda f: (f["qr_centro_y_cm"], f["qr_centro_x_cm"])))
 
     tarjetas_prueba(calles, urls, fuentes, logo, SALIDA / "tarjetas_qr_prueba.pdf")
+    convertir_a_cmyk(pdf, SALIDA / "PARA_IMPRESION_mapa_calles_mujeres_320x240cm_CMYK.pdf")
     print(f"Listo → {SALIDA}  ({pdf.stat().st_size / 1e6:.1f} MB)")
 
 
