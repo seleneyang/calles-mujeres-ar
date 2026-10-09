@@ -107,8 +107,10 @@ El mapa impreso cubre un cuadrado de 25 × 25 km centrado en las 30 calles (esca
 - **Escuchar:** el teléfono lee la tarjeta en voz alta (`speechSynthesis`, sin servidor).
 - **Tu recorrido:** el teléfono guarda las calles que ya escaneaste (solo en ese teléfono) y muestra «3/30». La hoja del pasaporte incluye recorridos por tema (insurgentas, escritoras, artistas, científicas, educadoras y feministas), con un botón «Guíame».
 - **Siguiente en el mapa:** una flecha y la distancia real sobre el piso hasta el pin más cercano que falta, calculadas con `posiciones_qr.csv`.
-  - **Brújula:** el día del montaje, mide con la brújula de un teléfono hacia dónde apunta el norte del mapa impreso y escribe ese rumbo en `CONFIG.NORTE_MAPA_RUMBO` (en `ar.html`). Así la flecha usa la brújula del teléfono.
-  - **Sin ese dato:** la flecha indica la dirección «en el mapa», tomando la parte de arriba del mapa como norte.
+  - **Calibración automática de la brújula:** no hay que medir nada al montar. Todos los QR están impresos derechos, con su borde de arriba hacia el norte del mapa. Cuando la cámara ve un QR del piso, la app mide qué tan girado aparece y le suma el rumbo de la brújula del teléfono: el resultado es hacia dónde queda el norte del mapa en la sala.
+    - Toma 5 lecturas estables y guarda el resultado en ese teléfono durante 24 horas. Usa [jsQR](https://github.com/cozmo/jsQR), que solo se descarga si la persona activa la cámara.
+    - Si el teléfono no tiene brújula o la persona no usa la cámara, la flecha indica la dirección «en el mapa», tomando la parte de arriba del mapa como norte.
+    - `CONFIG.NORTE_MAPA_RUMBO` solo sirve para fijar un valor a mano, si algún día hiciera falta.
 
 ### Curaduría de imágenes (`contextos.json`)
 

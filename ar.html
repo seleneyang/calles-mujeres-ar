@@ -464,11 +464,14 @@ const CONFIG = {
   SUBIR_COMMONS: 'https://commons.wikimedia.org/wiki/Special:UploadWizard?uselang=es',
   TIEMPO_MAX_MS: 7000,
   SEGUNDOS_POR_IMAGEN: 7,
-  // Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso, tal como quedó instalado
-  // en la sala. Medirlo el día del montaje con la brújula de un teléfono. Con null, la flecha
-  // indica la dirección "en el mapa" (arriba del mapa = norte) en lugar de usar la brújula.
+  // Rumbo de brújula (0-360°) hacia donde apunta el NORTE del mapa impreso en la sala.
+  // No hace falta medirlo: cada teléfono lo calcula solo al ver un QR del piso con la cámara
+  // (ver calibrarConQR). Solo se escribe aquí para forzar un valor fijo.
   NORTE_MAPA_RUMBO: null,
+  JSQR_URL: 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js',
   CLAVE_VISITAS: 'lcm.visitadas.v1',
+  CLAVE_NORTE: 'lcm.norte-mapa.v1',
+  HORAS_CALIBRACION: 24,
 };
 
 const MENSAJE_BRECHA =
@@ -854,6 +857,82 @@ function guardarVisitas(visitas) {
   try { localStorage.setItem(CONFIG.CLAVE_VISITAS, JSON.stringify([...visitas])); } catch { /* modo privado */ }
 }
 
+// ============================================================================
+// Calibración automática: el QR del piso dice dónde está el norte del mapa
+// ----------------------------------------------------------------------------
+// Todos los QR se imprimieron derechos (su borde superior mira al norte del mapa). Si la cámara
+// ve uno girado θ grados y la brújula del teléfono marca R, el norte del mapa está en R + θ.
+// ============================================================================
+let norteMapa = CONFIG.NORTE_MAPA_RUMBO ?? leerNorteGuardado();
+
+const normalizar = (g) => ((g % 360) + 360) % 360;
+
+function leerNorteGuardado() {
+  try {
+    const d = JSON.parse(localStorage.getItem(CONFIG.CLAVE_NORTE));
+    return d && Date.now() - d.t < CONFIG.HORAS_CALIBRACION * 3600e3 ? d.grados : null;
+  } catch { return null; }
+}
+
+function mediaCircular(grados) {
+  const x = grados.reduce((s, g) => s + Math.cos(g * Math.PI / 180), 0);
+  const y = grados.reduce((s, g) => s + Math.sin(g * Math.PI / 180), 0);
+  return normalizar(Math.atan2(y, x) * 180 / Math.PI);
+}
+
+const diferencia = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
+
+// Ángulo (sentido horario) del borde superior del QR respecto a la parte de arriba de la imagen.
+// Devuelve null si no hay un QR del proyecto en el cuadro.
+function giroDelQR(imagen) {
+  const qr = window.jsQR?.(imagen.data, imagen.width, imagen.height, { inversionAttempts: 'dontInvert' });
+  if (!qr || !qr.data.includes('calle_id=')) return null;
+  const { topLeftCorner: a, topRightCorner: b } = qr.location;
+  return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+}
+
+function cargarScript(src) {
+  return new Promise((ok, error) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = ok;
+    s.onerror = error;
+    document.head.append(s);
+  });
+}
+
+async function calibrarConQR(video) {
+  if (norteMapa != null) return;
+  try { await cargarScript(CONFIG.JSQR_URL); } catch { return; } // sin red: queda la dirección "en el mapa"
+  const lienzo = document.createElement('canvas');
+  const ctx = lienzo.getContext('2d', { willReadFrequently: true });
+  const muestras = [];
+  const ciclo = setInterval(() => {
+    if (norteMapa != null) return clearInterval(ciclo);
+    // Hace falta brújula, video y el teléfono en vertical (en horizontal la imagen va girada)
+    if (rumboTelefono == null || !video.videoWidth || (screen.orientation?.angle ?? 0) !== 0) return;
+    const escala = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
+    lienzo.width = Math.round(video.videoWidth * escala);
+    lienzo.height = Math.round(video.videoHeight * escala);
+    ctx.drawImage(video, 0, 0, lienzo.width, lienzo.height);
+    const giro = giroDelQR(ctx.getImageData(0, 0, lienzo.width, lienzo.height));
+    if (giro == null) return;
+    muestras.push(normalizar(rumboTelefono + giro));
+    if (muestras.length < 5) return;
+    const media = mediaCircular(muestras);
+    if (muestras.every((g) => diferencia(g, media) < 20)) { // lecturas estables: brújula sin interferencias
+      norteMapa = media;
+      try { localStorage.setItem(CONFIG.CLAVE_NORTE, JSON.stringify({ grados: media, t: Date.now() })); } catch { /* modo privado */ }
+      avisar('Brújula calibrada con el mapa ✓');
+      setTimeout(() => avisar(''), 3000);
+      if (guia) pintarGuia();
+      clearInterval(ciclo);
+    } else {
+      muestras.shift();
+    }
+  }, 350);
+}
+
 const RUMBOS = ['norte', 'noreste', 'este', 'sureste', 'sur', 'suroeste', 'oeste', 'noroeste'];
 let rumboTelefono = null; // grados de brújula; null si el teléfono no la da
 let guia = null;          // { datos, desde, hacia }
@@ -891,8 +970,8 @@ function pintarGuia() {
     flecha.style.transform = '';
     return;
   }
-  const conBrujula = CONFIG.NORTE_MAPA_RUMBO != null && rumboTelefono != null;
-  const giro = conBrujula ? guia.rumbo + CONFIG.NORTE_MAPA_RUMBO - rumboTelefono : guia.rumbo;
+  const conBrujula = norteMapa != null && rumboTelefono != null;
+  const giro = conBrujula ? guia.rumbo + norteMapa - rumboTelefono : guia.rumbo;
   flecha.style.transform = `rotate(${giro}deg)`;
   $('#sig-nombre').textContent = guia.calle.mujer.nombre;
   const m = guia.metros < 1 ? `${Math.round(guia.metros * 100)} cm` : `${guia.metros.toFixed(1).replace('.', ',')} m`;
@@ -1023,6 +1102,7 @@ async function entrar(conCamara) {
     if (orientacion) {
       iniciarAnclaje();
       escucharBrujula();
+      if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
     }
   }
   (await datosListos)();
