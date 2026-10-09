@@ -139,7 +139,18 @@
         "qr_x_cm": 30.6,
         "qr_y_cm": 195.6
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/2/27/Dolores_del_R%C3%ADo%27s_house_in_Coyoacan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Dolores_del_R%C3%ADo%27s_house_in_Coyoacan.jpg",
+          "autor": "MasqueIV",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": false,
+          "ancho": 780,
+          "pie": "La Escondida, su casa en Coyoacán, donde vivió de 1943 a 1983"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1904,
@@ -225,7 +236,18 @@
         "qr_x_cm": 120.0,
         "qr_y_cm": 157.7
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Elena_Arizmendi_ca_1916.PNG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Elena_Arizmendi_ca_1916.PNG",
+          "autor": "Unknown authorUnknown author",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "ancho": 434,
+          "pie": "Retrato hacia 1916, en plena Revolución"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1884,
@@ -312,7 +334,18 @@
         "qr_x_cm": 114.8,
         "qr_y_cm": 71.5
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Mosaico_de_Eulalia_Guzm%C3%A1n.jpg/1280px-Mosaico_de_Eulalia_Guzm%C3%A1n.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Mosaico_de_Eulalia_Guzm%C3%A1n.jpg",
+          "autor": "Pequeño mar",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": false,
+          "ancho": 2608,
+          "pie": "Mosaico en su honor en el Metro de la Ciudad de México"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1890,
@@ -384,6 +417,7 @@
           "licencia": "CC BY 2.0",
           "licencia_url": "https://creativecommons.org/licenses/by/2.0",
           "horizontal": true,
+          "ancho": 4288,
           "pie": "El patio de la Casa Azul, en Coyoacán: «Frida y Diego vivieron en esta casa»"
         },
         {
@@ -393,6 +427,7 @@
           "licencia": "CC BY-SA 4.0",
           "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
           "horizontal": false,
+          "ancho": 2431,
           "pie": "La prótesis que usó tras la amputación de su pierna, en 1953"
         }
       ],
@@ -437,7 +472,18 @@
         "qr_x_cm": 222.0,
         "qr_y_cm": 194.8
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/b/b8/Gabriela_Mistral_y_Doris_Dana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Gabriela_Mistral_y_Doris_Dana.jpg",
+          "autor": "Ministerio de Relaciones Exteriores de Chile.",
+          "licencia": "CC BY 2.0 cl",
+          "licencia_url": "https://creativecommons.org/licenses/by/2.0/cl/deed.en",
+          "horizontal": false,
+          "ancho": 580,
+          "pie": "Con el embajador Enrique Gajardo Villarroel y Doris Dana en Fortín de las Flores, México, 1949"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1889,
@@ -482,7 +528,28 @@
         "qr_x_cm": 92.0,
         "qr_y_cm": 219.8
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/La_Ilustre_Corregidora_Mar%C3%ADa_Josefa_Ortiz_de_Dom%C3%ADnguez.jpg/1280px-La_Ilustre_Corregidora_Mar%C3%ADa_Josefa_Ortiz_de_Dom%C3%ADnguez.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:La_Ilustre_Corregidora_Mar%C3%ADa_Josefa_Ortiz_de_Dom%C3%ADnguez.jpg",
+          "autor": "Ramón Sánchez Lima",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "ancho": 3406,
+          "pie": "«La ilustre Corregidora», óleo de Ramón Sánchez Lima, 1892"
+        },
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Casa_donde_muri%C3%B3_Do%C3%B1a_Josefa_Ortiz_de_Dom%C3%ADnguez%2C_Ciudad_de_M%C3%A9xico_-_Fachada.jpg/1280px-Casa_donde_muri%C3%B3_Do%C3%B1a_Josefa_Ortiz_de_Dom%C3%ADnguez%2C_Ciudad_de_M%C3%A9xico_-_Fachada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Casa_donde_muri%C3%B3_Do%C3%B1a_Josefa_Ortiz_de_Dom%C3%ADnguez,_Ciudad_de_M%C3%A9xico_-_Fachada.jpg",
+          "autor": "Juan Carlos Fonseca Mata",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": false,
+          "ancho": 1536,
+          "pie": "La casa donde murió, en la antigua calle del Carmen del Centro Histórico"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1768,
@@ -543,7 +610,18 @@
         "qr_x_cm": 225.0,
         "qr_y_cm": 268.1
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://upload.wikimedia.org/wikipedia/commons/4/48/Laura_Mendez_de_Cuenca_poetisa_mexicana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Laura_Mendez_de_Cuenca_poetisa_mexicana.jpg",
+          "autor": "Unknown authorUnknown author",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "ancho": 392,
+          "pie": "Retrato hacia 1892"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1853,
@@ -589,6 +667,7 @@
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": false,
+          "ancho": 1003,
           "pie": "Su casa en República de Brasil 37, en el Centro Histórico, donde vivió y murió"
         },
         {
@@ -598,6 +677,7 @@
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": false,
+          "ancho": 781,
           "pie": "Timbre conmemorativo del centenario de la Independencia, 1910"
         }
       ],
@@ -637,7 +717,18 @@
         "qr_x_cm": 152.5,
         "qr_y_cm": 178.7
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Montep%C3%ADo_Luz_Savi%C3%B1on.jpg/1280px-Montep%C3%ADo_Luz_Savi%C3%B1on.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Montep%C3%ADo_Luz_Savi%C3%B1on.jpg",
+          "autor": "YoelResidente",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": true,
+          "ancho": 2048,
+          "pie": "El Montepío Luz Saviñón, en la calle de Allende del Centro Histórico, fundado en 1902 con la fortuna que ella legó"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1850,
@@ -805,7 +896,18 @@
         "qr_x_cm": 109.9,
         "qr_y_cm": 21.7
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Benito_Ju%C3%A1rez_y_Margarita_Maza%2C_Panteon_de_San_Fernando.jpg/1280px-Benito_Ju%C3%A1rez_y_Margarita_Maza%2C_Panteon_de_San_Fernando.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Benito_Ju%C3%A1rez_y_Margarita_Maza,_Panteon_de_San_Fernando.jpg",
+          "autor": "Öskr Rck",
+          "licencia": "CC BY-SA 3.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/3.0",
+          "horizontal": false,
+          "ancho": 3456,
+          "pie": "Su tumba junto a la de Benito Juárez, en el Panteón de San Fernando"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1826,
@@ -996,7 +1098,18 @@
         "qr_x_cm": 194.7,
         "qr_y_cm": 139.6
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/RosarioCastellanostombDoloresDF.JPG/1280px-RosarioCastellanostombDoloresDF.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:RosarioCastellanostombDoloresDF.JPG",
+          "autor": "Thelmadatter",
+          "licencia": "CC BY-SA 3.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/3.0",
+          "horizontal": false,
+          "ancho": 2592,
+          "pie": "Su tumba en la Rotonda de las Personas Ilustres del Panteón de Dolores"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1925,
@@ -1062,7 +1175,18 @@
         "qr_x_cm": 91.4,
         "qr_y_cm": 92.8
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Claustro_de_Sor_Juana.jpg/1280px-Claustro_de_Sor_Juana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Claustro_de_Sor_Juana.jpg",
+          "autor": "Eneas de Troya",
+          "licencia": "CC BY 2.0",
+          "licencia_url": "https://creativecommons.org/licenses/by/2.0",
+          "horizontal": true,
+          "ancho": 3872,
+          "pie": "El antiguo convento de San Jerónimo, donde vivió como monja y escribió su obra; hoy es el Claustro de Sor Juana"
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1651,
@@ -1083,10 +1207,6 @@
         {
           "anio": 1695,
           "texto": "Muere en Ciudad de México"
-        },
-        {
-          "anio": 2014,
-          "texto": "«El divino Narciso» (póstuma)"
         }
       ],
       "temas": [

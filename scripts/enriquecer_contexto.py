@@ -79,6 +79,7 @@ def creditos_commons(archivos):
                 "licencia": md.get("LicenseShortName", {}).get("value", ""),
                 "licencia_url": md.get("LicenseUrl", {}).get("value", ""),
                 "horizontal": ii["width"] >= ii["height"],
+                "ancho": ii["width"],  # las chicas (< 900 px) se muestran enmarcadas, no a pantalla completa
             }
         time.sleep(1)
     return info

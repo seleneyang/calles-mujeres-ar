@@ -263,13 +263,28 @@
     opacity: 0; transition: opacity .9s ease; will-change: transform;
   }
   .mundo.visible { opacity: 1; }
-  .mundo figure { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.8s ease; }
+  .mundo figure { position: absolute; inset: 0; margin: 0; opacity: 0; transition: opacity 1.8s ease; overflow: hidden; }
   .mundo figure.activa { opacity: 1; }
-  .mundo img { width: 100%; height: 100%; object-fit: cover; animation: acercar 16s ease-in-out infinite alternate; }
-  @keyframes acercar { from { transform: scale(1.03); } to { transform: scale(1.14) translate(-2%, -1.5%); } }
+  .mundo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* Efecto Ken Burns: la animación arranca de nuevo cada vez que la imagen se vuelve activa */
+  .mundo figure.activa img.principal { animation: var(--kb) var(--kb-dur, 10s) ease-in-out forwards; }
+  /* Con una sola imagen, el movimiento va y viene sin detenerse */
+  .mundo.unica figure.activa img.principal { animation-iteration-count: infinite; animation-direction: alternate; --kb-dur: 16s; }
+  @keyframes kb-acerca { from { transform: scale(1.04); } to { transform: scale(1.2) translate(-2%, -3%); } }
+  @keyframes kb-aleja  { from { transform: scale(1.2) translate(2%, -2%); } to { transform: scale(1.04); } }
+  /* Imágenes horizontales en pantalla vertical: paneo a lo largo de toda la imagen */
+  @keyframes kb-paneo-der { from { object-position: 8% 50%; transform: scale(1.04); } to { object-position: 92% 50%; transform: scale(1.12); } }
+  @keyframes kb-paneo-izq { from { object-position: 92% 50%; transform: scale(1.12); } to { object-position: 8% 50%; transform: scale(1.04); } }
+  @keyframes kb-suave { from { transform: scale(1); } to { transform: scale(1.06); } }
+  /* Imágenes pequeñas: foto enmarcada sobre una copia desenfocada de sí misma */
+  .mundo figure.enmarcada img.difusa { filter: blur(28px) saturate(1.2); transform: scale(1.2); opacity: .75; }
+  .mundo figure.enmarcada img.principal {
+    inset: 15% 14% 50%; width: 72%; height: 35%; object-fit: contain;
+    filter: drop-shadow(0 18px 40px rgba(0,0,0,.6));
+  }
   .mundo::after {
     content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(18,6,31,.15) 0%, rgba(18,6,31,.45) 45%, rgba(18,6,31,.85) 100%);
+    background: linear-gradient(180deg, rgba(18,6,31,.25) 0%, rgba(18,6,31,0) 18%, rgba(18,6,31,.1) 38%, rgba(18,6,31,.8) 70%, rgba(18,6,31,.92) 100%);
   }
   .pie-mundo {
     position: fixed; z-index: 5; left: 16px; right: 16px; top: max(14px, env(safe-area-inset-top));
@@ -347,8 +362,11 @@
   #sig-distancia { text-transform: none; letter-spacing: 0; font-size: .74rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* Con imágenes de contexto: la tarjeta deja ver su mundo arriba y abajo */
-  body.con-mundo .escena { padding-top: calc(max(14px, env(safe-area-inset-top)) + 96px); }
-  body.con-mundo .panel { max-height: min(60dvh, calc(100dvh - 300px)); background: rgba(26, 11, 46, 0.7); }
+  /* Con imágenes de contexto: la imagen ocupa la mitad de arriba y la tarjeta baja */
+  body.con-mundo .escena { place-items: end center; }
+  body.con-mundo .panel { max-height: min(50dvh, calc(100dvh - 330px)); background: rgba(26, 11, 46, 0.78); }
+  body.con-mundo .haz, body.con-mundo .anillo { display: none; }
+  body.con-mundo .cabecera .retrato { width: 52px; height: 52px; }
 
   /* ---------- Hoja del pasaporte ---------- */
   .hoja {
@@ -743,8 +761,19 @@ let mundoVisible = false;
 function montarMundo(imagenes) {
   if (!imagenes?.length) return;
   const capa = $('#mundo');
-  const figuras = imagenes.map((img) => el('figure', {}, el('img', { src: img.src, alt: '', decoding: 'async' })));
+  const dur = CONFIG.SEGUNDOS_POR_IMAGEN + 2; // dura un poco más que la imagen: nunca se ve quieta
+  const figuras = imagenes.map((img, k) => {
+    const enmarcada = img.ancho && img.ancho < 900;
+    const kb = enmarcada ? 'kb-suave'
+      : img.horizontal ? (k % 2 ? 'kb-paneo-izq' : 'kb-paneo-der')
+      : (k % 2 ? 'kb-aleja' : 'kb-acerca');
+    const fig = el('figure', { class: enmarcada ? 'enmarcada' : '', style: `--kb:${kb};--kb-dur:${dur}s` },
+      enmarcada && el('img', { class: 'difusa', src: img.src, alt: '', decoding: 'async' }),
+      el('img', { class: 'principal', src: img.src, alt: '', decoding: 'async' }));
+    return fig;
+  });
   capa.replaceChildren(...figuras);
+  capa.classList.toggle('unica', figuras.length === 1);
   let i = 0;
   const mostrar = () => {
     figuras.forEach((f, k) => f.classList.toggle('activa', k === i));

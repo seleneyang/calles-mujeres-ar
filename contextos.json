@@ -23,30 +23,60 @@
   },
   "rosario-castellanos-25154787": {
     "nombre": "Rosario Castellanos",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:RosarioCastellanostombDoloresDF.JPG",
+        "pie": "Su tumba en la Rotonda de las Personas Ilustres del Panteón de Dolores"
+      }
+    ]
   },
   "sor-juana-ines-de-la-cruz-24858788": {
     "nombre": "Sor Juana Inés de la Cruz",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Claustro de Sor Juana.jpg",
+        "pie": "El antiguo convento de San Jerónimo, donde vivió como monja y escribió su obra; hoy es el Claustro de Sor Juana"
+      }
+    ]
   },
   "eulalia-guzman-5849710": {
     "nombre": "Eulalia Guzmán",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Mosaico de Eulalia Guzmán.jpg",
+        "pie": "Mosaico en su honor en el Metro de la Ciudad de México"
+      }
+    ]
   },
   "elena-arizmendi-25207088": {
     "nombre": "Elena Arizmendi",
-    "imagenes": [],
+    "imagenes": [
+      {
+        "archivo": "File:Elena Arizmendi ca 1916.PNG",
+        "pie": "Retrato hacia 1916, en plena Revolución"
+      }
+    ],
     "temas": [
       "feministas"
     ]
   },
   "luz-savinon-4842166": {
     "nombre": "Luz Saviñón",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Montepío Luz Saviñon.jpg",
+        "pie": "El Montepío Luz Saviñón, en la calle de Allende del Centro Histórico, fundado en 1902 con la fortuna que ella legó"
+      }
+    ]
   },
   "margarita-maza-de-juarez-78362513": {
     "nombre": "Margarita Maza",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Benito Juárez y Margarita Maza, Panteon de San Fernando.jpg",
+        "pie": "Su tumba junto a la de Benito Juárez, en el Panteón de San Fernando"
+      }
+    ]
   },
   "dolores-jimenez-muro-25053071": {
     "nombre": "Dolores Jiménez y Muro",
@@ -54,7 +84,16 @@
   },
   "josefa-ortiz-dedominguez-99984608": {
     "nombre": "Josefa Ortiz de Domínguez",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:La Ilustre Corregidora María Josefa Ortiz de Domínguez.jpg",
+        "pie": "«La ilustre Corregidora», óleo de Ramón Sánchez Lima, 1892"
+      },
+      {
+        "archivo": "File:Casa donde murió Doña Josefa Ortiz de Domínguez, Ciudad de México - Fachada.jpg",
+        "pie": "La casa donde murió, en la antigua calle del Carmen del Centro Histórico"
+      }
+    ]
   },
   "madame-cuirie-392206229": {
     "nombre": "Marie Curie",
@@ -62,11 +101,21 @@
   },
   "gabriela-mistral-32886048": {
     "nombre": "Gabriela Mistral",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Gabriela Mistral y Doris Dana.jpg",
+        "pie": "Con el embajador Enrique Gajardo Villarroel y Doris Dana en Fortín de las Flores, México, 1949"
+      }
+    ]
   },
   "dolores-del-rio-70905707": {
     "nombre": "Dolores del Río",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Dolores del Río's house in Coyoacan.jpg",
+        "pie": "La Escondida, su casa en Coyoacán, donde vivió de 1943 a 1983"
+      }
+    ]
   },
   "frida-kalho-38525493": {
     "nombre": "Frida Kahlo",
@@ -87,7 +136,12 @@
   },
   "laura-mendez-de-cuenca-40879832": {
     "nombre": "Laura Méndez de Cuenca",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Laura Mendez de Cuenca poetisa mexicana.jpg",
+        "pie": "Retrato hacia 1892"
+      }
+    ]
   },
   "emilia-romero-de-valle-25154829": {
     "nombre": "Emilia Romero de Valle",
