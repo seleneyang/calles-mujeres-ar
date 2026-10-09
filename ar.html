@@ -369,6 +369,17 @@
   body.con-mundo .haz, body.con-mundo .anillo { display: none; }
   body.con-mundo .cabecera .retrato { width: 52px; height: 52px; }
 
+  /* El resumen y la línea de tiempo nunca se aplastan: si no caben, la tarjeta se desplaza */
+  .panel .extracto, .panel .linea { flex: 0 0 auto; min-height: 5.2em; max-height: 34dvh; }
+
+  /* Pantallas bajas o en horizontal: la tarjeta va a un lado y usa todo el alto */
+  @media (max-height: 640px) and (min-width: 560px) {
+    body.con-mundo .escena { place-items: center end; padding-top: calc(max(14px, env(safe-area-inset-top)) + 8px); }
+    body.con-mundo .panel { max-height: calc(100dvh - 120px); width: min(440px, 58vw); }
+    body.con-mundo .ancla { width: auto; }
+    .pie-mundo p { max-width: 38%; }
+  }
+
   /* ---------- Hoja del pasaporte ---------- */
   .hoja {
     position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; max-height: 82dvh; overflow-y: auto;
@@ -802,13 +813,17 @@ function ajustarEnmarcadas() {
     const pie = $('#pie-mundo').getBoundingClientRect();
     const panel = contenido.querySelector('.panel')?.getBoundingClientRect();
     if (!panel) return;
+    const dock = $('#dock').getBoundingClientRect();
+    const alLado = panel.left > innerWidth * 0.3; // pantalla baja u horizontal: tarjeta a la derecha
     for (const fig of document.querySelectorAll('#mundo figure.enmarcada')) {
-      const origen = fig.getBoundingClientRect().top; // la capa es más grande que la pantalla (parallax)
-      const arriba = pie.bottom + 12 - origen;
-      const alto = Math.max(80, panel.top - 14 - (pie.bottom + 12));
+      const caja = fig.getBoundingClientRect(); // la capa es más grande que la pantalla (parallax)
       const img = fig.querySelector('img.principal');
-      img.style.top = `${arriba}px`;
-      img.style.height = `${alto}px`;
+      const arriba = pie.bottom + 12;
+      const abajo = alLado ? dock.top - 12 : panel.top - 14;
+      img.style.top = `${arriba - caja.top}px`;
+      img.style.height = `${Math.max(80, abajo - arriba)}px`;
+      img.style.left = `${(alLado ? 16 : innerWidth * 0.1) - caja.left}px`;
+      img.style.width = `${alLado ? panel.left - 32 : innerWidth * 0.8}px`;
     }
   });
 }
