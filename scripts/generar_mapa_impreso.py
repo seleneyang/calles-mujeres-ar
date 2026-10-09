@@ -403,36 +403,86 @@ def punto_de_calle(trazos):
     return min(pts, key=lambda p: (p[0] - mx) ** 2 + (p[1] - my) ** 2)  # un vértice real de la calle
 
 
-def cuadro_titulo(ax, x0, y0, w, h, fuentes, total_mujer, proj, logo):
-    ax.add_patch(FancyBboxPatch((x0, y0), w, h, boxstyle="round,pad=0,rounding_size=2.5",
+def dibujar_logo_horizontal(ax, x, y, alto, z, color="white"):
+    """Logotipo GEOCHICAS horizontal en vectores (assets/logo_geochicas_horizontal.json, extraído del PDF)."""
+    d = json.loads((RAIZ / "assets" / "logo_geochicas_horizontal.json").read_text())
+    x0, y0, x1, y1 = d["bbox"]
+    k = alto / (y1 - y0)
+    paths = [MPath([(x + (vx - x0) * k, y + (vy - y0) * k) for vx, vy in f["v"]], f["c"]) for f in d["formas"]]
+    ax.add_collection(PathCollection(paths, facecolor=color, edgecolor="none", zorder=z))
+    return (x1 - x0) * k  # ancho en cm
+
+
+# ---------------------------------------------------------------- tarjeta de leyenda
+INTRO = "Esta es una muestra de las calles recopiladas a través\ndel proyecto Las Calles de las Mujeres."
+PASOS = ("1  Busca un pin con código QR sobre una calle\n"
+         "2  Escanéalo con la cámara de tu celular\n"
+         "3  Descubre su historia en realidad aumentada")
+CREDITOS = ("Mapa base © colaboradores de OpenStreetMap · OpenMapTiles · OpenFreeMap.\n"
+            "Calles: Geochicas, «Las Calles de las Mujeres» (ODbL). Textos: Wikipedia (CC BY-SA 4.0).")
+TITULO = "Las Calles de las Mujeres -\nCiudad de México"
+PAD = 4.0
+SANGRIA_LEYENDA = 8.0
+FILA_LEYENDA = 3.4
+
+
+def _medida(ax, txt, fp, tam, interlineado):
+    """(ancho, alto) en cm de un texto tal como se dibujará."""
+    rend = ax.figure.canvas.get_renderer()
+    cm_por_px = (ax.get_xlim()[1] - ax.get_xlim()[0]) / ax.bbox.width
+    t = ax.text(0, 0, txt, fontproperties=fp, fontsize=tam, linespacing=interlineado)
+    caja = t.get_window_extent(rend)
+    t.remove()
+    return caja.width * cm_por_px, caja.height * cm_por_px
+
+
+def maquetar_titulo(ax, fuentes, total_mujer):
+    """Calcula tamaños y posiciones de la tarjeta a partir del texto real: sin huecos ni encimados."""
+    f = fuentes["texto"]
+    leyenda = [f"Calle con nombre de mujer ({total_mujer} en la CDMX)",
+               "Calle con código QR: escanéalo y descubre su historia",
+               "Límite de la Ciudad de México"]
+    bloques = {"intro": (INTRO, f, 38, 1.3), "pasos": (PASOS, f, 42, 1.55), "creditos": (CREDITOS, f, 20, 1.3)}
+    med = {k: _medida(ax, *v) for k, v in bloques.items()}
+    ancho_leyenda = SANGRIA_LEYENDA + max(_medida(ax, t, f, 38, 1)[0] for t in leyenda)
+    ancho_resto = max(ancho_leyenda, med["intro"][0], med["pasos"][0], med["creditos"][0])
+    # El título se ajusta al ancho del resto del contenido (entre 110 y 150 pt)
+    ancho_t150, _ = _medida(ax, TITULO, fuentes["titulo"], 150, 0.95)
+    tam_titulo = max(110, min(150, 150 * ancho_resto / ancho_t150))
+    ancho_t, alto_t = _medida(ax, TITULO, fuentes["titulo"], tam_titulo, 0.95)
+    logo_alto = 4.4
+    y = PAD
+    pos = {"titulo": y}; y += alto_t + 2.0
+    pos["logo"] = y; y += logo_alto + 2.6
+    pos["intro"] = y; y += med["intro"][1] + 2.8
+    pos["pasos"] = y; y += med["pasos"][1] + 1.6
+    pos["leyenda"] = y + FILA_LEYENDA / 2; y += 3 * FILA_LEYENDA + 1.2
+    pos["escala"] = y; y += 4.2
+    pos["creditos"] = y; y += med["creditos"][1] + PAD - 0.5
+    return {"ancho": max(ancho_t, ancho_resto) + 2 * PAD, "alto": y, "tam_titulo": tam_titulo,
+            "logo_alto": logo_alto, "pos": pos, "bloques": bloques, "leyenda": leyenda}
+
+
+def cuadro_titulo(ax, x0, y0, m, fuentes, proj):
+    ax.add_patch(FancyBboxPatch((x0, y0), m["ancho"], m["alto"], boxstyle="round,pad=0,rounding_size=2.5",
                                 facecolor=MORADO_OSCURO, edgecolor="none", zorder=60))
-    tx = x0 + 4
-    ax.text(tx, y0 + 4.5, "Las Calles de las Mujeres -\nCiudad de México", fontproperties=fuentes["titulo"],
-            fontsize=150, color="white", va="top", linespacing=0.95, zorder=61)
-    kl = 6.0 / (logo.arriba)  # logo de 6 cm de alto
-    logo.dibujar(ax, tx + logo.izq * kl, y0 + 27, kl, 61, "white")
-    ax.text(tx + (logo.izq + logo.der) * kl + 1.5, y0 + 24, "Geochicas", fontproperties=fuentes["subtitulo"],
-            fontsize=80, color="#e3d0ff", va="center", zorder=61)
-    pasos = ("1  Busca un pin con código QR sobre una calle",
-             "2  Escanéalo con la cámara de tu celular",
-             "3  Descubre su historia en realidad aumentada")
-    for i, t in enumerate(pasos):
-        ax.text(tx, y0 + 32 + i * 3.4, t, fontproperties=fuentes["texto"], fontsize=44, color="white",
-                va="top", zorder=61)
-    ly = y0 + 45
-    leyenda = ((MUJER, 10, f"Calle con nombre de mujer ({total_mujer} en la CDMX)"),
-               (MARCA_CLARA, 18, "Calle con código QR: escanéalo y descubre su historia"))
-    for i, (color, ancho, t) in enumerate(leyenda):
-        y = ly + i * 3.6
-        ax.plot([tx, tx + 6], [y, y], color=color, linewidth=ancho, solid_capstyle="round", zorder=61)
-        ax.text(tx + 8, y, t, fontproperties=fuentes["texto"], fontsize=40, color="white", va="center", zorder=61)
-    y = ly + 2 * 3.6
-    ax.plot([tx, tx + 6], [y, y], color="#bbbbbb", linewidth=5, linestyle=(0, (3, 2)), zorder=61)
-    ax.text(tx + 8, y, "Límite de la Ciudad de México", fontproperties=fuentes["texto"], fontsize=40,
-            color="white", va="center", zorder=61)
-    # Escala gráfica
+    tx, pos = x0 + PAD, m["pos"]
+    ax.text(tx, y0 + pos["titulo"], TITULO, fontproperties=fuentes["titulo"], fontsize=m["tam_titulo"],
+            color="white", va="top", linespacing=0.95, zorder=61)
+    dibujar_logo_horizontal(ax, tx, y0 + pos["logo"], m["logo_alto"], 61)
+    colores = {"intro": "#e3d0ff", "pasos": "white", "creditos": "#cdbbe6"}
+    for clave, (txt, fp, tam, interlineado) in m["bloques"].items():
+        ax.text(tx, y0 + pos[clave], txt, fontproperties=fp, fontsize=tam, color=colores[clave], va="top",
+                linespacing=interlineado, zorder=61)
+    muestras = ((MUJER, 10, "-"), (MARCA_CLARA, 18, "-"), ("#bbbbbb", 5, (0, (3, 2))))
+    for i, (txt, (c, grosor, estilo)) in enumerate(zip(m["leyenda"], muestras)):
+        y = y0 + pos["leyenda"] + i * FILA_LEYENDA
+        ax.plot([tx, tx + 6], [y, y], color=c, linewidth=grosor, linestyle=estilo, solid_capstyle="round", zorder=61)
+        ax.text(tx + SANGRIA_LEYENDA, y, txt, fontproperties=fuentes["texto"], fontsize=38, color="white",
+                va="center", zorder=61)
+    # Escala gráfica y norte
     km = proj.cm_por_km()
-    sy = y0 + h - 9
+    sy = y0 + pos["escala"]
     for i in range(2):
         ax.add_patch(Rectangle((tx + i * km, sy), km, 1.0, facecolor="white" if i % 2 == 0 else "#9c7cc4",
                                edgecolor="white", linewidth=2, zorder=61))
@@ -441,9 +491,6 @@ def cuadro_titulo(ax, x0, y0, w, h, fuentes, total_mujer, proj, logo):
             va="top", ha="center", zorder=61)
     ax.text(tx + 2 * km + 8, sy + 0.5, "N ↑", fontproperties=fuentes["titulo"], fontsize=48, color="white",
             va="center", zorder=61)
-    ax.text(tx, y0 + h - 3, "Mapa base © colaboradores de OpenStreetMap · OpenMapTiles · OpenFreeMap.  "
-            "Calles: Geochicas, «Las Calles de las Mujeres» (ODbL).  Textos: Wikipedia (CC BY-SA 4.0).",
-            fontproperties=fuentes["texto"], fontsize=20, color="#cdbbe6", va="center", zorder=61)
 
 
 def tarjetas_prueba(calles, urls, fuentes, logo, destino):
@@ -532,7 +579,8 @@ def main():
         trazar(ax, trazos, MARCA_CLARA, 15, 31)
         puntos[cid] = punto_de_calle(trazos)
 
-    titulo = (LADO_CM - MARGEN_CM - 112, MARGEN_CM, 112, 74 - 9)  # x, y, ancho, alto (arriba a la derecha)
+    maqueta = maquetar_titulo(ax, fuentes, total_mujer)
+    titulo = (LADO_CM - MARGEN_CM - maqueta["ancho"], MARGEN_CM, maqueta["ancho"], maqueta["alto"])  # arriba a la derecha
     reservada = (titulo[0] - 2, titulo[1] - 2, titulo[0] + titulo[2] + 2, titulo[1] + titulo[3] + 2)
     logo = Logo()
     k = logo.escala(QR_CM)
@@ -559,7 +607,7 @@ def main():
             "url": urls[cid],
         })
 
-    cuadro_titulo(ax, *titulo, fuentes, total_mujer, proj, logo)
+    cuadro_titulo(ax, titulo[0], titulo[1], maqueta, fuentes, proj)
 
     pdf = SALIDA / "mapa_calles_mujeres_320cm.pdf"
     print("Escribiendo PDF vectorial…")
