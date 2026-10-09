@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Genera el mapa impreso (plotter 320 × 320 cm): pines con el logo de Geochicas y un QR circular
+Genera el mapa impreso (plotter 320 × 240 cm): pines con el logo de Geochicas y un QR circular
 adentro, con la punta sobre cada calle.
 
     .venv/bin/python scripts/generar_mapa_impreso.py \
         --url-base https://seleneyang.github.io/calles-mujeres-ar/ar.html
 
 Salidas en impresion/:
-    mapa_calles_mujeres_320cm.pdf   vectorial, tamaño real, para el plotter
+    mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, para el plotter
     mapa_calles_mujeres_preview.png vista previa
     posiciones_qr.csv               dónde queda cada QR (cm desde la esquina superior izquierda)
     tarjetas_qr_prueba.pdf          los 30 pines QR en hojas carta para probar con el celular
@@ -52,8 +52,9 @@ GEOJSON_URL = (
 )
 UA = {"User-Agent": "GeochicasAR-print/1.0 (mapa impreso exposicion Geochicas)"}
 
-LADO_CM = 320.0
-LADO_KM = 25.0
+ANCHO_CM, ALTO_CM = 320.0, 240.0
+ALTO_KM = 24.5                       # las 30 calles abarcan ~22 km de norte a sur
+ANCHO_KM = ALTO_KM * ANCHO_CM / ALTO_CM
 CENTRO = (19.409, -99.1185)  # lat, lon: centro de las 30 calles seleccionadas
 ZOOM = 14
 CM = 1 / 2.54  # pulgadas por cm
@@ -101,25 +102,27 @@ def merc(lon, lat):
 class Proyeccion:
     """Web Mercator → cm sobre el lienzo (origen arriba a la izquierda)."""
 
-    def __init__(self, lat, lon, lado_km, lado_cm):
+    def __init__(self, lat, lon, ancho_km, ancho_cm, alto_cm):
         self.cx, self.cy = merc(lon, lat)
-        self.h = (lado_km * 500) / (40075016.686 * math.cos(math.radians(lat)))
-        self.k = lado_cm / (2 * self.h)
+        self.hx = (ancho_km * 500) / (40075016.686 * math.cos(math.radians(lat)))  # media anchura
+        self.hy = self.hx * alto_cm / ancho_cm
+        self.k = ancho_cm / (2 * self.hx)
+        self.ancho_km = ancho_km
 
     def xy(self, X, Y):
-        return (X - (self.cx - self.h)) * self.k, (Y - (self.cy - self.h)) * self.k
+        return (X - (self.cx - self.hx)) * self.k, (Y - (self.cy - self.hy)) * self.k
 
     def lonlat(self, lon, lat):
         return self.xy(*merc(lon, lat))
 
     def tiles(self, z):
         n = 2 ** z
-        x0, x1 = int((self.cx - self.h) * n), int((self.cx + self.h) * n)
-        y0, y1 = int((self.cy - self.h) * n), int((self.cy + self.h) * n)
+        x0, x1 = int((self.cx - self.hx) * n), int((self.cx + self.hx) * n)
+        y0, y1 = int((self.cy - self.hy) * n), int((self.cy + self.hy) * n)
         return [(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)]
 
     def cm_por_km(self):
-        return self.k * self.h * 2 / LADO_KM
+        return self.k * self.hx * 2 / self.ancho_km
 
 
 def fuente(nombre):
@@ -360,15 +363,47 @@ def se_cruzan(a, b):
     return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
 
 
-def colocar_marcadores(calles, puntos, logo, k, zona_reservada):
-    """Greedy: la punta del pin va sobre la calle; si choca con otro, se desplaza con una línea guía."""
-    colocadas, ocupado = {}, [zona_reservada]
+def _cruza(p1, p2, q1, q2):
+    """¿Se cruzan los segmentos p1-p2 y q1-q2? (sin contar extremos compartidos)"""
+    def o(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+    return o(p1, p2, q1) * o(p1, p2, q2) < 0 and o(q1, q2, p1) * o(q1, q2, p2) < 0
 
+
+def _atraviesa(p1, p2, r):
+    """¿El segmento p1-p2 pasa por dentro del rectángulo r?"""
+    for i in range(1, 20):
+        x = p1[0] + (p2[0] - p1[0]) * i / 20
+        y = p1[1] + (p2[1] - p1[1]) * i / 20
+        if r[0] < x < r[2] and r[1] < y < r[3]:
+            return True
+    return False
+
+
+def colocar_marcadores(calles, puntos, logo, k, zona_reservada, intentos=300):
+    """Prueba muchos órdenes de colocación y se queda con el de líneas guía más cortas y sin cruces."""
     def vecinos(cid):
         px, py = puntos[cid]
         return sum(1 for o, (qx, qy) in puntos.items() if o != cid and math.hypot(px - qx, py - qy) < 40)
 
-    for cid in sorted(calles, key=vecinos, reverse=True):
+    base = sorted(calles, key=vecinos, reverse=True)
+    rnd = random.Random(2026)  # semilla fija: el mapa sale igual cada vez que se genera
+    mejor = None
+    for i in range(intentos):
+        orden = base if i == 0 else rnd.sample(base, len(base))
+        r = _colocar_en_orden(orden, calles, puntos, logo, k, zona_reservada)
+        if r and (mejor is None or r[1] < mejor[1]):
+            mejor = r
+    if mejor is None:
+        raise SystemExit("No hubo espacio para todos los marcadores")
+    print(f"  colocación: coste {mejor[1]:.0f} tras {intentos} órdenes", flush=True)
+    return mejor[0]
+
+
+def _colocar_en_orden(orden, calles, puntos, logo, k, zona_reservada):
+    """Greedy: la punta del pin va sobre la calle; si choca con otro, se desplaza con una línea guía."""
+    colocadas, ocupado, guias, total = {}, [zona_reservada], [], 0.0
+    for cid in orden:
         px, py = puntos[cid]
         nombre = calles[cid]["mujer"]["nombre"]
         mejor = None
@@ -377,23 +412,35 @@ def colocar_marcadores(calles, puntos, logo, k, zona_reservada):
                 ang = 2 * math.pi * paso / 24
                 tx, ty = px + radio * math.cos(ang), py + radio * math.sin(ang)
                 r = caja_marcador(logo, k, tx, ty, nombre)
-                if r[0] < MARGEN_CM or r[1] < MARGEN_CM or r[2] > LADO_CM - MARGEN_CM or r[3] > LADO_CM - MARGEN_CM:
+                if r[0] < MARGEN_CM or r[1] < MARGEN_CM or r[2] > ANCHO_CM - MARGEN_CM or r[3] > ALTO_CM - MARGEN_CM:
                     continue
                 if any(se_cruzan(r, o) for o in ocupado):
                     continue
                 tapa = sum(1 for o, (qx, qy) in puntos.items()
                            if o != cid and r[0] - 2 < qx < r[2] + 2 and r[1] - 2 < qy < r[3] + 2)
-                coste = radio + tapa * 100
+                # Una línea guía que pasa por debajo de otro pin o cruza otra línea confunde
+                cruces = 0
+                if radio:
+                    seg = ((px, py), (tx, ty))
+                    cruces = sum(_atraviesa(*seg, o) for o in ocupado[1:])
+                    cruces += sum(_cruza(*seg, *g) for g in guias)
+                # y una nueva tampoco debe tapar líneas ya trazadas
+                cruces += sum(_atraviesa(*g, r) for g in guias)
+                penal = tapa * 100 + cruces * 45
+                coste = radio + penal
                 if mejor is None or coste < mejor[0]:
-                    mejor = (coste, tx, ty, r)
-            if mejor and mejor[0] < 100:
+                    mejor = (coste, tx, ty, r, penal)
+            if mejor and mejor[4] == 0:  # ya hay un lugar limpio: no hace falta alejarse más
                 break
         if mejor is None:
-            raise SystemExit(f"No hubo espacio para el marcador de {cid}")
-        _, tx, ty, r = mejor
+            return None
+        total += mejor[0]
+        _, tx, ty, r, _ = mejor
         colocadas[cid] = (tx, ty)
         ocupado.append(r)
-    return colocadas
+        if math.hypot(tx - px, ty - py) > 0.5:
+            guias.append(((px, py), (tx, ty)))
+    return colocadas, total
 
 
 def punto_de_calle(trazos):
@@ -536,19 +583,19 @@ def main():
     }
     calles = json.loads(Path(a.datos).read_text(encoding="utf-8"))["calles"]
     urls = {cid: f"{a.url_base}?calle_id={cid}" for cid in calles}
-    proj = Proyeccion(*CENTRO, LADO_KM, LADO_CM)
+    proj = Proyeccion(*CENTRO, ANCHO_KM, ANCHO_CM, ALTO_CM)
 
     print("Descargando mapa base (OpenFreeMap)…")
     rellenos, viales, rios, limites, colonias = capas_base(proj, descargar_tiles(proj))
     print("Calles con nombre de mujer (Geochicas)…")
     por_osm, trazos_mujer, total_mujer = calles_mujeres(proj)
 
-    fig = plt.figure(figsize=(LADO_CM * CM, LADO_CM * CM))
+    fig = plt.figure(figsize=(ANCHO_CM * CM, ALTO_CM * CM))
     ax = fig.add_axes([0, 0, 1, 1])
-    ax.set_xlim(0, LADO_CM)
-    ax.set_ylim(LADO_CM, 0)
+    ax.set_xlim(0, ANCHO_CM)
+    ax.set_ylim(ALTO_CM, 0)
     ax.axis("off")
-    ax.add_patch(Rectangle((0, 0), LADO_CM, LADO_CM, facecolor=FONDO, zorder=0))
+    ax.add_patch(Rectangle((0, 0), ANCHO_CM, ALTO_CM, facecolor=FONDO, zorder=0))
 
     rellenar(ax, rellenos[RESIDENCIAL], RESIDENCIAL, 1)
     rellenar(ax, rellenos[BOSQUE], BOSQUE, 2)
@@ -563,7 +610,7 @@ def main():
         trazar(ax, viales[clave], CALLE_MAYOR, ancho, 9)
     trazar(ax, limites, "#a9a9a9", 6, 10, linestyles=(0, (6, 4)))
     for (x, y), nombre in colonias:
-        if 0 < x < LADO_CM and 0 < y < LADO_CM:
+        if 0 < x < ANCHO_CM and 0 < y < ALTO_CM:
             ax.text(x, y, nombre.upper(), ha="center", va="center", fontsize=26, color=ETIQUETA,
                     fontproperties=fuentes["texto_b"], alpha=0.75, zorder=11)
 
@@ -580,7 +627,7 @@ def main():
         puntos[cid] = punto_de_calle(trazos)
 
     maqueta = maquetar_titulo(ax, fuentes, total_mujer)
-    titulo = (LADO_CM - MARGEN_CM - maqueta["ancho"], MARGEN_CM, maqueta["ancho"], maqueta["alto"])  # arriba a la derecha
+    titulo = (ANCHO_CM - MARGEN_CM - maqueta["ancho"], MARGEN_CM, maqueta["ancho"], maqueta["alto"])  # arriba a la derecha
     reservada = (titulo[0] - 2, titulo[1] - 2, titulo[0] + titulo[2] + 2, titulo[1] + titulo[3] + 2)
     logo = Logo()
     k = logo.escala(QR_CM)
@@ -609,7 +656,7 @@ def main():
 
     cuadro_titulo(ax, titulo[0], titulo[1], maqueta, fuentes, proj)
 
-    pdf = SALIDA / "mapa_calles_mujeres_320cm.pdf"
+    pdf = SALIDA / "mapa_calles_mujeres_320x240cm.pdf"
     print("Escribiendo PDF vectorial…")
     fig.savefig(pdf)
     fig.savefig(SALIDA / "mapa_calles_mujeres_preview.png", dpi=a.dpi_preview)

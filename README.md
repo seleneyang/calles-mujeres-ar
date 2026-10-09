@@ -9,7 +9,7 @@ geochicas-ar/
 ├── seleccion_30.json        # Curaduría: 15 con artículo + 15 sin artículo, y nombres corregidos
 ├── contextos.json           # Curaduría: imágenes de contexto de cada mujer (para llenar)
 ├── impresion/               # ← ARCHIVOS PARA IMPRIMIR
-│   ├── mapa_calles_mujeres_320cm.pdf   # vectorial, 320 × 320 cm, para el plotter
+│   ├── mapa_calles_mujeres_320x240cm.pdf  # vectorial, 320 × 240 cm, para el plotter
 │   ├── mapa_calles_mujeres_preview.png # vista previa
 │   ├── posiciones_qr.csv               # dónde queda cada QR (cm) para revisar en sitio
 │   └── tarjetas_qr_prueba.pdf          # los 30 QR en hojas carta para probar con el celular
@@ -89,13 +89,13 @@ python3 -m venv .venv && .venv/bin/pip install segno mapbox-vector-tile matplotl
 .venv/bin/python scripts/generar_mapa_impreso.py --url-base https://seleneyang.github.io/calles-mujeres-ar/ar.html
 ```
 
-El mapa impreso cubre un cuadrado de 25 × 25 km centrado en las 30 calles (escala aproximada de 1 cm por cada 78 m) e incluye:
+El mapa impreso mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las 30 calles (escala aproximada de 1 cm por cada 102 m). Incluye:
 
 - **Mapa base:** teselas vectoriales de OpenFreeMap con la paleta Positron. Es la misma que usa la app y no necesita API key. Las teselas se guardan en `.cache/`.
 - **Calles con nombre de mujer:** todas las del dataset, pintadas en lila.
 - **Tarjeta de leyenda:** lleva el título, el logotipo horizontal de Geochicas en vectores (`assets/logo_geochicas_horizontal.json`, extraído de `assets/logo_geochicas_horizontal.pdf`), el texto de presentación, las instrucciones, la leyenda, la escala y los créditos. Su tamaño se calcula a partir del texto real, para que no quede espacio vacío.
 - **Las 30 seleccionadas:** todas se ven iguales, con el mismo color de calle y el mismo pin. Desde el mapa no se puede saber cuál tiene artículo en Wikipedia: cada persona lo descubre al escanear.
-- **Los pines:** son el logo de Geochicas (vectorizado en `assets/logo_geochicas.json` a partir de `assets/logo_geochicas.webp`), de 29 × 21.5 cm, con la punta sobre la calle. Si dos pines chocan, uno se desplaza y una línea lo une a su calle.
+- **Los pines:** son el logo de Geochicas (vectorizado en `assets/logo_geochicas.json` a partir de `assets/logo_geochicas.webp`), de 29 × 21.5 cm, con la punta sobre la calle. Si dos pines chocan, uno se desplaza y una línea lo une a su calle. El script prueba 300 órdenes de colocación y se queda con el de líneas más cortas y sin cruces; usa una semilla fija, así que el resultado es siempre el mismo.
 - **El QR circular:** ocupa todo el interior del círculo del logo y está en el mismo color de Geochicas. La parte que la cámara lee es un QR cuadrado normal de 9.5 cm, versión 8 y corrección de errores nivel Q. Alrededor lleva módulos decorativos idénticos que completan el círculo. Entre el código y la decoración se dejan **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). En las pruebas, sin ese margen no se leyó ninguno (0/30), y con él ZXing leyó los 30 de frente, inclinados, girados y desenfocados. **No reduzcas esos valores sin volver a probar.**
 
 > ⚠️ Los QR llevan la URL de `--url-base`. Si cambias el dominio o el nombre del repositorio, **vuelve a generar el PDF antes de imprimir**.

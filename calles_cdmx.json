@@ -35,8 +35,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 96.0,
-        "qr_y_cm": 153.8
+        "qr_x_cm": 103.6,
+        "qr_y_cm": 106.1
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -60,8 +60,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 293.6,
-        "qr_y_cm": 182.8
+        "qr_x_cm": 262.2,
+        "qr_y_cm": 133.0
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -86,8 +86,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 196.2,
-        "qr_y_cm": 287.5
+        "qr_x_cm": 244.7,
+        "qr_y_cm": 207.8
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -111,8 +111,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 171.7,
-        "qr_y_cm": 257.3
+        "qr_x_cm": 167.4,
+        "qr_y_cm": 189.4
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -136,8 +136,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 30.6,
-        "qr_y_cm": 195.6
+        "qr_x_cm": 43.6,
+        "qr_y_cm": 152.8
       },
       "contexto": [
         {
@@ -196,8 +196,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 25.6,
-        "qr_y_cm": 86.2
+        "qr_x_cm": 57.1,
+        "qr_y_cm": 59.1
       },
       "contexto": [
         {
@@ -257,8 +257,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 120.0,
-        "qr_y_cm": 157.7
+        "qr_x_cm": 52.8,
+        "qr_y_cm": 97.4
       },
       "contexto": [
         {
@@ -305,8 +305,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 195.4,
-        "qr_y_cm": 250.7
+        "qr_x_cm": 192.2,
+        "qr_y_cm": 185.0
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -330,8 +330,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 163.4,
-        "qr_y_cm": 128.3
+        "qr_x_cm": 175.7,
+        "qr_y_cm": 91.3
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -356,8 +356,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 114.8,
-        "qr_y_cm": 71.5
+        "qr_x_cm": 127.7,
+        "qr_y_cm": 56.5
       },
       "contexto": [
         {
@@ -407,8 +407,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 174.1,
-        "qr_y_cm": 33.9
+        "qr_x_cm": 170.8,
+        "qr_y_cm": 19.0
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -432,8 +432,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 245.0,
-        "qr_y_cm": 26.1
+        "qr_x_cm": 243.3,
+        "qr_y_cm": 21.8
       },
       "contexto": [
         {
@@ -497,8 +497,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 222.0,
-        "qr_y_cm": 194.8
+        "qr_x_cm": 230.1,
+        "qr_y_cm": 144.9
       },
       "contexto": [
         {
@@ -554,8 +554,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 92.0,
-        "qr_y_cm": 219.8
+        "qr_x_cm": 68.9,
+        "qr_y_cm": 135.6
       },
       "contexto": [
         {
@@ -613,8 +613,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 68.8,
-        "qr_y_cm": 236.1
+        "qr_x_cm": 91.5,
+        "qr_y_cm": 178.8
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -638,8 +638,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 225.0,
-        "qr_y_cm": 268.1
+        "qr_x_cm": 220.0,
+        "qr_y_cm": 198.3
       },
       "contexto": [
         {
@@ -688,8 +688,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 140.1,
-        "qr_y_cm": 101.6
+        "qr_x_cm": 151.7,
+        "qr_y_cm": 70.9
       },
       "contexto": [
         {
@@ -748,8 +748,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 152.5,
-        "qr_y_cm": 178.7
+        "qr_x_cm": 130.7,
+        "qr_y_cm": 121.2
       },
       "contexto": [
         {
@@ -796,8 +796,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 68.7,
-        "qr_y_cm": 198.9
+        "qr_x_cm": 96.8,
+        "qr_y_cm": 143.6
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -821,8 +821,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 251.5,
-        "qr_y_cm": 197.9
+        "qr_x_cm": 205.8,
+        "qr_y_cm": 141.1
       },
       "contexto": [
         {
@@ -920,8 +920,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 144.2,
-        "qr_y_cm": 257.1
+        "qr_x_cm": 143.3,
+        "qr_y_cm": 199.0
       },
       "contexto": [],
       "linea_tiempo": [
@@ -973,8 +973,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 109.9,
-        "qr_y_cm": 21.7
+        "qr_x_cm": 114.7,
+        "qr_y_cm": 20.5
       },
       "contexto": [
         {
@@ -1022,8 +1022,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 136.2,
-        "qr_y_cm": 21.3
+        "qr_x_cm": 141.1,
+        "qr_y_cm": 22.2
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1048,8 +1048,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 206.2,
-        "qr_y_cm": 99.5
+        "qr_x_cm": 200.4,
+        "qr_y_cm": 69.3
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1073,8 +1073,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 138.9,
-        "qr_y_cm": 293.3
+        "qr_x_cm": 157.2,
+        "qr_y_cm": 150.4
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1098,8 +1098,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 123.7,
-        "qr_y_cm": 198.9
+        "qr_x_cm": 122.4,
+        "qr_y_cm": 156.5
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1123,8 +1123,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 97.4,
-        "qr_y_cm": 260.1
+        "qr_x_cm": 119.7,
+        "qr_y_cm": 193.0
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1151,8 +1151,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 121.0,
-        "qr_y_cm": 238.5
+        "qr_x_cm": 72.3,
+        "qr_y_cm": 215.8
       },
       "contexto": [],
       "linea_tiempo": [],
@@ -1176,8 +1176,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 194.7,
-        "qr_y_cm": 139.6
+        "qr_x_cm": 229.9,
+        "qr_y_cm": 100.0
       },
       "contexto": [
         {
@@ -1254,8 +1254,8 @@
         ]
       },
       "mapa_fisico": {
-        "qr_x_cm": 91.4,
-        "qr_y_cm": 92.8
+        "qr_x_cm": 104.3,
+        "qr_y_cm": 65.0
       },
       "contexto": [
         {
