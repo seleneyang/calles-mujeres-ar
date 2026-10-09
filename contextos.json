@@ -6,7 +6,8 @@
     "Si la imagen NO está en Commons, usa url + autor + licencia (+ pagina) en lugar de archivo. Solo imágenes con licencia libre o de dominio público.",
     "Si una mujer sin artículo tiene ficha en Wikidata, agrega \"wikidata_id\": \"Q...\" para mostrar su línea de tiempo.",
     "Opcional: \"temas\": [\"insurgentas\", \"escritoras\", \"artistas\", \"cientificas\", \"educadoras\", \"feministas\"] para sumarla a un recorrido.",
-    "Si una mujer queda sin imágenes, la app muestra un marco vacío que invita a subir una a Commons."
+    "Si una mujer queda sin imágenes, la app muestra un marco vacío que invita a subir una a Commons.",
+    "Opcional por imagen: \"encuadre\": \"completa\" para mostrarla entera, sin recortar (útil en fotos de grupo)."
   ],
   "leona-vicario-24850916": {
     "nombre": "Leona Vicario",
@@ -97,7 +98,25 @@
   },
   "madame-cuirie-392206229": {
     "nombre": "Marie Curie",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Poland 4089 - Marie Curie (4198109017).jpg",
+        "pie": "La calle Freta, en Varsovia, donde nació en 1867"
+      },
+      {
+        "archivo": "File:Pierre and Marie Curie.jpg",
+        "pie": "Con Pierre Curie hacia 1904: ella opera el aparato con el que midieron la radiactividad que los llevó al radio"
+      },
+      {
+        "archivo": "File:Marie Curie in her Paris Laboratory, 1912.jpg",
+        "pie": "En su laboratorio de París, en 1912, un año después de su segundo Premio Nobel"
+      },
+      {
+        "archivo": "File:1911 Solvay conference.jpg",
+        "pie": "Conferencia Solvay de 1911, en Bruselas: la única mujer entre los científicos (sentada, segunda desde la derecha)",
+        "encuadre": "completa"
+      }
+    ]
   },
   "gabriela-mistral-32886048": {
     "nombre": "Gabriela Mistral",

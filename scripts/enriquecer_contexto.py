@@ -220,7 +220,8 @@ def main():
         imgs = []
         for img in curaduria.get(cid, {}).get("imagenes", []):
             if img.get("archivo") in cred:
-                imgs.append({**cred[img["archivo"]], "pie": img.get("pie", "")})
+                imgs.append({**cred[img["archivo"]], "pie": img.get("pie", ""),
+                             "completa": img.get("encuadre") == "completa"})
             elif img.get("url"):  # imagen fuera de Commons: créditos escritos a mano
                 faltan = [k for k in ("autor", "licencia") if not img.get(k)]
                 if faltan:

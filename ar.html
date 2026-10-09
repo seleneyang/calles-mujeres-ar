@@ -278,8 +278,9 @@
   @keyframes kb-suave { from { transform: scale(1); } to { transform: scale(1.06); } }
   /* Imágenes pequeñas: foto enmarcada sobre una copia desenfocada de sí misma */
   .mundo figure.enmarcada img.difusa { filter: blur(28px) saturate(1.2); transform: scale(1.2); opacity: .75; }
+  /* top/height los ajusta JS al hueco libre entre el pie de foto y la tarjeta */
   .mundo figure.enmarcada img.principal {
-    inset: 15% 14% 50%; width: 72%; height: 35%; object-fit: contain;
+    left: 10%; width: 80%; top: 18%; height: 24%; object-fit: contain;
     filter: drop-shadow(0 18px 40px rgba(0,0,0,.6));
   }
   .mundo::after {
@@ -763,7 +764,8 @@ function montarMundo(imagenes) {
   const capa = $('#mundo');
   const dur = CONFIG.SEGUNDOS_POR_IMAGEN + 2; // dura un poco más que la imagen: nunca se ve quieta
   const figuras = imagenes.map((img, k) => {
-    const enmarcada = img.ancho && img.ancho < 900;
+    // Enmarcada: imágenes pequeñas, o las que deben verse completas (p. ej. fotos de grupo)
+    const enmarcada = img.completa || (img.ancho && img.ancho < 900);
     const kb = enmarcada ? 'kb-suave'
       : img.horizontal ? (k % 2 ? 'kb-paneo-izq' : 'kb-paneo-der')
       : (k % 2 ? 'kb-aleja' : 'kb-acerca');
@@ -783,10 +785,29 @@ function montarMundo(imagenes) {
         el('a', { href: img.pagina, target: '_blank', rel: 'noopener' }, img.licencia || 'ver licencia')));
   };
   mostrar();
+  ajustarEnmarcadas();
+  addEventListener('resize', ajustarEnmarcadas);
   if (figuras.length > 1) setInterval(() => { i = (i + 1) % figuras.length; mostrar(); }, CONFIG.SEGUNDOS_POR_IMAGEN * 1000);
   alternarMundo(true);
   document.body.classList.add('con-mundo');
   $('#pie-mundo').classList.add('visible');
+}
+
+// La foto enmarcada ocupa exactamente el espacio libre entre el pie de foto y la tarjeta
+function ajustarEnmarcadas() {
+  requestAnimationFrame(() => {
+    const pie = $('#pie-mundo').getBoundingClientRect();
+    const panel = contenido.querySelector('.panel')?.getBoundingClientRect();
+    if (!panel) return;
+    for (const fig of document.querySelectorAll('#mundo figure.enmarcada')) {
+      const origen = fig.getBoundingClientRect().top; // la capa es más grande que la pantalla (parallax)
+      const arriba = pie.bottom + 12 - origen;
+      const alto = Math.max(80, panel.top - 14 - (pie.bottom + 12));
+      const img = fig.querySelector('img.principal');
+      img.style.top = `${arriba}px`;
+      img.style.height = `${alto}px`;
+    }
+  });
 }
 
 function alternarMundo(visible = !mundoVisible) {
