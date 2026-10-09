@@ -81,14 +81,26 @@
   },
   "dolores-jimenez-muro-25053071": {
     "nombre": "Dolores Jiménez y Muro",
-    "imagenes": []
+    "imagenes": [
+      {
+        "archivo": "File:Dolores jiménez y muro.jpg",
+        "pie": "Retrato hacia 1905, pocos años antes de unirse a la Revolución",
+        "encuadre": "completa"
+      },
+      {
+        "archivo": "File:Museo de las Mujeres Zapatistas.jpg",
+        "pie": "El Museo de las Mujeres Zapatistas, en la antigua casa de Josefa Espejo en Ayala, Morelos: la memoria de las mujeres del zapatismo",
+        "encuadre": "completa"
+      }
+    ]
   },
   "josefa-ortiz-dedominguez-99984608": {
     "nombre": "Josefa Ortiz de Domínguez",
     "imagenes": [
       {
         "archivo": "File:La Ilustre Corregidora María Josefa Ortiz de Domínguez.jpg",
-        "pie": "«La ilustre Corregidora», óleo de Ramón Sánchez Lima, 1892"
+        "pie": "«La ilustre Corregidora», óleo de Ramón Sánchez Lima, 1892",
+        "encuadre": "completa"
       },
       {
         "archivo": "File:Casa donde murió Doña Josefa Ortiz de Domínguez, Ciudad de México - Fachada.jpg",

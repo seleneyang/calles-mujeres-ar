@@ -199,7 +199,30 @@
         "qr_x_cm": 25.6,
         "qr_y_cm": 86.2
       },
-      "contexto": [],
+      "contexto": [
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Dolores_jim%C3%A9nez_y_muro.jpg/1280px-Dolores_jim%C3%A9nez_y_muro.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Dolores_jim%C3%A9nez_y_muro.jpg",
+          "autor": "Autor desconocido",
+          "licencia": "Public domain",
+          "licencia_url": "",
+          "horizontal": false,
+          "ancho": 2000,
+          "pie": "Retrato hacia 1905, pocos años antes de unirse a la Revolución",
+          "completa": true
+        },
+        {
+          "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Museo_de_las_Mujeres_Zapatistas.jpg/1280px-Museo_de_las_Mujeres_Zapatistas.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+          "pagina": "https://commons.wikimedia.org/wiki/File:Museo_de_las_Mujeres_Zapatistas.jpg",
+          "autor": "Logue 0019",
+          "licencia": "CC BY-SA 4.0",
+          "licencia_url": "https://creativecommons.org/licenses/by-sa/4.0",
+          "horizontal": true,
+          "ancho": 4096,
+          "pie": "El Museo de las Mujeres Zapatistas, en la antigua casa de Josefa Espejo en Ayala, Morelos: la memoria de las mujeres del zapatismo",
+          "completa": true
+        }
+      ],
       "linea_tiempo": [
         {
           "anio": 1848,
@@ -241,7 +264,7 @@
         {
           "src": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Elena_Arizmendi_ca_1916.PNG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
           "pagina": "https://commons.wikimedia.org/wiki/File:Elena_Arizmendi_ca_1916.PNG",
-          "autor": "Unknown authorUnknown author",
+          "autor": "Autor desconocido",
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": false,
@@ -544,7 +567,7 @@
           "horizontal": false,
           "ancho": 3406,
           "pie": "«La ilustre Corregidora», óleo de Ramón Sánchez Lima, 1892",
-          "completa": false
+          "completa": true
         },
         {
           "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Casa_donde_muri%C3%B3_Do%C3%B1a_Josefa_Ortiz_de_Dom%C3%ADnguez%2C_Ciudad_de_M%C3%A9xico_-_Fachada.jpg/1280px-Casa_donde_muri%C3%B3_Do%C3%B1a_Josefa_Ortiz_de_Dom%C3%ADnguez%2C_Ciudad_de_M%C3%A9xico_-_Fachada.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -622,7 +645,7 @@
         {
           "src": "https://upload.wikimedia.org/wikipedia/commons/4/48/Laura_Mendez_de_Cuenca_poetisa_mexicana.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
           "pagina": "https://commons.wikimedia.org/wiki/File:Laura_Mendez_de_Cuenca_poetisa_mexicana.jpg",
-          "autor": "Unknown authorUnknown author",
+          "autor": "Autor desconocido",
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": false,
@@ -816,7 +839,7 @@
         {
           "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Pierre_and_Marie_Curie.jpg/1280px-Pierre_and_Marie_Curie.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "pagina": "https://commons.wikimedia.org/wiki/File:Pierre_and_Marie_Curie.jpg",
-          "autor": "Unknown photographer",
+          "autor": "Autor desconocido",
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": true,
@@ -827,7 +850,7 @@
         {
           "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Marie_Curie_in_her_Paris_Laboratory%2C_1912.jpg/1280px-Marie_Curie_in_her_Paris_Laboratory%2C_1912.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
           "pagina": "https://commons.wikimedia.org/wiki/File:Marie_Curie_in_her_Paris_Laboratory,_1912.jpg",
-          "autor": "unattributed",
+          "autor": "Autor desconocido",
           "licencia": "Public domain",
           "licencia_url": "",
           "horizontal": true,

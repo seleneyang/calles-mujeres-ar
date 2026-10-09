@@ -55,6 +55,14 @@ def limpiar_html(t):
 
 
 # ---------------------------------------------------------------- Commons
+def autor_legible(autor):
+    """Commons a veces duplica el texto ("Unknown authorUnknown author") o lo deja en inglés."""
+    if not autor or re.fullmatch(r"(unknown( author| photographer)?|unattributed|anonymous|desconocido)+", autor, re.I):
+        return "Autor desconocido"
+    mitad = len(autor) // 2
+    return autor[:mitad] if len(autor) % 2 == 0 and autor[:mitad] == autor[mitad:] else autor
+
+
 def creditos_commons(archivos):
     """Autor, licencia y URL (1280 px) de cada archivo de Commons."""
     info = {}
@@ -75,7 +83,7 @@ def creditos_commons(archivos):
             info[a] = {
                 "src": ii.get("thumburl") or ii["url"],
                 "pagina": ii["descriptionurl"],
-                "autor": limpiar_html(md.get("Artist", {}).get("value")) or "Autor desconocido",
+                "autor": autor_legible(limpiar_html(md.get("Artist", {}).get("value"))),
                 "licencia": md.get("LicenseShortName", {}).get("value", ""),
                 "licencia_url": md.get("LicenseUrl", {}).get("value", ""),
                 "horizontal": ii["width"] >= ii["height"],
