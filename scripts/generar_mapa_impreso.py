@@ -8,8 +8,9 @@ adentro, con la punta sobre cada calle.
 
 Salidas en impresion/:
     mapa_calles_mujeres_320x240cm.pdf  vectorial, tamaño real, en RGB (para revisar en pantalla)
-    PARA_IMPRESION_mapa_calles_mujeres_320x240cm_CMYK.pdf   la misma, en CMYK: ESTA es la que va a la imprenta
-                                    (requiere Ghostscript: brew install ghostscript)
+    PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf   ESTA es la que va a la imprenta:
+                                    CMYK, textos en curvas y al 20 % (64 × 48 cm), como pide la ficha técnica
+                                    de la imprenta para piezas de más de 3 m (requiere: brew install ghostscript)
     mapa_calles_mujeres_preview.png vista previa
     posiciones_qr.csv               dónde queda cada QR (cm desde la esquina superior izquierda)
     tarjetas_qr_prueba.pdf          los 30 pines QR en hojas carta para probar con el celular
@@ -581,18 +582,26 @@ def tarjetas_prueba(calles, urls, fuentes, logo, destino):
             plt.close(fig)
 
 
-def convertir_a_cmyk(origen, destino):
-    """Copia en CMYK para imprenta (matplotlib solo escribe RGB). Usa el perfil CMYK por omisión de Ghostscript."""
+ESCALA_IMPRENTA = 0.20  # ficha técnica de la imprenta: piezas de más de 3 m se envían al 20 %
+
+
+def preparar_para_imprenta(origen, destino):
+    """Archivo según la ficha técnica de la imprenta: CMYK (sin RGB), textos convertidos a curvas y al 20 %
+    del tamaño final. Es vectorial, así que no pierde calidad al ampliarlo al 500 %.
+    Usa Ghostscript con su perfil CMYK por omisión (matplotlib solo escribe RGB)."""
     gs = shutil.which("gs")
     if not gs:
-        print("  ⚠️  Ghostscript no está instalado: no se generó la versión CMYK (brew install ghostscript)")
+        print("  ⚠️  Ghostscript no está instalado: no se generó el archivo para imprenta (brew install ghostscript)")
         return
+    ancho_pt = ANCHO_CM * ESCALA_IMPRENTA / 2.54 * 72
+    alto_pt = ALTO_CM * ESCALA_IMPRENTA / 2.54 * 72
     subprocess.run([gs, "-q", "-o", str(destino), "-sDEVICE=pdfwrite",
                     "-sColorConversionStrategy=CMYK", "-sProcessColorModel=DeviceCMYK", "-dOverrideICC=true",
-                    "-dCompatibilityLevel=1.6", "-dAutoRotatePages=/None", "-dEmbedAllFonts=true",
-                    "-dSubsetFonts=true", "-dDownsampleColorImages=false", "-dDownsampleGrayImages=false",
-                    str(origen)], check=True)
-    print(f"  CMYK para imprenta → {destino.name}")
+                    "-dNoOutputFonts",  # textos en curvas
+                    f"-dDEVICEWIDTHPOINTS={ancho_pt:.2f}", f"-dDEVICEHEIGHTPOINTS={alto_pt:.2f}",
+                    "-dFIXEDMEDIA", "-dPDFFitPage", "-dCompatibilityLevel=1.6", "-dAutoRotatePages=/None",
+                    "-dDownsampleColorImages=false", "-dDownsampleGrayImages=false", str(origen)], check=True)
+    print(f"  Para imprenta (CMYK, curvas, {ESCALA_IMPRENTA:.0%}) → {destino.name}")
 
 
 # ---------------------------------------------------------------- main
@@ -701,7 +710,7 @@ def main():
         w.writerows(sorted(filas, key=lambda f: (f["qr_centro_y_cm"], f["qr_centro_x_cm"])))
 
     tarjetas_prueba(calles, urls, fuentes, logo, SALIDA / "tarjetas_qr_prueba.pdf")
-    convertir_a_cmyk(pdf, SALIDA / "PARA_IMPRESION_mapa_calles_mujeres_320x240cm_CMYK.pdf")
+    preparar_para_imprenta(pdf, SALIDA / "PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf")
     print(f"Listo → {SALIDA}  ({pdf.stat().st_size / 1e6:.1f} MB)")
 
 

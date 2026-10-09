@@ -9,7 +9,7 @@ geochicas-ar/
 ├── seleccion_30.json        # Curaduría: 15 con artículo + 15 sin artículo, y nombres corregidos
 ├── contextos.json           # Curaduría: imágenes de contexto de cada mujer (para llenar)
 ├── impresion/               # ← ARCHIVOS PARA IMPRIMIR
-│   ├── PARA_IMPRESION_mapa_calles_mujeres_320x240cm_CMYK.pdf  # ← EL QUE VA A LA IMPRENTA (CMYK)
+│   ├── PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf  # ← EL QUE VA A LA IMPRENTA
 │   ├── mapa_calles_mujeres_320x240cm.pdf  # el mismo en RGB, para revisar en pantalla
 │   ├── mapa_calles_mujeres_preview.png # vista previa
 │   ├── posiciones_qr.csv               # dónde queda cada QR (cm) para revisar en sitio
@@ -100,7 +100,12 @@ El mapa impreso mide 320 × 240 cm y cubre unos 32.7 × 24.5 km centrados en las
 - **El QR circular:** ocupa todo el interior del círculo del logo y está en el color de Geochicas. La parte que la cámara lee es un QR cuadrado de **8 cm**, versión 5 (37 × 37 módulos de unos 2.2 mm) y corrección de errores nivel Q, rodeado de módulos decorativos que completan el círculo. Entre el código y la decoración hay **1 módulo blanco**, y **2 módulos** alrededor de los tres cuadros de las esquinas (`QR_SILENCIO` y `QR_SILENCIO_BUSCADORES`). Sin ese margen no se leyó ninguno (0/30). **No reduzcas esos valores sin volver a probar.**
   - **URL corta:** el QR lleva `https://seleneyang.github.io/calles-mujeres-ar/?calle_id=xxx`. El código de 3 caracteres sale del `calle_id` (`codigo_corto()`) y no revela nada de la calle. `index.html` redirige a `ar.html` conservando el parámetro, y `ar.html` acepta tanto el código como el `calle_id` completo. Una URL más corta significa menos módulos, cada uno más grande: en las pruebas, este QR de 8 cm se leyó en condiciones donde el anterior de 9.5 cm (49 × 49) ya fallaba.
 
-> 🖨️ **Para la imprenta usa `PARA_IMPRESION_…_CMYK.pdf`.** Está convertido a CMYK con Ghostscript (`brew install ghostscript`) y su perfil CMYK por omisión. Las tintas quedan en un máximo de 288 %, y el morado de Geochicas (#871657) queda en C42 M100 Y40 K19. Si la imprenta trabaja con un perfil concreto (por ejemplo FOGRA39 o GRACoL), se puede convertir con ese perfil.
+> 🖨️ **Para la imprenta usa `PARA_IMPRESION_mapa_320x240cm_ESCALA_20pct_CMYK_curvas.pdf`.** Cumple la ficha técnica de la imprenta (Sinergia Publicitaria):
+> - **Escala:** al 20 % del tamaño final (64 × 48 cm), porque la pieza mide más de 3 m. Hay que imprimirlo al **500 %** para que quede de 320 × 240 cm; es vectorial y no pierde calidad.
+> - **Color:** en CMYK, sin RGB ni Pantone. Usa el perfil CMYK por omisión de Ghostscript: las tintas llegan a un máximo de 288 % y el morado de Geochicas (#871657) queda en C42 M100 Y40 K19.
+> - **Textos:** convertidos a curvas.
+>
+> Lo genera `generar_mapa_impreso.py` (requiere `brew install ghostscript`).
 
 > ⚠️ Los QR llevan la URL de `--url-base`. Si cambias el dominio o el nombre del repositorio, **vuelve a generar el PDF antes de imprimir**.
 
