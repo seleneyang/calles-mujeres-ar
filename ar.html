@@ -126,6 +126,37 @@
     from { opacity: 0; transform: translateY(40px) rotateX(25deg) scale(.92); }
     to   { opacity: 1; transform: none; }
   }
+  /* Cerrar la tarjeta: se hunde hacia el mapa */
+  .panel.saliendo { animation: hundirse .32s ease-in forwards !important; }
+  @keyframes hundirse { to { opacity: 0; transform: translateY(60px) rotateX(30deg) scale(.9); } }
+  .cerrar-tarjeta {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+    border: 1px solid var(--borde); background: rgba(18,6,31,.6); color: var(--texto); font-size: 1.1rem;
+  }
+  .cerrar-tarjeta:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
+  .panel .etiqueta, .panel .alerta { margin-right: 44px; }
+
+  /* Visor: la cámara sigue encendida esperando el siguiente pin */
+  .visor { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+  .visor-marco {
+    position: relative; width: min(62vw, 260px); aspect-ratio: 1; border-radius: 28px;
+    box-shadow: 0 0 0 100vmax rgba(18,6,31,.28);
+  }
+  .visor-marco::before, .visor-marco::after {
+    content: ""; position: absolute; inset: 0; border-radius: 28px;
+    border: 4px solid var(--lila-200);
+    -webkit-mask: conic-gradient(#000 0 25%, transparent 0 50%, #000 0 75%, transparent 0) 50% 50% / 60% 60%;
+            mask: conic-gradient(#000 0 25%, transparent 0 50%, #000 0 75%, transparent 0) 50% 50% / 60% 60%;
+  }
+  .visor-marco::after { inset: 0; border-color: transparent; border-top-color: var(--lila-200);
+    -webkit-mask: none; mask: none; border-radius: 0; height: 0; top: 50%; border-width: 2px 0 0;
+    box-shadow: 0 0 14px var(--morado-400); animation: barrido 2.2s ease-in-out infinite; }
+  @keyframes barrido { 0%, 100% { transform: translateY(-110px); opacity: .2; } 50% { transform: translateY(110px); opacity: 1; } }
+  .visor p { font-family: var(--titular); font-size: 1.2rem; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+  .visor small { color: var(--lila-100); font-size: .85rem; text-shadow: 0 1px 8px rgba(0,0,0,.7); max-width: 30ch; }
+  .visor.encontrado .visor-marco::before { border-color: var(--ambar); }
+
 
   .etiqueta {
     display: inline-flex; align-items: center; gap: 8px;
@@ -651,8 +682,14 @@ function panelArticulo(calle, resumen) {
   return armarPanel(calle, resumen, url, foto, herramientas, [historia]);
 }
 
+function botonCerrar() {
+  return el('button', { class: 'cerrar-tarjeta', type: 'button', 'aria-label': 'Cerrar y buscar otro pin',
+    onclick: cerrarTarjeta }, '✕');
+}
+
 function armarPanel(calle, resumen, url, foto, herramientas, vistas) {
   return el('article', { class: 'panel', 'aria-labelledby': 'titulo-calle' },
+    botonCerrar(),
     el('span', { class: 'etiqueta' }, 'Calle con nombre de mujer'),
     el('div', { class: 'cabecera' },
       foto && el('img', { class: 'retrato', src: foto, alt: `Retrato de ${calle.mujer.nombre}` }),
@@ -694,6 +731,7 @@ function panelBrecha(calle, datos) {
     : null;
 
   return el('article', { class: 'panel brecha', role: 'alert', 'aria-labelledby': 'titulo-calle' },
+    botonCerrar(),
     el('span', { class: 'alerta' }, '⚠ Brecha de datos'),
     el('div', { class: 'herramientas' },
       el('h1', { id: 'titulo-calle' }, calle.mujer.nombre),
@@ -858,7 +896,19 @@ function avisarFalloCamara(e) {
 // ============================================================================
 let mundoVisible = false;
 
+let intervaloMundo = null;
+let escuchandoResize = false;
+
+function limpiarMundo() {
+  clearInterval(intervaloMundo);
+  $('#mundo').classList.remove('visible');
+  $('#pie-mundo').classList.remove('visible');
+  document.body.classList.remove('con-mundo');
+  setTimeout(() => { if (!document.body.classList.contains('con-mundo')) $('#mundo').replaceChildren(); }, 900);
+}
+
 function montarMundo(imagenes) {
+  limpiarMundo();
   if (!imagenes?.length) return;
   const capa = $('#mundo');
   const dur = CONFIG.SEGUNDOS_POR_IMAGEN + 2; // dura un poco más que la imagen: nunca se ve quieta
@@ -885,8 +935,10 @@ function montarMundo(imagenes) {
   };
   mostrar();
   ajustarEnmarcadas();
-  addEventListener('resize', ajustarEnmarcadas);
-  if (figuras.length > 1) setInterval(() => { i = (i + 1) % figuras.length; mostrar(); }, CONFIG.SEGUNDOS_POR_IMAGEN * 1000);
+  if (!escuchandoResize) { addEventListener('resize', ajustarEnmarcadas); escuchandoResize = true; }
+  if (figuras.length > 1) {
+    intervaloMundo = setInterval(() => { i = (i + 1) % figuras.length; mostrar(); }, CONFIG.SEGUNDOS_POR_IMAGEN * 1000);
+  }
   alternarMundo(true);
   document.body.classList.add('con-mundo');
   $('#pie-mundo').classList.add('visible');
@@ -1017,6 +1069,16 @@ function giroDelQR(imagen) {
   return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
 }
 
+// Recorta el centro del cuadro de video (donde apunta la persona) a resolución completa.
+// Reducir el cuadro entero dejaba el QR demasiado pequeño para leerlo desde de pie.
+function cuadroCentral(video, lienzo, ctx, fraccion = 0.7, maximo = 900) {
+  const lado = Math.min(video.videoWidth, video.videoHeight) * fraccion;
+  lienzo.width = lienzo.height = Math.round(Math.min(lado, maximo));
+  ctx.drawImage(video, (video.videoWidth - lado) / 2, (video.videoHeight - lado) / 2, lado, lado,
+    0, 0, lienzo.width, lienzo.height);
+  return ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+}
+
 function cargarScript(src) {
   return new Promise((ok, error) => {
     const s = document.createElement('script');
@@ -1037,11 +1099,7 @@ async function calibrarConQR(video) {
     if (norteMapa != null) return clearInterval(ciclo);
     // Hace falta brújula, video y el teléfono en vertical (en horizontal la imagen va girada)
     if (rumboTelefono == null || !video.videoWidth || (screen.orientation?.angle ?? 0) !== 0) return;
-    const escala = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
-    lienzo.width = Math.round(video.videoWidth * escala);
-    lienzo.height = Math.round(video.videoHeight * escala);
-    ctx.drawImage(video, 0, 0, lienzo.width, lienzo.height);
-    const giro = giroDelQR(ctx.getImageData(0, 0, lienzo.width, lienzo.height));
+    const giro = giroDelQR(cuadroCentral(video, lienzo, ctx)); // recortar no cambia el ángulo
     if (giro == null) return;
     muestras.push(normalizar(rumboTelefono + giro));
     if (muestras.length < 5) return;
@@ -1144,7 +1202,8 @@ function abrirPasaporte(datos, calleId, visitas) {
     const visitada = visitas.has(id);
     return el('li', { class: visitada ? 'visitada' : '' }, el('span', {}, c.mujer.nombre),
       id === calleId ? el('small', {}, 'aquí estás')
-        : visitada ? el('a', { href: `?calle_id=${encodeURIComponent(id)}` }, 'Volver a ver')
+        : visitada ? el('a', { href: `?calle_id=${encodeURIComponent(datos.calles[id].codigo || id)}`,
+            onclick: (e) => { e.preventDefault(); cerrarPasaporte(); irACalle(id); } }, 'Volver a ver')
         : el('button', { type: 'button', onclick: () => { guiarHacia(datos, calleId, id); cerrarPasaporte(); } }, 'Guíame'));
   };
   const rutas = Object.entries(datos.temas || {}).map(([clave, nombre]) => {
@@ -1179,40 +1238,135 @@ function cerrarPasaporte() {
 // ============================================================================
 // Arranque
 // ============================================================================
+const estado = { datos: null, calleId: null, camara: false };
+
+// El QR impreso lleva un código corto de 3 caracteres; también se acepta el calle_id completo
+function buscarCalle(datos, id) {
+  if (!id) return null;
+  return datos.calles?.[id] ?? Object.values(datos.calles || {}).find((c) => c.codigo === id) ?? null;
+}
+
+// Prepara la tarjeta de una calle (consulta Wikipedia) y devuelve la función que la muestra
+async function prepararCalle(datos, calle) {
+  const resultado = await resolverArticulo(calle.mujer);
+  return () => {
+    estado.calleId = calle.calle_id;
+    document.title = `${calle.mujer.nombre} · Las Calles de las Mujeres`;
+    // La URL refleja la calle que se está viendo (sin recargar la página)
+    const url = new URL(location.href);
+    url.searchParams.set('calle_id', calle.codigo || calle.calle_id);
+    history.replaceState(null, '', url);
+    if (resultado.estado === 'existe') {
+      pintar(panelArticulo(calle, resultado.resumen));
+      $('#lector').textContent = `${calle.mujer.nombre}. ${resultado.resumen.extract}`;
+    } else {
+      pintar(panelBrecha(calle, datos), { brecha: true });
+      navigator.vibrate?.([60, 40, 60]);
+      $('#lector').textContent = `${calle.mujer.nombre}. ${MENSAJE_BRECHA}`;
+    }
+    montarMundo(calle.contexto);
+    montarRecorrido(datos, calle.calle_id);
+  };
+}
+
 async function flujoDatos() {
-  let calleId = leerCalleId();
+  const calleId = leerCalleId();
+  const datos = await cargarDatos();
+  estado.datos = datos;
   if (!calleId) {
     return () => pintar(panelError('Escanea un código QR',
       'Busca los códigos QR junto a las calles con nombre de mujer en el mapa y escanéalos con la cámara de tu teléfono.'));
   }
-
-  const datos = await cargarDatos();
-  // El QR impreso lleva un código corto de 3 caracteres; también se acepta el calle_id completo
-  const calle = datos.calles?.[calleId] ?? Object.values(datos.calles || {}).find((c) => c.codigo === calleId);
-  if (calle) calleId = calle.calle_id;
+  const calle = buscarCalle(datos, calleId);
   if (!calle) {
     return () => pintar(panelError('Calle no encontrada',
       `No encontramos la calle “${calleId}”. Intenta escanear de nuevo el código QR.`));
   }
   $('#calle-previa').textContent = calle.mujer.nombre;
-  document.title = `${calle.mujer.nombre} · Las Calles de las Mujeres`;
+  return prepararCalle(datos, calle);
+}
 
-  const resultado = await resolverArticulo(calle.mujer);
-  if (resultado.estado === 'existe') {
-    return () => {
-      pintar(panelArticulo(calle, resultado.resumen));
-      $('#lector').textContent = `${calle.mujer.nombre}. ${resultado.resumen.extract}`;
-      montarMundo(calle.contexto);
-      montarRecorrido(datos, calleId);
-    };
-  }
-  return () => {
-    pintar(panelBrecha(calle, datos), { brecha: true });
-    navigator.vibrate?.([60, 40, 60]);
-    $('#lector').textContent = `${calle.mujer.nombre}. ${MENSAJE_BRECHA}`;
-    montarMundo(calle.contexto);
-    montarRecorrido(datos, calleId);
+// ============================================================================
+// De un pin a otro sin salir: cerrar la tarjeta deja la cámara buscando el siguiente QR
+// ============================================================================
+let cicloEscaneo = null;
+let ignorar = { id: null, hasta: 0 }; // no reabrir al instante la tarjeta recién cerrada
+
+function cerrarTarjeta() {
+  window.speechSynthesis?.cancel();
+  const panel = contenido.querySelector('.panel');
+  ignorar = { id: estado.calleId, hasta: Date.now() + 4000 };
+  const mostrarVisor = () => {
+    document.body.classList.remove('es-brecha');
+    limpiarMundo();
+    pintar(visor());
+    if (estado.camara) iniciarEscaneo();
   };
+  if (panel && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    panel.classList.add('saliendo');
+    setTimeout(mostrarVisor, 320);
+  } else {
+    mostrarVisor();
+  }
+}
+
+function visor() {
+  if (!estado.camara) {
+    return el('div', { class: 'visor' },
+      el('p', {}, 'Busca otro pin en el mapa'),
+      el('small', {}, 'Escanéalo con la cámara de tu teléfono, o activa la cámara aquí para pasar de un pin a otro sin salir.'),
+      el('button', { class: 'boton', type: 'button', onclick: async () => {
+        try { await iniciarCamara(); estado.camara = true; pintar(visor()); iniciarEscaneo(); }
+        catch (e) { avisarFalloCamara(e); }
+      } }, 'Activar cámara'));
+  }
+  return el('div', { class: 'visor', id: 'visor' },
+    el('div', { class: 'visor-marco', 'aria-hidden': 'true' }),
+    el('p', {}, 'Apunta a otro pin del mapa'),
+    el('small', {}, 'Su historia aparecerá aquí. También puedes elegir una calle en «Tu recorrido».'));
+}
+
+function idDesdeQR(texto) {
+  try {
+    const url = new URL(texto);
+    if (!url.hostname.endsWith('github.io') && url.hostname !== location.hostname) return null;
+    return url.searchParams.get('calle_id');
+  } catch { return null; }
+}
+
+async function iniciarEscaneo() {
+  if (cicloEscaneo) return;
+  try { if (!window.jsQR) await cargarScript(CONFIG.JSQR_URL); } catch { return; }
+  const video = $('#camara');
+  const lienzo = document.createElement('canvas');
+  const ctx = lienzo.getContext('2d', { willReadFrequently: true });
+  cicloEscaneo = setInterval(async () => {
+    if (!video.videoWidth || !$('#visor')) return;
+    const img = cuadroCentral(video, lienzo, ctx);
+    const qr = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+    const calle = qr && buscarCalle(estado.datos, idDesdeQR(qr.data));
+    if (!calle) return;
+    if (calle.calle_id === ignorar.id && Date.now() < ignorar.hasta) return;
+    detenerEscaneo();
+    navigator.vibrate?.(30);
+    $('#visor')?.classList.add('encontrado');
+    $('#visor p').textContent = calle.mujer.nombre;
+    $('#visor small').textContent = 'Buscando su historia…';
+    (await prepararCalle(estado.datos, calle))();
+  }, 300);
+}
+
+function detenerEscaneo() {
+  clearInterval(cicloEscaneo);
+  cicloEscaneo = null;
+}
+
+// Desde el pasaporte ("Volver a ver"): cambia de calle sin recargar
+async function irACalle(id) {
+  const calle = buscarCalle(estado.datos, id);
+  if (!calle) return;
+  detenerEscaneo();
+  (await prepararCalle(estado.datos, calle))();
 }
 
 // Los datos se piden en cuanto carga la página, en paralelo con la decisión
@@ -1222,26 +1376,40 @@ const datosListos = flujoDatos().catch((e) => {
   return () => pintar(panelError('Algo salió mal', 'No pudimos cargar la información. Revisa tu conexión e inténtalo de nuevo.'));
 });
 
-async function entrar(conCamara) {
+const CLAVE_SESION = 'lcm.sesion-ar';
+
+async function entrar(conCamara, { sinGesto = false } = {}) {
   $('#portada').classList.add('oculta');
   if (conCamara) {
     const [orientacion] = await Promise.all([
-      pedirOrientacion(),
-      iniciarCamara().catch((e) => {
+      sinGesto ? Promise.resolve(false) : pedirOrientacion(),
+      iniciarCamara().then(() => {
+        estado.camara = true;
+        try { sessionStorage.setItem(CLAVE_SESION, '1'); } catch { /* modo privado */ }
+      }).catch((e) => {
         console.warn(e);
         avisarFalloCamara(e);
       }),
     ]);
+    if (sinGesto) {
+      // iOS solo concede el giroscopio tras un toque: se pide en el primer toque en la pantalla
+      addEventListener('pointerdown', async () => {
+        if (await pedirOrientacion()) { iniciarAnclaje(); vigilarSensores(); activarBrujulaSiPiso(); }
+      }, { once: true });
+    }
     if (orientacion) {
       iniciarAnclaje();
       vigilarSensores();
-      if (CONFIG.MONTAJE === 'piso') {
-        escucharBrujula();
-        if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
-      }
+      activarBrujulaSiPiso();
     }
   }
   (await datosListos)();
+}
+
+function activarBrujulaSiPiso() {
+  if (CONFIG.MONTAJE !== 'piso') return;
+  escucharBrujula();
+  if ($('#camara').classList.contains('activa')) calibrarConQR($('#camara'));
 }
 
 // ?diagnostico=1 → muestra qué pasa con cámara y sensores (para probar en teléfonos Android)
@@ -1262,6 +1430,11 @@ if (new URLSearchParams(location.search).has('diagnostico')) {
 }
 
 $('#btn-ar').addEventListener('click', () => entrar(true));
+// Si en esta visita ya se activó la realidad aumentada (y se escaneó otro QR con la app de cámara),
+// se entra directo, sin volver a mostrar la portada.
+try {
+  if (sessionStorage.getItem(CLAVE_SESION) && leerCalleId()) entrar(true, { sinGesto: true });
+} catch { /* modo privado */ }
 $('#btn-sin-camara').addEventListener('click', () => entrar(false));
 $('#btn-mundo').addEventListener('click', () => alternarMundo());
 $('#btn-cerrar-hoja').addEventListener('click', cerrarPasaporte);
