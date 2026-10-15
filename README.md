@@ -111,7 +111,10 @@ El mapa impreso va **en el piso**. Mide 320 × 240 cm y cubre unos 32.7 × 24.5 
 
 ## Funciones interactivas de `ar.html`
 
-- **De un pin a otro sin salir:** cada tarjeta tiene un botón **✕**. Al cerrarla, la cámara sigue encendida y aparece un visor («Apunta a otro pin del mapa»). La propia página lee el siguiente QR con jsQR y muestra su tarjeta sin recargar ni volver a pedir permisos; el recorrido y la flecha se actualizan. Para leer el QR desde de pie, se analiza el centro del cuadro de video a resolución completa. «Volver a ver», en el pasaporte, también cambia de calle sin recargar.
+- **De un pin a otro sin salir:** cada tarjeta tiene un botón **✕**. Al cerrarla, la cámara sigue encendida y aparece un visor («Apunta a otro pin del mapa»). La propia página lee el siguiente QR y muestra su tarjeta sin recargar ni volver a pedir permisos; el recorrido y la flecha se actualizan.
+  - **Lectores:** en Android/Chrome se usa el lector nativo del sistema (`BarcodeDetector`, el mismo motor que la app de cámara), y jsQR como respaldo. En iPhone, Safari no tiene lector nativo y se usa solo jsQR, probando varios recortes del cuadro.
+  - **Zoom:** mientras se busca el siguiente pin, la cámara aplica un zoom de 2.5× si el teléfono lo permite (Chrome en Android). Desde de pie, un QR de 8 cm ocupa apenas un 7 % de la imagen.
+  - **Límite medido:** todos los lectores necesitan unos **2 píxeles por módulo** del QR. Si en 6 s no se lee nada, el visor sugiere acercarse. «Volver a ver», en el pasaporte, también cambia de calle sin recargar.
 - **Sin portada repetida:** si en la misma visita la persona escanea otro QR con la app de cámara del teléfono, la página entra directo a la tarjeta. En iPhone, el permiso de movimiento se vuelve a pedir con el primer toque en la pantalla.
 
 - **Su mundo:** detrás de la tarjeta pasan las imágenes de contexto elegidas en `contextos.json`, con un acercamiento lento y un efecto de profundidad al inclinar el teléfono. Arriba se muestra el pie de foto con su crédito y licencia. El botón «Ver cámara» las oculta.

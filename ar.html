@@ -801,6 +801,11 @@ async function iniciarCamara() {
     }
   }
   diagnostico.camara = 'activa';
+  const pista = stream.getVideoTracks()[0];
+  // Enfoque continuo (Android): sin él, al acercarse al QR la imagen puede quedar desenfocada
+  try { await pista.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }); } catch { /* no soportado */ }
+  const ajustes = pista.getSettings?.() || {};
+  diagnostico.resolucion = `${ajustes.width || '?'}×${ajustes.height || '?'}`;
   const video = $('#camara');
   video.srcObject = stream;
   await video.play();
@@ -1060,23 +1065,71 @@ function mediaCircular(grados) {
 
 const diferencia = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 
-// Ángulo (sentido horario) del borde superior del QR respecto a la parte de arriba de la imagen.
-// Devuelve null si no hay un QR del proyecto en el cuadro.
-function giroDelQR(imagen) {
-  const qr = window.jsQR?.(imagen.data, imagen.width, imagen.height, { inversionAttempts: 'dontInvert' });
-  if (!qr || !qr.data.includes('calle_id=')) return null;
-  const { topLeftCorner: a, topRightCorner: b } = qr.location;
-  return Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
-}
 
 // Recorta el centro del cuadro de video (donde apunta la persona) a resolución completa.
 // Reducir el cuadro entero dejaba el QR demasiado pequeño para leerlo desde de pie.
 function cuadroCentral(video, lienzo, ctx, fraccion = 0.7, maximo = 900) {
   const lado = Math.min(video.videoWidth, video.videoHeight) * fraccion;
-  lienzo.width = lienzo.height = Math.round(Math.min(lado, maximo));
+  // Los recortes pequeños se amplían (hasta 640 px): a jsQR le cuesta leer módulos de 1–2 px
+  lienzo.width = lienzo.height = Math.round(Math.min(Math.max(lado, 640), maximo));
   ctx.drawImage(video, (video.videoWidth - lado) / 2, (video.videoHeight - lado) / 2, lado, lado,
     0, 0, lienzo.width, lienzo.height);
   return ctx.getImageData(0, 0, lienzo.width, lienzo.height);
+}
+
+// ---------------------------------------------------------------------------------------------
+// Lector de QR. En Android/Chrome se usa el lector nativo del sistema (BarcodeDetector, el mismo
+// motor de Google que usa la app de cámara): lee QR pequeños, inclinados o algo desenfocados.
+// En iPhone (Safari no lo tiene) se usa jsQR probando varios recortes del cuadro.
+// ---------------------------------------------------------------------------------------------
+let detectorNativo; // undefined: sin comprobar · null: no disponible
+let turnoRecorte = 0;
+const RECORTES_JSQR = [[0.7, 900], [0.42, 900], [1, 1280]]; // centro, centro cercano (≈ zoom), todo
+
+async function prepararLector() {
+  if (detectorNativo === undefined) {
+    try {
+      detectorNativo = 'BarcodeDetector' in window && (await BarcodeDetector.getSupportedFormats()).includes('qr_code')
+        ? new BarcodeDetector({ formats: ['qr_code'] }) : null;
+    } catch { detectorNativo = null; }
+  }
+  // jsQR siempre como segundo lector: el nativo a veces no devuelve nada aunque el QR se vea bien
+  if (!window.jsQR) {
+    try { await cargarScript(CONFIG.JSQR_URL); } catch { /* sin red */ }
+  }
+  diagnostico.escaner = [detectorNativo && 'nativo', window.jsQR && 'jsQR'].filter(Boolean).join(' + ') || 'ninguno';
+  return Boolean(detectorNativo || window.jsQR);
+}
+
+// Devuelve { texto, giro } del primer QR del proyecto en el cuadro, o null.
+// giro: ángulo (sentido horario) del borde superior del QR respecto a la parte de arriba de la imagen.
+const lienzoCompleto = document.createElement('canvas');
+const ctxCompleto = lienzoCompleto.getContext('2d', { willReadFrequently: true });
+
+async function leerQR(video, lienzo, ctx) {
+  diagnostico.cuadros = (diagnostico.cuadros || 0) + 1;
+  const angulo = (a, b) => Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+  if (detectorNativo) {
+    // Se lee desde una copia del cuadro (más fiable que pasar el <video> directamente)
+    const escala = Math.min(1, 1920 / Math.max(video.videoWidth, video.videoHeight));
+    lienzoCompleto.width = Math.round(video.videoWidth * escala);
+    lienzoCompleto.height = Math.round(video.videoHeight * escala);
+    ctxCompleto.drawImage(video, 0, 0, lienzoCompleto.width, lienzoCompleto.height);
+    try {
+      const qr = (await detectorNativo.detect(lienzoCompleto)).find((c) => c.rawValue?.includes('calle_id='));
+      if (qr) {
+        diagnostico.ultimoLector = 'nativo';
+        return { texto: qr.rawValue, giro: angulo(qr.cornerPoints[0], qr.cornerPoints[1]) };
+      }
+    } catch { /* se intenta con jsQR */ }
+  }
+  if (!window.jsQR) return null;
+  const [fraccion, maximo] = RECORTES_JSQR[turnoRecorte++ % RECORTES_JSQR.length];
+  const img = cuadroCentral(video, lienzo, ctx, fraccion, maximo);
+  const qr = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+  if (!qr || !qr.data.includes('calle_id=')) return null;
+  diagnostico.ultimoLector = 'jsQR';
+  return { texto: qr.data, giro: angulo(qr.location.topLeftCorner, qr.location.topRightCorner) };
 }
 
 function cargarScript(src) {
@@ -1091,15 +1144,19 @@ function cargarScript(src) {
 
 async function calibrarConQR(video) {
   if (norteMapa != null) return;
-  try { await cargarScript(CONFIG.JSQR_URL); } catch { return; } // sin red: queda la dirección "en el mapa"
+  if (!(await prepararLector())) return; // sin lector: queda la dirección "en el mapa"
   const lienzo = document.createElement('canvas');
   const ctx = lienzo.getContext('2d', { willReadFrequently: true });
   const muestras = [];
-  const ciclo = setInterval(() => {
+  let leyendo = false;
+  const ciclo = setInterval(async () => {
     if (norteMapa != null) return clearInterval(ciclo);
     // Hace falta brújula, video y el teléfono en vertical (en horizontal la imagen va girada)
-    if (rumboTelefono == null || !video.videoWidth || (screen.orientation?.angle ?? 0) !== 0) return;
-    const giro = giroDelQR(cuadroCentral(video, lienzo, ctx)); // recortar no cambia el ángulo
+    if (leyendo || rumboTelefono == null || !video.videoWidth || (screen.orientation?.angle ?? 0) !== 0) return;
+    leyendo = true;
+    const qr = await leerQR(video, lienzo, ctx).catch(() => null); // recortar no cambia el ángulo
+    leyendo = false;
+    const giro = qr?.giro;
     if (giro == null) return;
     muestras.push(normalizar(rumboTelefono + giro));
     if (muestras.length < 5) return;
@@ -1323,7 +1380,7 @@ function visor() {
   return el('div', { class: 'visor', id: 'visor' },
     el('div', { class: 'visor-marco', 'aria-hidden': 'true' }),
     el('p', {}, 'Apunta a otro pin del mapa'),
-    el('small', {}, 'Su historia aparecerá aquí. También puedes elegir una calle en «Tu recorrido».'));
+    el('small', {}, 'Centra su código en el recuadro. También puedes elegir una calle en «Tu recorrido».'));
 }
 
 function idDesdeQR(texto) {
@@ -1334,17 +1391,42 @@ function idDesdeQR(texto) {
   } catch { return null; }
 }
 
+// Zoom de la cámara mientras se busca el siguiente pin (Chrome en Android lo permite; Safari no).
+// Desde de pie, un QR de 8 cm ocupa ~7 % del ancho de la imagen: con 2.5× tiene píxeles de sobra.
+async function zoomEscaneo(activo) {
+  const pista = $('#camara').srcObject?.getVideoTracks?.()[0];
+  const zoom = pista?.getCapabilities?.().zoom;
+  if (!zoom) { diagnostico.zoom = 'no disponible'; return; }
+  const valor = activo ? Math.min(zoom.max, Math.max(zoom.min, 2.5)) : zoom.min;
+  try {
+    await pista.applyConstraints({ advanced: [{ zoom: valor }] });
+    diagnostico.zoom = `${valor}×`;
+  } catch (e) { diagnostico.zoom = `error: ${e.name}`; }
+}
+
 async function iniciarEscaneo() {
   if (cicloEscaneo) return;
-  try { if (!window.jsQR) await cargarScript(CONFIG.JSQR_URL); } catch { return; }
+  zoomEscaneo(true);
+  if (!(await prepararLector())) {
+    avisar('No se pudo cargar el lector de QR: escanea el pin con la cámara de tu teléfono');
+    return;
+  }
   const video = $('#camara');
   const lienzo = document.createElement('canvas');
   const ctx = lienzo.getContext('2d', { willReadFrequently: true });
+  const inicio = Date.now();
+  let leyendo = false;
   cicloEscaneo = setInterval(async () => {
-    if (!video.videoWidth || !$('#visor')) return;
-    const img = cuadroCentral(video, lienzo, ctx);
-    const qr = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
-    const calle = qr && buscarCalle(estado.datos, idDesdeQR(qr.data));
+    if (leyendo || !video.videoWidth || !$('#visor')) return;
+    // Si en 6 s no lee nada, sugerir acercarse (suele ser un QR demasiado pequeño en la imagen)
+    if (Date.now() - inicio > 6000 && !$('#visor').dataset.pista) {
+      $('#visor').dataset.pista = '1';
+      $('#visor small').textContent = 'Acércate un poco: el QR debe ocupar al menos la mitad del recuadro y verse nítido.';
+    }
+    leyendo = true;
+    const qr = await leerQR(video, lienzo, ctx).catch(() => null);
+    leyendo = false;
+    const calle = qr && buscarCalle(estado.datos, idDesdeQR(qr.texto));
     if (!calle) return;
     if (calle.calle_id === ignorar.id && Date.now() < ignorar.hasta) return;
     detenerEscaneo();
@@ -1353,10 +1435,11 @@ async function iniciarEscaneo() {
     $('#visor p').textContent = calle.mujer.nombre;
     $('#visor small').textContent = 'Buscando su historia…';
     (await prepararCalle(estado.datos, calle))();
-  }, 300);
+  }, 250);
 }
 
 function detenerEscaneo() {
+  if (cicloEscaneo) zoomEscaneo(false);
   clearInterval(cicloEscaneo);
   cicloEscaneo = null;
 }
@@ -1421,7 +1504,8 @@ if (new URLSearchParams(location.search).has('diagnostico')) {
     caja.textContent = [
       `Navegador: ${navigator.userAgent}`,
       `Dentro de otra app: ${navegadorDentroDeApp() ? 'sí' : 'no'}`,
-      `Cámara: ${diagnostico.camara} (intentos: ${diagnostico.intentos})`,
+      `Cámara: ${diagnostico.camara} (intentos: ${diagnostico.intentos}) · ${diagnostico.resolucion || ''}`,
+      `Lector de QR: ${diagnostico.escaner || 'sin iniciar'} · cuadros analizados: ${diagnostico.cuadros || 0} · zoom: ${diagnostico.zoom || '—'} · última lectura: ${diagnostico.ultimoLector || '—'}`,
       `Movimiento: ${diagnostico.orientacion} · eventos recibidos: ${diagnostico.eventos}`,
       `Reducir movimiento: ${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'sí' : 'no'}`,
       `Brújula: ${rumboTelefono == null ? 'sin datos' : Math.round(rumboTelefono) + '°'} · norte del mapa: ${norteMapa == null ? 'sin calibrar' : Math.round(norteMapa) + '°'}`,
